@@ -65,49 +65,51 @@ const RegexTester = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="p-8 space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-3">
-          <label className="block text-sm font-medium mb-2">Regular Expression</label>
+          <label className="block text-sm font-medium mb-3">Regular Expression</label>
           <Input
             placeholder="Enter regex pattern..."
             value={pattern}
             onChange={(e) => setPattern(e.target.value)}
+            className="text-base py-3"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Flags</label>
+          <label className="block text-sm font-medium mb-3">Flags</label>
           <Input
             placeholder="gimuy"
             value={flags}
             onChange={(e) => setFlags(e.target.value)}
+            className="text-base py-3"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Test String</label>
+        <label className="block text-sm font-medium mb-3">Test String</label>
         <Textarea
           placeholder="Enter text to test against..."
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
-          className="min-h-[100px]"
+          className="min-h-[120px] text-base py-3"
         />
       </div>
 
       {error && (
         <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <p className="text-red-700 font-medium">Regex Error:</p>
-            <p className="text-red-600 text-sm">{error}</p>
+            <p className="text-red-600 text-sm mt-1">{error}</p>
           </CardContent>
         </Card>
       )}
 
       {testString && !error && (
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3">
               Test Result
               <Badge variant={matches.length > 0 ? "default" : "secondary"}>
                 {matches.length} match{matches.length !== 1 ? 'es' : ''}
@@ -116,7 +118,7 @@ const RegexTester = () => {
           </CardHeader>
           <CardContent>
             <div 
-              className="font-mono text-sm bg-slate-50 p-3 rounded border whitespace-pre-wrap"
+              className="font-mono text-sm bg-slate-50 p-4 rounded border whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: highlightMatches(testString) }}
             />
           </CardContent>
@@ -125,15 +127,15 @@ const RegexTester = () => {
 
       {matches.length > 0 && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle>Matches</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-4">
               {matches.map((match, index) => (
-                <div key={index} className="bg-slate-50 p-3 rounded border font-mono text-sm">
-                  <div><strong>Match {index + 1}:</strong> "{match[0]}"</div>
-                  <div><strong>Index:</strong> {match.index}</div>
+                <div key={index} className="bg-slate-50 p-4 rounded border font-mono text-sm">
+                  <div className="mb-2"><strong>Match {index + 1}:</strong> "{match[0]}"</div>
+                  <div className="mb-2"><strong>Index:</strong> {match.index}</div>
                   {match.length > 1 && (
                     <div><strong>Groups:</strong> {match.slice(1).join(', ')}</div>
                   )}
