@@ -25,7 +25,11 @@ const IsoGenerator = () => {
       const dateTime = new Date(`${customDate}T${customTime}`);
       if (!isNaN(dateTime.getTime())) {
         setCustomIso(dateTime.toISOString());
+      } else {
+        setCustomIso('');
       }
+    } else {
+      setCustomIso('');
     }
   }, [customDate, customTime]);
 
@@ -35,6 +39,12 @@ const IsoGenerator = () => {
 
   const generateVariations = (isoString: string) => {
     const date = new Date(isoString);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+    
     return {
       iso: isoString,
       local: date.toLocaleString(),
@@ -55,27 +65,29 @@ const IsoGenerator = () => {
           <CardTitle className="text-lg">Current Time (Live)</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {Object.entries(currentVariations).map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center gap-3">
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-slate-600 capitalize">
-                    {key === 'iso' ? 'ISO 8601' : key}
+          {currentVariations && (
+            <div className="space-y-3">
+              {Object.entries(currentVariations).map(([key, value]) => (
+                <div key={key} className="flex justify-between items-center gap-3">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-slate-600 capitalize">
+                      {key === 'iso' ? 'ISO 8601' : key}
+                    </div>
+                    <div className="font-mono text-sm bg-slate-50 p-2 rounded border">
+                      {value}
+                    </div>
                   </div>
-                  <div className="font-mono text-sm bg-slate-50 p-2 rounded border">
-                    {value}
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(value.toString())}
+                  >
+                    Copy
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => copyToClipboard(value.toString())}
-                >
-                  Copy
-                </Button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
