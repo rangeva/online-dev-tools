@@ -17,7 +17,6 @@ import EpochConverter from '@/components/tools/EpochConverter';
 import IsoGenerator from '@/components/tools/IsoGenerator';
 import CronEditor from '@/components/tools/CronEditor';
 import JsonFormatter from '@/components/tools/JsonFormatter';
-import YamlConverter from '@/components/tools/YamlConverter';
 import XmlFormatter from '@/components/tools/XmlFormatter';
 import HashGenerator from '@/components/tools/HashGenerator';
 import HtpasswdGenerator from '@/components/tools/HtpasswdGenerator';
@@ -66,12 +65,11 @@ const Index = () => {
     },
     {
       id: 'data',
-      name: 'JSON, YAML & XML',
+      name: 'JSON & XML',
       icon: Hash,
       description: 'Data format tools',
       tools: [
         { id: 'json-formatter', name: 'JSON Formatter & Validator', component: JsonFormatter },
-        { id: 'yaml-converter', name: 'YAML to JSON Converter', component: YamlConverter },
         { id: 'xml-formatter', name: 'XML Formatter', component: XmlFormatter },
       ]
     },
