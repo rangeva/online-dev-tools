@@ -36,19 +36,16 @@ export const FeedbackForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Send feedback to a webhook service (like Zapier, Formspree, etc.)
-      const response = await fetch('https://formspree.io/f/your-form-id', {
+      // Create FormData for Netlify Forms
+      const formData = new FormData();
+      formData.append('form-name', 'feedback');
+      formData.append('email', email);
+      formData.append('feedback', feedback);
+
+      const response = await fetch('/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          feedback: feedback,
-          timestamp: new Date().toISOString(),
-          source: 'Developer Toolbox',
-          url: window.location.href
-        }),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
       });
 
       if (response.ok) {
