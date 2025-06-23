@@ -168,19 +168,26 @@ const JsonFormatter = () => {
   const collapseAll = () => {
     const getAllPaths = (obj: any, currentPath: string = ''): string[] => {
       const paths: string[] = [];
+      
       if (typeof obj === 'object' && obj !== null) {
-        if (Array.isArray(obj)) {
+        // Add current path if it's not the root
+        if (currentPath !== '') {
           paths.push(currentPath);
+        }
+        
+        if (Array.isArray(obj)) {
           obj.forEach((item, index) => {
-            paths.push(...getAllPaths(item, currentPath + `[${index}]`));
+            const newPath = currentPath === '' ? `[${index}]` : `${currentPath}[${index}]`;
+            paths.push(...getAllPaths(item, newPath));
           });
         } else {
-          paths.push(currentPath);
           Object.keys(obj).forEach(key => {
-            paths.push(...getAllPaths(obj[key], currentPath + (currentPath ? '.' : '') + key));
+            const newPath = currentPath === '' ? key : `${currentPath}.${key}`;
+            paths.push(...getAllPaths(obj[key], newPath));
           });
         }
       }
+      
       return paths;
     };
 
@@ -188,7 +195,7 @@ const JsonFormatter = () => {
       const allPaths = getAllPaths(parsedJson);
       const newCollapsedStates: {[key: string]: boolean} = {};
       allPaths.forEach(path => {
-        if (path) newCollapsedStates[path] = true;
+        newCollapsedStates[path] = true;
       });
       setCollapsedStates(newCollapsedStates);
     }
