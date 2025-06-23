@@ -13,7 +13,7 @@ const UrlEncoder = () => {
     try {
       setEncoded(encodeURIComponent(input));
     } catch (error) {
-      setEncoded('Error: Invalid input for encoding');
+      setDecoded('Error: Invalid input for encoding');
     }
   };
 
@@ -30,18 +30,18 @@ const UrlEncoder = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <div>
-        <label className="block text-sm font-medium mb-2">Input</label>
+        <label className="block text-sm font-medium mb-3">Input</label>
         <Textarea
           placeholder="Enter text or URL to encode/decode..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="min-h-[80px]"
+          className="min-h-[100px]"
         />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <Button onClick={encode} disabled={!input} className="flex-1">
           Encode
         </Button>
@@ -52,11 +52,11 @@ const UrlEncoder = () => {
 
       {encoded && (
         <Card>
-          <CardContent className="p-4">
-            <div className="flex justify-between items-start gap-3">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start gap-4">
               <div className="flex-1">
-                <div className="font-medium text-sm text-slate-600 mb-2">Encoded</div>
-                <div className="font-mono text-sm bg-slate-50 p-3 rounded border break-all">
+                <div className="font-medium text-sm text-slate-600 mb-3">Encoded</div>
+                <div className="font-mono text-sm bg-slate-50 p-4 rounded border break-all">
                   {encoded}
                 </div>
               </div>
@@ -74,11 +74,11 @@ const UrlEncoder = () => {
 
       {decoded && (
         <Card>
-          <CardContent className="p-4">
-            <div className="flex justify-between items-start gap-3">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start gap-4">
               <div className="flex-1">
-                <div className="font-medium text-sm text-slate-600 mb-2">Decoded</div>
-                <div className="font-mono text-sm bg-slate-50 p-3 rounded border break-all">
+                <div className="font-medium text-sm text-slate-600 mb-3">Decoded</div>
+                <div className="font-mono text-sm bg-slate-50 p-4 rounded border break-all">
                   {decoded}
                 </div>
               </div>
