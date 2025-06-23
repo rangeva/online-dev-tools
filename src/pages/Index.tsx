@@ -100,8 +100,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-12">
+        {/* Header with proper semantic structure */}
+        <header className="text-center mb-12">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
             Developer Toolbox
           </h1>
@@ -111,66 +111,88 @@ const Index = () => {
           <Badge variant="secondary" className="mt-4">
             {toolCategories.reduce((acc, cat) => acc + cat.tools.length, 0)} Tools Available
           </Badge>
-        </div>
+        </header>
 
-        {/* Tool Categories */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-8">
-            {toolCategories.map((category) => {
-              const IconComponent = category.icon;
-              return (
-                <TabsTrigger key={category.id} value={category.id} className="flex items-center gap-2">
-                  <IconComponent className="w-4 h-4" />
-                  <span className="hidden sm:inline">{category.name}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
+        {/* Main content with semantic structure */}
+        <main>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-6 mb-8" role="tablist">
+              {toolCategories.map((category) => {
+                const IconComponent = category.icon;
+                return (
+                  <TabsTrigger 
+                    key={category.id} 
+                    value={category.id} 
+                    className="flex items-center gap-2"
+                    role="tab"
+                    aria-selected={activeTab === category.id}
+                  >
+                    <IconComponent className="w-4 h-4" aria-hidden="true" />
+                    <span className="hidden sm:inline">{category.name}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
 
-          {toolCategories.map((category) => (
-            <TabsContent key={category.id} value={category.id}>
-              <div className="mb-6">
-                <h2 className="text-2xl font-semibold mb-2">{category.name}</h2>
-                <p className="text-slate-600">{category.description}</p>
-              </div>
-              
-              {/* Special layout for JSON & XML tools */}
-              {category.id === 'data' ? (
-                <div className="space-y-6">
-                  {category.tools.map((tool) => {
-                    const ToolComponent = tool.component;
-                    return (
-                      <Card key={tool.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                          <CardTitle className="text-xl">{tool.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <ToolComponent />
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {category.tools.map((tool) => {
-                    const ToolComponent = tool.component;
-                    return (
-                      <Card key={tool.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                          <CardTitle className="text-lg">{tool.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <ToolComponent />
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
-            </TabsContent>
-          ))}
-        </Tabs>
+            {toolCategories.map((category) => (
+              <TabsContent key={category.id} value={category.id} role="tabpanel">
+                <section>
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-semibold mb-2">{category.name}</h2>
+                    <p className="text-slate-600">{category.description}</p>
+                  </div>
+                  
+                  {/* Special layout for JSON & XML tools */}
+                  {category.id === 'data' ? (
+                    <div className="space-y-6">
+                      {category.tools.map((tool) => {
+                        const ToolComponent = tool.component;
+                        return (
+                          <article key={tool.id}>
+                            <Card className="hover:shadow-lg transition-shadow">
+                              <CardHeader>
+                                <CardTitle className="text-xl">{tool.name}</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <ToolComponent />
+                              </CardContent>
+                            </Card>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                      {category.tools.map((tool) => {
+                        const ToolComponent = tool.component;
+                        return (
+                          <article key={tool.id}>
+                            <Card className="hover:shadow-lg transition-shadow">
+                              <CardHeader>
+                                <CardTitle className="text-lg">{tool.name}</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <ToolComponent />
+                              </CardContent>
+                            </Card>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </main>
+
+        {/* Footer for additional SEO value */}
+        <footer className="mt-16 pt-8 border-t border-slate-200 text-center text-slate-600">
+          <p>
+            Free online developer tools for text processing, encoding/decoding, date conversion, 
+            JSON/XML formatting, security utilities, and more. No registration required.
+          </p>
+        </footer>
       </div>
     </div>
   );
