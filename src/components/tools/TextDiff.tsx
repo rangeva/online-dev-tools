@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -143,43 +142,47 @@ const TextDiff = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-2">Original Text</label>
+    <div className="p-6 space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Original Text
+          </label>
           <Textarea
             placeholder="Enter original text..."
             value={text1}
             onChange={(e) => setText1(e.target.value)}
-            className="min-h-[120px]"
+            className="min-h-[150px] p-4"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-2">Modified Text</label>
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Modified Text
+          </label>
           <Textarea
             placeholder="Enter modified text..."
             value={text2}
             onChange={(e) => setText2(e.target.value)}
-            className="min-h-[120px]"
+            className="min-h-[150px] p-4"
           />
         </div>
       </div>
 
-      <div className="flex gap-2">
-        <Button onClick={calculateDiff} className="flex-1">
+      <div className="flex gap-3">
+        <Button onClick={calculateDiff} className="flex-1 py-3">
           Compare Texts
         </Button>
-        <Button onClick={clearTexts} variant="outline">
+        <Button onClick={clearTexts} variant="outline" className="py-3 px-6">
           Clear All
         </Button>
       </div>
 
       {diff.length > 0 && (
-        <Card>
-          <CardHeader>
+        <Card className="mt-6">
+          <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center justify-between">
               Differences
-              <div className="text-sm font-normal text-slate-600">
+              <div className="text-sm font-normal text-slate-600 dark:text-slate-400">
                 <span className="text-green-600">+{diff.filter(d => d.type === 'added').length} added</span>
                 {' | '}
                 <span className="text-red-600">-{diff.filter(d => d.type === 'removed').length} removed</span>
@@ -188,20 +191,20 @@ const TextDiff = () => {
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-1 font-mono text-sm max-h-96 overflow-y-auto">
+          <CardContent className="pt-0">
+            <div className="space-y-2 font-mono text-sm max-h-96 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-800">
               {diff.map((item, index) => (
                 <div
                   key={index}
-                  className={`p-2 rounded ${
+                  className={`p-3 rounded-md ${
                     item.type === 'added'
                       ? 'bg-green-100 text-green-800 border-l-4 border-green-500'
                       : item.type === 'removed'
                       ? 'bg-red-100 text-red-800 border-l-4 border-red-500'
-                      : 'bg-gray-50 text-gray-700'
+                      : 'bg-gray-50 text-gray-700 border-l-4 border-gray-300'
                   }`}
                 >
-                  <span className="mr-2 font-bold">
+                  <span className="mr-3 font-bold">
                     {item.type === 'added' ? '+' : item.type === 'removed' ? '-' : ' '}
                   </span>
                   {item.inlineChanges ? (
