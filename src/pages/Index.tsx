@@ -351,17 +351,17 @@ const Index = () => {
 
             {/* Category Tabs */}
             <Tabs defaultValue="all" value={activeCategory} onValueChange={handleCategoryChange} className="mb-8">
-              <TabsList className="grid grid-cols-4 md:grid-cols-8 gap-1 h-auto p-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <TabsList className="flex flex-wrap justify-center w-full max-w-4xl mx-auto h-auto p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm">
                 {toolCategories.map((category) => {
                   const Icon = category.icon;
                   return (
                     <TabsTrigger
                       key={category.id}
                       value={category.id}
-                      className="flex flex-col items-center gap-1 p-3 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 dark:data-[state=active]:bg-blue-900 dark:data-[state=active]:text-blue-100"
+                      className="flex flex-col items-center gap-2 p-4 m-1 min-w-[120px] data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 dark:data-[state=active]:bg-blue-900 dark:data-[state=active]:text-blue-100 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 rounded-md"
                     >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-xs font-medium">{category.name}</span>
+                      <Icon className="h-5 w-5" />
+                      <span className="text-xs font-medium text-center leading-tight">{category.name}</span>
                     </TabsTrigger>
                   );
                 })}
