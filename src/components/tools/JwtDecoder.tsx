@@ -43,45 +43,45 @@ const JwtDecoder = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-8 space-y-8">
       <div>
-        <label className="block text-sm font-medium mb-2">JWT Token</label>
+        <label className="block text-sm font-medium mb-3">JWT Token</label>
         <Textarea
           placeholder="Paste your JWT token here..."
           value={jwt}
           onChange={(e) => setJwt(e.target.value)}
-          className="min-h-[80px] font-mono text-sm"
+          className="min-h-[120px] font-mono text-sm py-3"
         />
       </div>
 
       {error && (
         <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <p className="text-red-700 font-medium">Invalid JWT:</p>
-            <p className="text-red-600 text-sm">{error}</p>
+            <p className="text-red-600 text-sm mt-1">{error}</p>
           </CardContent>
         </Card>
       )}
 
       {decoded && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-3">
                 Header
                 <Badge variant="secondary">{decoded.header.alg || 'Unknown'}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <pre className="bg-slate-50 p-3 rounded border text-sm overflow-x-auto">
+              <pre className="bg-slate-50 p-4 rounded border text-sm overflow-x-auto">
                 {JSON.stringify(decoded.header, null, 2)}
               </pre>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-3">
                 Payload
                 {decoded.payload.exp && (
                   <Badge variant={isExpired(decoded.payload.exp) ? "destructive" : "default"}>
@@ -91,12 +91,12 @@ const JwtDecoder = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <pre className="bg-slate-50 p-3 rounded border text-sm overflow-x-auto">
+              <pre className="bg-slate-50 p-4 rounded border text-sm overflow-x-auto">
                 {JSON.stringify(decoded.payload, null, 2)}
               </pre>
               
               {(decoded.payload.iat || decoded.payload.exp || decoded.payload.nbf) && (
-                <div className="mt-4 space-y-2 text-sm">
+                <div className="mt-6 space-y-3 text-sm">
                   {decoded.payload.iat && (
                     <div><strong>Issued At:</strong> {formatTimestamp(decoded.payload.iat)}</div>
                   )}
@@ -112,14 +112,14 @@ const JwtDecoder = () => {
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-4">
               <CardTitle className="text-lg">Signature</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-slate-50 p-3 rounded border font-mono text-sm break-all">
+              <div className="bg-slate-50 p-4 rounded border font-mono text-sm break-all">
                 {decoded.signature}
               </div>
-              <p className="text-sm text-slate-600 mt-2">
+              <p className="text-sm text-slate-600 mt-3">
                 Signature verification requires the secret key
               </p>
             </CardContent>
