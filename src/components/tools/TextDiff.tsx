@@ -21,7 +21,7 @@ const TextDiff = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-8 space-y-8">
       <TextDiffInput
         text1={text1}
         text2={text2}
@@ -29,11 +29,11 @@ const TextDiff = () => {
         setText2={setText2}
       />
 
-      <div className="flex gap-3">
-        <Button onClick={handleCalculateDiff} className="flex-1 py-3">
+      <div className="flex gap-4">
+        <Button onClick={handleCalculateDiff} className="flex-1 py-3 text-base">
           Compare Texts
         </Button>
-        <Button onClick={handleClearTexts} variant="outline" className="py-3 px-6">
+        <Button onClick={handleClearTexts} variant="outline" className="py-3 px-8 text-base">
           Clear All
         </Button>
       </div>
