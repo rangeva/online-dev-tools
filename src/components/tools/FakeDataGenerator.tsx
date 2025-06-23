@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -152,7 +151,7 @@ const FakeDataGenerator = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Data Fields</CardTitle>
