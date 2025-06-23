@@ -134,21 +134,40 @@ const Index = () => {
                 <p className="text-slate-600">{category.description}</p>
               </div>
               
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {category.tools.map((tool) => {
-                  const ToolComponent = tool.component;
-                  return (
-                    <Card key={tool.id} className="hover:shadow-lg transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-lg">{tool.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ToolComponent />
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+              {/* Special layout for JSON & XML tools */}
+              {category.id === 'data' ? (
+                <div className="space-y-6">
+                  {category.tools.map((tool) => {
+                    const ToolComponent = tool.component;
+                    return (
+                      <Card key={tool.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <CardTitle className="text-xl">{tool.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ToolComponent />
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {category.tools.map((tool) => {
+                    const ToolComponent = tool.component;
+                    return (
+                      <Card key={tool.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <CardTitle className="text-lg">{tool.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ToolComponent />
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
             </TabsContent>
           ))}
         </Tabs>
