@@ -59,21 +59,21 @@ const IsoGenerator = () => {
   const customVariations = customIso ? generateVariations(customIso) : null;
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Current Time (Live)</CardTitle>
         </CardHeader>
         <CardContent>
           {currentVariations && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {Object.entries(currentVariations).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center gap-3">
+                <div key={key} className="flex justify-between items-center gap-4">
                   <div className="flex-1">
                     <div className="text-sm font-medium text-slate-600 capitalize">
                       {key === 'iso' ? 'ISO 8601' : key}
                     </div>
-                    <div className="font-mono text-sm bg-slate-50 p-2 rounded border">
+                    <div className="font-mono text-sm bg-slate-50 p-3 rounded border">
                       {value}
                     </div>
                   </div>
@@ -96,9 +96,9 @@ const IsoGenerator = () => {
           <CardTitle className="text-lg">Custom Date & Time</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Date</label>
+              <label className="block text-sm font-medium mb-3">Date</label>
               <Input
                 type="date"
                 value={customDate}
@@ -106,7 +106,7 @@ const IsoGenerator = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Time</label>
+              <label className="block text-sm font-medium mb-3">Time</label>
               <Input
                 type="time"
                 step="1"
@@ -117,14 +117,14 @@ const IsoGenerator = () => {
           </div>
 
           {customVariations && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {Object.entries(customVariations).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center gap-3">
+                <div key={key} className="flex justify-between items-center gap-4">
                   <div className="flex-1">
                     <div className="text-sm font-medium text-slate-600 capitalize">
                       {key === 'iso' ? 'ISO 8601' : key}
                     </div>
-                    <div className="font-mono text-sm bg-slate-50 p-2 rounded border">
+                    <div className="font-mono text-sm bg-slate-50 p-3 rounded border">
                       {value}
                     </div>
                   </div>

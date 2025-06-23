@@ -44,13 +44,13 @@ const EpochConverter = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Current Time</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="font-mono text-lg">{currentEpoch}</span>
               <Button variant="outline" size="sm" onClick={useCurrentTime}>
@@ -64,8 +64,8 @@ const EpochConverter = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-3">
           <label className="block text-sm font-medium">UNIX Timestamp</label>
           <Input
             placeholder="1640995200"
@@ -77,7 +77,7 @@ const EpochConverter = () => {
           </Button>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label className="block text-sm font-medium">Human Date</label>
           <Input
             placeholder="2022-01-01T00:00:00.000Z"
@@ -91,7 +91,7 @@ const EpochConverter = () => {
       </div>
 
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-6">
           <div className="text-sm text-slate-600">
             <p><strong>Tip:</strong> Supports both seconds and milliseconds timestamps.</p>
             <p>Common formats: ISO 8601, RFC 2822, or any valid date string.</p>

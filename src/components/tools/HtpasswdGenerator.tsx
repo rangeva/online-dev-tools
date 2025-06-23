@@ -92,10 +92,10 @@ const HtpasswdGenerator = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="p-6 space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium mb-2">Username</label>
+          <label className="block text-sm font-medium mb-3">Username</label>
           <Input
             placeholder="Enter username"
             value={username}
@@ -103,8 +103,8 @@ const HtpasswdGenerator = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Password</label>
-          <div className="flex gap-2">
+          <label className="block text-sm font-medium mb-3">Password</label>
+          <div className="flex gap-3">
             <Input
               type="password"
               placeholder="Enter password"
@@ -124,7 +124,7 @@ const HtpasswdGenerator = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Hash Algorithm</label>
+        <label className="block text-sm font-medium mb-3">Hash Algorithm</label>
         <Select value={algorithm} onValueChange={setAlgorithm}>
           <SelectTrigger>
             <SelectValue />
@@ -144,7 +144,7 @@ const HtpasswdGenerator = () => {
 
       {error && (
         <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <p className="text-red-700 text-sm">{error}</p>
           </CardContent>
         </Card>
@@ -165,7 +165,7 @@ const HtpasswdGenerator = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-mono text-sm bg-slate-50 p-3 rounded border break-all">
+            <div className="font-mono text-sm bg-slate-50 p-4 rounded border break-all">
               {htpasswdEntry}
             </div>
           </CardContent>
@@ -177,11 +177,11 @@ const HtpasswdGenerator = () => {
           <CardTitle className="text-lg">Usage Instructions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-sm text-slate-600 space-y-2">
+          <div className="text-sm text-slate-600 space-y-3">
             <p>1. Copy the generated entry to your .htpasswd file</p>
             <p>2. Configure your web server to use the .htpasswd file for authentication</p>
             <p>3. For Apache, add this to your .htaccess or virtual host configuration:</p>
-            <pre className="bg-slate-100 p-2 rounded mt-2 text-xs">
+            <pre className="bg-slate-100 p-3 rounded mt-3 text-xs">
 {`AuthType Basic
 AuthName "Restricted Area"
 AuthUserFile /path/to/.htpasswd

@@ -83,16 +83,16 @@ const CronEditor = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <div>
-        <label className="block text-sm font-medium mb-2">Cron Expression</label>
+        <label className="block text-sm font-medium mb-3">Cron Expression</label>
         <Input
           placeholder="0 0 * * *"
           value={cronExpression}
           onChange={(e) => setCronExpression(e.target.value)}
           className="font-mono"
         />
-        <div className="text-xs text-slate-500 mt-1">
+        <div className="text-xs text-slate-500 mt-2">
           Format: minute hour day-of-month month day-of-week
         </div>
       </div>
@@ -117,9 +117,9 @@ const CronEditor = () => {
             <CardTitle className="text-lg">Next Scheduled Runs</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {nextRuns.map((run, index) => (
-                <div key={index} className="font-mono text-sm bg-slate-50 p-2 rounded border">
+                <div key={index} className="font-mono text-sm bg-slate-50 p-3 rounded border">
                   {run}
                 </div>
               ))}
@@ -133,11 +133,11 @@ const CronEditor = () => {
           <CardTitle className="text-lg">Common Examples</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {cronExamples.map((example, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-2 hover:bg-slate-50 rounded cursor-pointer"
+                className="flex justify-between items-center p-3 hover:bg-slate-50 rounded cursor-pointer"
                 onClick={() => setCronExpression(example.expression)}
               >
                 <div className="flex-1">

@@ -50,23 +50,23 @@ const CaseConverter = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <Textarea
         placeholder="Enter text to convert..."
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        className="min-h-[80px]"
+        className="min-h-[100px]"
       />
 
-      <div className="grid gap-3">
+      <div className="grid gap-4">
         {conversions.map((conversion) => (
-          <Card key={conversion.name} className="p-3">
-            <div className="flex justify-between items-start gap-3">
+          <Card key={conversion.name} className="p-4">
+            <div className="flex justify-between items-start gap-4">
               <div className="flex-1">
-                <div className="font-medium text-sm text-slate-600 mb-1">
+                <div className="font-medium text-sm text-slate-600 mb-3">
                   {conversion.name}
                 </div>
-                <div className="font-mono text-sm bg-slate-50 p-2 rounded border min-h-[2rem] break-all">
+                <div className="font-mono text-sm bg-slate-50 p-4 rounded border min-h-[2rem] break-all">
                   {inputText ? conversion.convert(inputText) : 'Preview will appear here...'}
                 </div>
               </div>

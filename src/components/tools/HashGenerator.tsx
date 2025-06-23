@@ -79,9 +79,9 @@ const HashGenerator = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-6">
       <div>
-        <label className="block text-sm font-medium mb-2">Input Text</label>
+        <label className="block text-sm font-medium mb-3">Input Text</label>
         <Input
           placeholder="Enter text to hash..."
           value={input}
@@ -89,7 +89,7 @@ const HashGenerator = () => {
         />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {hashTypes.map((hashType) => (
           <Card key={hashType.key}>
             <CardHeader>
@@ -111,7 +111,7 @@ const HashGenerator = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="font-mono text-sm bg-slate-50 p-3 rounded border break-all">
+              <div className="font-mono text-sm bg-slate-50 p-4 rounded border break-all">
                 {hashes[hashType.key] || 'Hash will appear here...'}
               </div>
             </CardContent>
@@ -120,7 +120,7 @@ const HashGenerator = () => {
       </div>
 
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-6">
           <div className="text-sm text-slate-600">
             <p><strong>Security Note:</strong></p>
             <ul className="list-disc list-inside space-y-1 mt-2">
