@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,8 @@ import LoremGenerator from '@/components/tools/LoremGenerator';
 import FakeDataGenerator from '@/components/tools/FakeDataGenerator';
 
 const Index = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('text');
 
   const toolCategories = [
@@ -97,6 +100,20 @@ const Index = () => {
     }
   ];
 
+  // Handle URL parameters for tab selection
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && toolCategories.some(cat => cat.id === tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  // Handle tab change and update URL
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setSearchParams({ tab: value });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto px-4 py-8">
@@ -115,7 +132,7 @@ const Index = () => {
 
         {/* Main content with semantic structure */}
         <main>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-6 mb-8" role="tablist">
               {toolCategories.map((category) => {
                 const IconComponent = category.icon;
