@@ -36,37 +36,39 @@ export const FeedbackForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Create mailto link with the feedback
-      const subject = encodeURIComponent('Developer Toolbox Feedback');
-      const body = encodeURIComponent(`
-Feedback from: ${email}
-
-Feedback:
-${feedback}
-
----
-Sent from Developer Toolbox
-      `);
-      
-      const mailtoLink = `mailto:rangeva@gmail.com?subject=${subject}&body=${body}`;
-      
-      // Open the user's email client
-      window.location.href = mailtoLink;
-      
-      toast({
-        title: "Thank you!",
-        description: "Your email client should open with the feedback ready to send.",
+      // Send feedback to a webhook service (like Zapier, Formspree, etc.)
+      const response = await fetch('https://formspree.io/f/your-form-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          feedback: feedback,
+          timestamp: new Date().toISOString(),
+          source: 'Developer Toolbox',
+          url: window.location.href
+        }),
       });
-      
-      // Reset form
-      setEmail('');
-      setFeedback('');
-      setIsOpen(false);
+
+      if (response.ok) {
+        toast({
+          title: "Thank you!",
+          description: "Your feedback has been sent successfully. We appreciate your input!",
+        });
+        
+        // Reset form
+        setEmail('');
+        setFeedback('');
+        setIsOpen(false);
+      } else {
+        throw new Error('Failed to send feedback');
+      }
     } catch (error) {
-      console.error('Error preparing feedback:', error);
+      console.error('Error sending feedback:', error);
       toast({
         title: "Error",
-        description: "There was an issue preparing your feedback. Please try again.",
+        description: "There was an issue sending your feedback. Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -122,7 +124,7 @@ Sent from Developer Toolbox
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
-                  "Preparing..."
+                  "Sending..."
                 ) : (
                   <>
                     <Send className="h-4 w-4 mr-2" />

@@ -41,7 +41,6 @@ import JsonFormatter from "@/components/tools/JsonFormatter";
 import XmlFormatter from "@/components/tools/XmlFormatter";
 import HashGenerator from "@/components/tools/HashGenerator";
 import HtpasswdGenerator from "@/components/tools/HtpasswdGenerator";
-import SslChecker from "@/components/tools/SslChecker";
 import UuidGenerator from "@/components/tools/UuidGenerator";
 import LoremGenerator from "@/components/tools/LoremGenerator";
 import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
@@ -59,8 +58,7 @@ const Index = () => {
     { id: "date", name: "Date & Time", icon: Clock },
     { id: "data", name: "Data & Format", icon: Database },
     { id: "security", name: "Security", icon: Shield },
-    { id: "generators", name: "Generators", icon: Zap },
-    { id: "network", name: "Network", icon: Globe }
+    { id: "generators", name: "Generators", icon: Zap }
   ];
 
   const tools = [
@@ -198,15 +196,6 @@ const Index = () => {
       icon: Shield,
       component: HtpasswdGenerator,
       tags: ["htpasswd", "auth", "password", "apache"]
-    },
-    {
-      id: "ssl-checker",
-      name: "SSL Checker",
-      description: "Check SSL certificate details and validity",
-      category: "security",
-      icon: Shield,
-      component: SslChecker,
-      tags: ["ssl", "certificate", "security", "https"]
     },
     {
       id: "uuid-generator",
