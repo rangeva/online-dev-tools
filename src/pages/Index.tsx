@@ -1,4 +1,6 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,8 +50,10 @@ import YamlConverter from "@/components/tools/YamlConverter";
 import { FeedbackForm } from "@/components/FeedbackForm";
 
 const Index = () => {
+  const { toolId, category } = useParams();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [activeCategory, setActiveCategory] = useState(category || "all");
 
   const toolCategories = [
     { id: "all", name: "All Tools", icon: Settings },
@@ -226,6 +230,22 @@ const Index = () => {
     }
   ];
 
+  // Update URL when category changes
+  useEffect(() => {
+    if (category && category !== activeCategory) {
+      setActiveCategory(category);
+    }
+  }, [category]);
+
+  const handleCategoryChange = (newCategory: string) => {
+    setActiveCategory(newCategory);
+    if (newCategory === "all") {
+      navigate("/");
+    } else {
+      navigate(`/category/${newCategory}`);
+    }
+  };
+
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -236,9 +256,39 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const selectedTool = toolId ? tools.find(tool => tool.id === toolId) : null;
 
-  const selectedToolData = tools.find(tool => tool.id === selectedTool);
+  // Generate page title and meta description
+  const getPageTitle = () => {
+    if (selectedTool) {
+      return `${selectedTool.name} - Developer Toolbox`;
+    }
+    if (activeCategory !== "all") {
+      const categoryName = toolCategories.find(cat => cat.id === activeCategory)?.name;
+      return `${categoryName} - Developer Toolbox`;
+    }
+    return "Developer Toolbox - Essential Online Tools for Developers";
+  };
+
+  const getPageDescription = () => {
+    if (selectedTool) {
+      return selectedTool.description;
+    }
+    if (activeCategory !== "all") {
+      const categoryName = toolCategories.find(cat => cat.id === activeCategory)?.name;
+      return `${categoryName} for developers - Free online tools with no sign-up required.`;
+    }
+    return "Collection of essential online tools for developers including text utilities, encoding/decoding, date tools, JSON formatters, security tools and more.";
+  };
+
+  // Update document title and meta description
+  useEffect(() => {
+    document.title = getPageTitle();
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', getPageDescription());
+    }
+  }, [selectedTool, activeCategory]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -246,7 +296,7 @@ const Index = () => {
       <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               <div className="p-2 bg-blue-600 rounded-lg">
                 <Code className="h-6 w-6 text-white" />
               </div>
@@ -258,7 +308,7 @@ const Index = () => {
                   Essential online tools for developers
                 </p>
               </div>
-            </div>
+            </Link>
             <div className="hidden md:flex items-center space-x-2">
               <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                 Free
@@ -298,7 +348,7 @@ const Index = () => {
             </div>
 
             {/* Category Tabs */}
-            <Tabs defaultValue="all" value={activeCategory} onValueChange={setActiveCategory} className="mb-8">
+            <Tabs defaultValue="all" value={activeCategory} onValueChange={handleCategoryChange} className="mb-8">
               <TabsList className="grid grid-cols-4 md:grid-cols-8 gap-1 h-auto p-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 {toolCategories.map((category) => {
                   const Icon = category.icon;
@@ -321,37 +371,35 @@ const Index = () => {
               {filteredTools.map((tool) => {
                 const Icon = tool.icon;
                 return (
-                  <Card 
-                    key={tool.id} 
-                    className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105"
-                    onClick={() => setSelectedTool(tool.id)}
-                  >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
-                          <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <Badge variant="outline" className="text-xs">
-                          {toolCategories.find(cat => cat.id === tool.category)?.name}
-                        </Badge>
-                      </div>
-                      <CardTitle className="text-lg font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {tool.name}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="text-slate-600 dark:text-slate-400">
-                        {tool.description}
-                      </CardDescription>
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {tool.tags.slice(0, 3).map(tag => (
-                          <Badge key={tag} variant="secondary" className="text-xs bg-slate-100 dark:bg-slate-700">
-                            {tag}
+                  <Link key={tool.id} to={`/tool/${tool.id}`}>
+                    <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105 h-full">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                            <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {toolCategories.find(cat => cat.id === tool.category)?.name}
                           </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                        </div>
+                        <CardTitle className="text-lg font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {tool.name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="text-slate-600 dark:text-slate-400">
+                          {tool.description}
+                        </CardDescription>
+                        <div className="flex flex-wrap gap-1 mt-3">
+                          {tool.tags.slice(0, 3).map(tag => (
+                            <Badge key={tag} variant="secondary" className="text-xs bg-slate-100 dark:bg-slate-700">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 );
               })}
             </div>
@@ -375,28 +423,24 @@ const Index = () => {
               <div className="flex items-center space-x-3">
                 <Button
                   variant="outline"
-                  onClick={() => setSelectedTool(null)}
+                  onClick={() => navigate("/")}
                   className="border-slate-200 dark:border-slate-700"
                 >
                   ← Back to Tools
                 </Button>
                 <Separator orientation="vertical" className="h-6" />
                 <div className="flex items-center space-x-2">
-                  {selectedToolData && (
-                    <>
-                      <selectedToolData.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                        {selectedToolData.name}
-                      </h2>
-                    </>
-                  )}
+                  <selectedTool.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                    {selectedTool.name}
+                  </h2>
                 </div>
               </div>
             </div>
 
             {/* Tool Component */}
             <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-              {selectedToolData?.component && <selectedToolData.component />}
+              <selectedTool.component />
             </div>
           </div>
         )}

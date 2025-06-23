@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -76,12 +77,54 @@
         "Cron Expression Editor",
         "JSON Formatter & Validator",
         "XML Formatter",
+        "YAML Converter",
         "Hash Generator",
         "Htpasswd Generator",
-        "SSL Checker",
         "UUID Generator",
         "Lorem Ipsum Generator",
         "Fake Data Generator"
+      ],
+      "mainEntity": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "JSON Formatter & Validator",
+          "description": "Format, validate, and minify JSON data",
+          "url": "https://lovable.dev/tool/json-formatter"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Base64 Encoder/Decoder",
+          "description": "Encode and decode Base64 strings",
+          "url": "https://lovable.dev/tool/base64-encoder"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "UUID Generator",
+          "description": "Generate UUIDs (v1, v4) and validate existing ones",
+          "url": "https://lovable.dev/tool/uuid-generator"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Breadcrumb structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://lovable.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Developer Tools",
+          "item": "https://lovable.dev"
+        }
       ]
     }
     </script>
