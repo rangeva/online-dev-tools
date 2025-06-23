@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -351,14 +352,14 @@ const Index = () => {
 
             {/* Category Tabs */}
             <Tabs defaultValue="all" value={activeCategory} onValueChange={handleCategoryChange} className="mb-8">
-              <TabsList className="flex flex-wrap justify-center w-full max-w-4xl mx-auto h-auto p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm">
+              <TabsList className="flex flex-wrap justify-center w-full max-w-5xl mx-auto h-auto p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm">
                 {toolCategories.map((category) => {
                   const Icon = category.icon;
                   return (
                     <TabsTrigger
                       key={category.id}
                       value={category.id}
-                      className="flex flex-col items-center gap-2 p-4 m-1 min-w-[120px] data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 dark:data-[state=active]:bg-blue-900 dark:data-[state=active]:text-blue-100 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 rounded-md"
+                      className="flex flex-col items-center gap-2 p-4 m-1 min-w-[160px] data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 dark:data-[state=active]:bg-blue-900 dark:data-[state=active]:text-blue-100 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 rounded-md"
                     >
                       <Icon className="h-5 w-5" />
                       <span className="text-xs font-medium text-center leading-tight">{category.name}</span>
