@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,26 +26,26 @@ import {
   Download
 } from "lucide-react";
 
-// Tool components
-import { WordCounter } from "@/components/tools/WordCounter";
-import { TextDiff } from "@/components/tools/TextDiff";
-import { CaseConverter } from "@/components/tools/CaseConverter";
-import { RegexTester } from "@/components/tools/RegexTester";
-import { UrlEncoder } from "@/components/tools/UrlEncoder";
-import { Base64Encoder } from "@/components/tools/Base64Encoder";
-import { JwtDecoder } from "@/components/tools/JwtDecoder";
-import { EpochConverter } from "@/components/tools/EpochConverter";
-import { IsoGenerator } from "@/components/tools/IsoGenerator";
-import { CronEditor } from "@/components/tools/CronEditor";
-import { JsonFormatter } from "@/components/tools/JsonFormatter";
-import { XmlFormatter } from "@/components/tools/XmlFormatter";
-import { HashGenerator } from "@/components/tools/HashGenerator";
-import { HtpasswdGenerator } from "@/components/tools/HtpasswdGenerator";
-import { SslChecker } from "@/components/tools/SslChecker";
-import { UuidGenerator } from "@/components/tools/UuidGenerator";
-import { LoremGenerator } from "@/components/tools/LoremGenerator";
-import { FakeDataGenerator } from "@/components/tools/FakeDataGenerator";
-import { YamlConverter } from "@/components/tools/YamlConverter";
+// Tool components - using default imports
+import WordCounter from "@/components/tools/WordCounter";
+import TextDiff from "@/components/tools/TextDiff";
+import CaseConverter from "@/components/tools/CaseConverter";
+import RegexTester from "@/components/tools/RegexTester";
+import UrlEncoder from "@/components/tools/UrlEncoder";
+import Base64Encoder from "@/components/tools/Base64Encoder";
+import JwtDecoder from "@/components/tools/JwtDecoder";
+import EpochConverter from "@/components/tools/EpochConverter";
+import IsoGenerator from "@/components/tools/IsoGenerator";
+import CronEditor from "@/components/tools/CronEditor";
+import JsonFormatter from "@/components/tools/JsonFormatter";
+import XmlFormatter from "@/components/tools/XmlFormatter";
+import HashGenerator from "@/components/tools/HashGenerator";
+import HtpasswdGenerator from "@/components/tools/HtpasswdGenerator";
+import SslChecker from "@/components/tools/SslChecker";
+import UuidGenerator from "@/components/tools/UuidGenerator";
+import LoremGenerator from "@/components/tools/LoremGenerator";
+import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
+import YamlConverter from "@/components/tools/YamlConverter";
 import { FeedbackForm } from "@/components/FeedbackForm";
 
 const Index = () => {
