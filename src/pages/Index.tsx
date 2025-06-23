@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -48,6 +47,7 @@ import LoremGenerator from "@/components/tools/LoremGenerator";
 import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
 import YamlConverter from "@/components/tools/YamlConverter";
 import { FeedbackForm } from "@/components/FeedbackForm";
+import SEOBreadcrumbs from "@/components/SEOBreadcrumbs";
 
 const Index = () => {
   const { toolId, category } = useParams();
@@ -322,6 +322,8 @@ const Index = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        <SEOBreadcrumbs />
+        
         {!selectedTool ? (
           <>
             {/* Hero Section */}
