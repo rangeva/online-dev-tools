@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -344,14 +343,6 @@ const SslChecker = () => {
           </Card>
         </div>
       )}
-
-      <Card>
-        <CardContent className="p-4">
-          <div className="text-sm text-slate-600">
-            <p><strong>Note:</strong> This is a demonstration tool showing mock SSL certificate data. In a production environment, SSL checking would be performed server-side using actual certificate validation APIs to provide real certificate information and avoid CORS limitations.</p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
