@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -12,17 +11,31 @@ const XmlFormatter = () => {
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState('');
 
-  const formatXml = (xml: string, indent = 2): string => {
+  const formatXml = (xml: string, indentSize = 2): string => {
     let formatted = '';
-    let pad = 0;
+    let indent = 0;
     
-    xml.split(/>\s*</).forEach((node) => {
-      if (node.match(/^\/\w/)) pad -= indent;
-      formatted += '  '.repeat(pad) + '<' + node + '>\r\n';
-      if (node.match(/^<?\w[^>]*[^/]$/)) pad += indent;
+    // Remove extra whitespace and split by tags
+    const nodes = xml.replace(/>\s*</g, '><').split(/(?=<)/);
+    
+    nodes.forEach((node) => {
+      if (!node.trim()) return;
+      
+      // Check if it's a closing tag
+      if (node.match(/^<\/\w/)) {
+        indent = Math.max(0, indent - indentSize);
+      }
+      
+      // Add indentation and the node
+      formatted += ' '.repeat(indent) + node.trim() + '\n';
+      
+      // Check if it's an opening tag (not self-closing and not closing)
+      if (node.match(/^<\w[^>]*[^/]>/) || node.match(/^<\w[^>]*>$/)) {
+        indent += indentSize;
+      }
     });
     
-    return formatted.substring(1, formatted.length - 3);
+    return formatted.trim();
   };
 
   const minifyXml = (xml: string): string => {
