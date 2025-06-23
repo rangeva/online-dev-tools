@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,7 +20,6 @@ import JsonFormatter from '@/components/tools/JsonFormatter';
 import XmlFormatter from '@/components/tools/XmlFormatter';
 import HashGenerator from '@/components/tools/HashGenerator';
 import HtpasswdGenerator from '@/components/tools/HtpasswdGenerator';
-import SslChecker from '@/components/tools/SslChecker';
 import UuidGenerator from '@/components/tools/UuidGenerator';
 import LoremGenerator from '@/components/tools/LoremGenerator';
 import FakeDataGenerator from '@/components/tools/FakeDataGenerator';
@@ -84,7 +82,6 @@ const Index = () => {
       tools: [
         { id: 'hash-generator', name: 'Hash Generator', component: HashGenerator },
         { id: 'htpasswd-generator', name: 'Htpasswd Generator', component: HtpasswdGenerator },
-        { id: 'ssl-checker', name: 'SSL Checker', component: SslChecker },
       ]
     },
     {
