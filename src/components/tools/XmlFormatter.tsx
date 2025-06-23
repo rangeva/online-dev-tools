@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -264,9 +263,9 @@ const XmlFormatter = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="p-8 space-y-8">
       <div>
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-3">
           <label className="block text-sm font-medium">XML Input</label>
           {isValid !== null && (
             <Badge variant={isValid ? 'default' : 'destructive'}>
@@ -278,7 +277,7 @@ const XmlFormatter = () => {
           placeholder='<root><item>value</item></root>'
           value={input}
           onChange={(e) => handleInputChange(e.target.value)}
-          className="min-h-[120px] font-mono text-sm"
+          className="min-h-[120px] font-mono text-sm py-3"
         />
         {error && (
           <div className="text-red-600 text-sm mt-1">{error}</div>
@@ -291,7 +290,7 @@ const XmlFormatter = () => {
 
       {parsedXml && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle className="text-lg flex justify-between items-center">
               Interactive XML Viewer
               <div className="flex gap-2">
@@ -312,7 +311,7 @@ const XmlFormatter = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="bg-slate-50 p-3 rounded border text-sm font-mono max-h-96 overflow-auto">
+            <div className="bg-slate-50 p-4 rounded border text-sm font-mono max-h-96 overflow-auto">
               {renderXmlNode(parsedXml)}
             </div>
           </CardContent>
@@ -321,7 +320,7 @@ const XmlFormatter = () => {
 
       {formatted && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle className="text-lg flex justify-between items-center">
               Formatted XML
               <Button
@@ -334,7 +333,7 @@ const XmlFormatter = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="bg-slate-50 p-3 rounded border text-sm overflow-x-auto max-h-60">
+            <pre className="bg-slate-50 p-4 rounded border text-sm overflow-x-auto max-h-60">
               {formatted}
             </pre>
           </CardContent>
@@ -343,7 +342,7 @@ const XmlFormatter = () => {
 
       {minified && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle className="text-lg flex justify-between items-center">
               Minified XML
               <Button
@@ -356,7 +355,7 @@ const XmlFormatter = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="bg-slate-50 p-3 rounded border text-sm font-mono break-all max-h-40 overflow-y-auto">
+            <div className="bg-slate-50 p-4 rounded border text-sm font-mono break-all max-h-40 overflow-y-auto">
               {minified}
             </div>
           </CardContent>
