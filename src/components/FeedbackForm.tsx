@@ -1,138 +1,67 @@
 
 import React, { useState } from 'react';
-import { MessageSquare, Send } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 
+// Extend the global Window interface to include Tally
+declare global {
+  interface Window {
+    Tally: {
+      openPopup: (formId: string, options?: any) => void;
+      closePopup: (formId: string) => void;
+    };
+  }
+}
+
 export const FeedbackForm = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [email, setEmail] = useState('');
-  const [feedback, setFeedback] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const formId = '3jX45R';
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFeedbackClick = () => {
+    console.log('Opening Tally feedback form...');
     
-    if (!email || !feedback) {
+    if (typeof window !== 'undefined' && window.Tally) {
+      window.Tally.openPopup(formId, {
+        layout: 'modal',
+        width: 600,
+        autoClose: 3000,
+        onOpen: () => {
+          console.log('Tally form opened');
+        },
+        onClose: () => {
+          console.log('Tally form closed');
+        },
+        onSubmit: (payload: any) => {
+          console.log('Feedback submitted:', payload);
+          toast({
+            title: "Thank you!",
+            description: "Your feedback has been sent successfully. We appreciate your input!",
+          });
+        },
+        hiddenFields: {
+          source: 'Developer Toolbox',
+          url: window.location.href
+        }
+      });
+    } else {
+      console.error('Tally widget not loaded');
       toast({
         title: "Error",
-        description: "Please fill in both your email and feedback.",
+        description: "Feedback form could not be loaded. Please try again later.",
         variant: "destructive",
       });
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Create FormData for Netlify Forms
-      const formData = new FormData();
-      formData.append('form-name', 'feedback');
-      formData.append('email', email);
-      formData.append('feedback', feedback);
-
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as any).toString(),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Thank you!",
-          description: "Your feedback has been sent successfully. We appreciate your input!",
-        });
-        
-        // Reset form
-        setEmail('');
-        setFeedback('');
-        setIsOpen(false);
-      } else {
-        throw new Error('Failed to send feedback');
-      }
-    } catch (error) {
-      console.error('Error sending feedback:', error);
-      toast({
-        title: "Error",
-        description: "There was an issue sending your feedback. Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
-    <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          <Button
-            size="icon"
-            className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg z-50 bg-blue-600 hover:bg-blue-700"
-            aria-label="Send Feedback"
-          >
-            <MessageSquare className="h-5 w-5" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Send Feedback</DialogTitle>
-            <DialogDescription>
-              We'd love to hear your suggestions and feedback about our developer tools.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Input
-                type="email"
-                placeholder="Your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Textarea
-                placeholder="Your feedback and suggestions..."
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                rows={4}
-                required
-              />
-            </div>
-            <div className="flex gap-2 justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    <Send className="h-4 w-4 mr-2" />
-                    Send Feedback
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Button
+      onClick={handleFeedbackClick}
+      size="icon"
+      className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg z-50 bg-blue-600 hover:bg-blue-700"
+      aria-label="Send Feedback"
+    >
+      <MessageSquare className="h-5 w-5" />
+    </Button>
   );
 };
