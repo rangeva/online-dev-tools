@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -25,7 +24,9 @@ import {
   CheckCircle,
   AlertCircle,
   Copy,
-  Download
+  Download,
+  Sparkles,
+  Minimize2
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -47,6 +48,8 @@ import UuidGenerator from "@/components/tools/UuidGenerator";
 import LoremGenerator from "@/components/tools/LoremGenerator";
 import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
 import YamlConverter from "@/components/tools/YamlConverter";
+import HtmlMinifier from "@/components/tools/HtmlMinifier";
+import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import SEOBreadcrumbs from "@/components/SEOBreadcrumbs";
 
@@ -183,6 +186,24 @@ const Index = () => {
       icon: Shuffle,
       component: YamlConverter,
       tags: ["yaml", "json", "convert", "format"]
+    },
+    {
+      id: "html-minifier",
+      name: "HTML Minifier",
+      description: "Minify HTML code to reduce file size and optimize performance",
+      category: "data",
+      icon: Minimize2,
+      component: HtmlMinifier,
+      tags: ["html", "minify", "compress", "optimize"]
+    },
+    {
+      id: "html-beautifier",
+      name: "HTML Beautifier",
+      description: "Format and beautify HTML code for better readability",
+      category: "data",
+      icon: Sparkles,
+      component: HtmlBeautifier,
+      tags: ["html", "format", "beautify", "prettify"]
     },
     {
       id: "hash-generator",
