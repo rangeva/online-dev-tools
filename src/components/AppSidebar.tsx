@@ -127,7 +127,7 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="pb-0">
-                        <div className="w-full text-sm">
+                        <div className="w-full text-sm ml-4">
                           <ul className="flex w-full min-w-0 flex-col gap-1">
                             {categoryTools.map((tool) => {
                               const ToolIcon = tool.icon;
