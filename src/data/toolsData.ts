@@ -25,7 +25,8 @@ import {
   Replace,
   Filter,
   Trash2,
-  Space
+  Space,
+  QrCode
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -62,6 +63,7 @@ import HtmlToPlainText from "@/components/tools/HtmlToPlainText";
 import HtmlEntityCoder from "@/components/tools/HtmlEntityCoder";
 import ColorPaletteGenerator from "@/components/tools/ColorPaletteGenerator";
 import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
+import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
@@ -72,7 +74,7 @@ export const toolCategories = [
   { id: "data", name: "Data & Format", icon: Database },
   { id: "security", name: "Security", icon: Shield },
   { id: "generators", name: "Generators", icon: Zap },
-  { id: "color", name: "Color Tools", icon: Palette }
+  { id: "image-video", name: "Image & Video", icon: Eye }
 ];
 
 export const tools = [
@@ -356,10 +358,19 @@ export const tools = [
     tags: ["fake", "data", "generate", "test"]
   },
   {
+    id: "qr-code-generator",
+    name: "QR Code Generator",
+    description: "Generate and download a QR code for a URL (or just plain text), and customize the background and foreground colors.",
+    category: "image-video",
+    icon: QrCode,
+    component: QrCodeGenerator,
+    tags: ["qr", "code", "generator", "url", "text", "download", "colors"]
+  },
+  {
     id: "color-palette-generator",
     name: "Color Palette Generator",
     description: "Generate harmonious color palettes using color theory",
-    category: "color",
+    category: "image-video",
     icon: Palette,
     component: ColorPaletteGenerator,
     tags: ["color", "palette", "harmony", "design"]
@@ -368,7 +379,7 @@ export const tools = [
     id: "html-color-codes",
     name: "HTML Color Codes",
     description: "Pick colors, convert formats (HEX, RGB, HSL), and get color codes",
-    category: "color",
+    category: "image-video",
     icon: Palette,
     component: HtmlColorCodes,
     tags: ["color", "hex", "rgb", "hsl", "picker"]
