@@ -25,31 +25,31 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {filteredTools.map((tool) => {
         const Icon = tool.icon;
         return (
           <Link key={tool.id} to={`/tool/${tool.id}`}>
             <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105 h-full">
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-2 p-4">
                 <div className="flex items-start justify-between">
-                  <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
-                    <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                    <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <Badge variant="outline" className="text-xs">
                     {toolCategories.find(cat => cat.id === tool.category)?.name}
                   </Badge>
                 </div>
-                <CardTitle className="text-lg font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <CardTitle className="text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {tool.name}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
+              <CardContent className="p-4 pt-0">
+                <CardDescription className="text-slate-600 dark:text-slate-400 text-sm">
                   {tool.description}
                 </CardDescription>
-                <div className="flex flex-wrap gap-1 mt-3">
-                  {tool.tags.slice(0, 3).map(tag => (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {tool.tags.slice(0, 2).map(tag => (
                     <Badge key={tag} variant="secondary" className="text-xs bg-slate-100 dark:bg-slate-700">
                       {tag}
                     </Badge>
