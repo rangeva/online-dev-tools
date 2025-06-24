@@ -6,7 +6,7 @@ const SimpleHeroSection = () => {
         Developer Tools Collection
       </h1>
       <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-        Essential tools for developers and IT professionals
+        A comprehensive collection of essential online tools for developers. No sign-up required, completely free, and works entirely in your browser.
       </p>
     </div>
   );

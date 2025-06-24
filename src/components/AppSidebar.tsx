@@ -85,7 +85,7 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
         <div className="p-4 border-b flex-shrink-0">
           <div className="flex items-center">
             <Link to="/" className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-              IT Tools
+              OnlineDevTools.io
             </Link>
           </div>
           <div className="relative mt-4">
