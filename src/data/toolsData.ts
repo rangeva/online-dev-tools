@@ -1,4 +1,3 @@
-
 import { 
   FileText, 
   CheckCircle,
@@ -19,7 +18,8 @@ import {
   Zap,
   Eye,
   AlignLeft,
-  Code2
+  Code2,
+  Palette
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -48,6 +48,8 @@ import HtmlToJsx from "@/components/tools/HtmlToJsx";
 import HtmlPreviewer from "@/components/tools/HtmlPreviewer";
 import HtmlToPlainText from "@/components/tools/HtmlToPlainText";
 import HtmlEntityCoder from "@/components/tools/HtmlEntityCoder";
+import ColorPaletteGenerator from "@/components/tools/ColorPaletteGenerator";
+import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
 
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
@@ -57,7 +59,8 @@ export const toolCategories = [
   { id: "date", name: "Date & Time", icon: Clock },
   { id: "data", name: "Data & Format", icon: Database },
   { id: "security", name: "Security", icon: Shield },
-  { id: "generators", name: "Generators", icon: Zap }
+  { id: "generators", name: "Generators", icon: Zap },
+  { id: "color", name: "Color Tools", icon: Palette }
 ];
 
 export const tools = [
@@ -285,5 +288,23 @@ export const tools = [
     icon: Database,
     component: FakeDataGenerator,
     tags: ["fake", "data", "generate", "test"]
+  },
+  {
+    id: "color-palette-generator",
+    name: "Color Palette Generator",
+    description: "Generate harmonious color palettes using color theory",
+    category: "color",
+    icon: Palette,
+    component: ColorPaletteGenerator,
+    tags: ["color", "palette", "harmony", "design"]
+  },
+  {
+    id: "html-color-codes",
+    name: "HTML Color Codes",
+    description: "Pick colors, convert formats (HEX, RGB, HSL), and get color codes",
+    category: "color",
+    icon: Palette,
+    component: HtmlColorCodes,
+    tags: ["color", "hex", "rgb", "hsl", "picker"]
   }
 ];

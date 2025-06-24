@@ -13,7 +13,8 @@ const ToolPage = () => {
     "url-encoder", "base64-encoder", "jwt-decoder", "epoch-converter",
     "iso-generator", "cron-editor", "json-formatter", "xml-formatter",
     "yaml-converter", "hash-generator", "htpasswd-generator", "uuid-generator", 
-    "lorem-generator", "fake-data-generator"
+    "lorem-generator", "fake-data-generator", "color-palette-generator", 
+    "html-color-codes"
   ];
 
   if (!toolId || !validToolIds.includes(toolId)) {

@@ -1,4 +1,3 @@
-
 import { 
   Breadcrumb, 
   BreadcrumbList, 
@@ -19,7 +18,8 @@ const SEOBreadcrumbs = () => {
     { id: "date", name: "Date & Time" },
     { id: "data", name: "Data & Format" },
     { id: "security", name: "Security" },
-    { id: "generators", name: "Generators" }
+    { id: "generators", name: "Generators" },
+    { id: "color", name: "Color Tools" }
   ];
 
   const tools = [
@@ -47,7 +47,9 @@ const SEOBreadcrumbs = () => {
     { id: "htpasswd-generator", name: "Htpasswd Generator", category: "security" },
     { id: "uuid-generator", name: "UUID Generator", category: "generators" },
     { id: "lorem-generator", name: "Lorem Ipsum Generator", category: "generators" },
-    { id: "fake-data-generator", name: "Fake Data Generator", category: "generators" }
+    { id: "fake-data-generator", name: "Fake Data Generator", category: "generators" },
+    { id: "color-palette-generator", name: "Color Palette Generator", category: "color" },
+    { id: "html-color-codes", name: "HTML Color Codes", category: "color" }
   ];
 
   const currentTool = toolId ? tools.find(tool => tool.id === toolId) : null;
