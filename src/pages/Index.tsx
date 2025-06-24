@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "@/components/layout/Header";
-import HeroSection from "@/components/layout/HeroSection";
+import SimpleHeroSection from "@/components/layout/SimpleHeroSection";
 import CategoryTabs from "@/components/layout/CategoryTabs";
 import ToolsGrid from "@/components/layout/ToolsGrid";
 import ToolHeader from "@/components/layout/ToolHeader";
@@ -50,10 +49,8 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <AppSidebar />
+        <AppSidebar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <SidebarInset>
-          <Header />
-          
           {selectedTool ? (
             <div className="container mx-auto px-4 py-8">
               <SEOBreadcrumbs />
@@ -65,13 +62,10 @@ const Index = () => {
               </div>
             </div>
           ) : (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-6">
               <SEOBreadcrumbs />
               
-              <HeroSection 
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-              />
+              <SimpleHeroSection />
 
               <CategoryTabs 
                 activeCategory={activeCategory}

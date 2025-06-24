@@ -16,11 +16,14 @@ import { tools, toolCategories } from "@/data/toolsData";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useState } from "react";
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+}
+
+export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
   const { toolId } = useParams();
-  const [searchTerm, setSearchTerm] = useState("");
 
   // Group tools by category
   const toolsByCategory = toolCategories.reduce((acc, category) => {
@@ -56,7 +59,7 @@ export function AppSidebar() {
             type="text"
             placeholder="Search tools..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10"
           />
         </div>
