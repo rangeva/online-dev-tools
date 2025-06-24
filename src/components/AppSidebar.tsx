@@ -97,9 +97,6 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="font-medium text-sm">{tool.name}</div>
-                                  <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                                    {tool.description}
-                                  </div>
                                 </div>
                               </Link>
                             </SidebarMenuButton>
