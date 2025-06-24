@@ -117,7 +117,7 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
 
                   return (
                     <AccordionItem key={categoryId} value={categoryId} className="border-b-0">
-                      <AccordionTrigger className="flex items-center gap-2 px-2 py-3 hover:no-underline hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md">
+                      <AccordionTrigger className="flex items-center gap-2 px-3 py-3 hover:no-underline bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md mb-1">
                         <div className="flex items-center gap-2 flex-1">
                           <Icon className="h-4 w-4" />
                           <span className="font-medium text-sm">{category.name}</span>
