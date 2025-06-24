@@ -74,7 +74,7 @@ export const toolCategories = [
   { id: "data", name: "Data & Format", icon: Database },
   { id: "security", name: "Security", icon: Shield },
   { id: "generators", name: "Generators", icon: Zap },
-  { id: "image-video", name: "Image & Video", icon: Eye }
+  { id: "graphics", name: "Graphics", icon: Eye }
 ];
 
 export const tools = [
@@ -361,7 +361,7 @@ export const tools = [
     id: "qr-code-generator",
     name: "QR Code Generator",
     description: "Generate and download a QR code for a URL (or just plain text), and customize the background and foreground colors.",
-    category: "image-video",
+    category: "graphics",
     icon: QrCode,
     component: QrCodeGenerator,
     tags: ["qr", "code", "generator", "url", "text", "download", "colors"]
@@ -370,7 +370,7 @@ export const tools = [
     id: "color-palette-generator",
     name: "Color Palette Generator",
     description: "Generate harmonious color palettes using color theory",
-    category: "image-video",
+    category: "graphics",
     icon: Palette,
     component: ColorPaletteGenerator,
     tags: ["color", "palette", "harmony", "design"]
@@ -379,7 +379,7 @@ export const tools = [
     id: "html-color-codes",
     name: "HTML Color Codes",
     description: "Pick colors, convert formats (HEX, RGB, HSL), and get color codes",
-    category: "image-video",
+    category: "graphics",
     icon: Palette,
     component: HtmlColorCodes,
     tags: ["color", "hex", "rgb", "hsl", "picker"]
