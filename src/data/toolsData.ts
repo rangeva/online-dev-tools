@@ -27,7 +27,8 @@ import {
   Trash2,
   Space,
   QrCode,
-  Wifi
+  Wifi,
+  Camera
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -66,6 +67,7 @@ import ColorPaletteGenerator from "@/components/tools/ColorPaletteGenerator";
 import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import WifiQrGenerator from "@/components/tools/WifiQrGenerator";
+import CameraRecorder from "@/components/tools/CameraRecorder";
 
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
@@ -394,5 +396,14 @@ export const tools = [
     icon: Palette,
     component: HtmlColorCodes,
     tags: ["color", "hex", "rgb", "hsl", "picker"]
+  },
+  {
+    id: "camera-recorder",
+    name: "Camera Recorder",
+    description: "Take a picture or record a video from your webcam or camera.",
+    category: "graphics",
+    icon: Camera,
+    component: CameraRecorder,
+    tags: ["camera", "webcam", "photo", "video", "record", "capture"]
   }
 ];
