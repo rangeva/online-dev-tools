@@ -111,7 +111,7 @@ const RemoveEmptyLines = () => {
             <Checkbox
               id="removeWhitespaceOnly"
               checked={removeWhitespaceOnly}
-              onCheckedChange={setRemoveWhitespaceOnly}
+              onCheckedChange={(checked) => setRemoveWhitespaceOnly(checked === true)}
             />
             <Label htmlFor="removeWhitespaceOnly">
               Also remove lines with only whitespace (spaces, tabs)

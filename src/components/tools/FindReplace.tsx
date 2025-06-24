@@ -170,7 +170,7 @@ const FindReplace = () => {
               <Checkbox
                 id="caseSensitive"
                 checked={caseSensitive}
-                onCheckedChange={setCaseSensitive}
+                onCheckedChange={(checked) => setCaseSensitive(checked === true)}
               />
               <Label htmlFor="caseSensitive">Case Sensitive</Label>
             </div>
@@ -178,7 +178,7 @@ const FindReplace = () => {
               <Checkbox
                 id="useRegex"
                 checked={useRegex}
-                onCheckedChange={setUseRegex}
+                onCheckedChange={(checked) => setUseRegex(checked === true)}
               />
               <Label htmlFor="useRegex">Use Regular Expression</Label>
             </div>
@@ -186,7 +186,7 @@ const FindReplace = () => {
               <Checkbox
                 id="replaceAll"
                 checked={replaceAll}
-                onCheckedChange={setReplaceAll}
+                onCheckedChange={(checked) => setReplaceAll(checked === true)}
               />
               <Label htmlFor="replaceAll">Replace All Occurrences</Label>
             </div>

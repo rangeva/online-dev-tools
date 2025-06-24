@@ -119,7 +119,7 @@ const RemoveDuplicateLines = () => {
               <Checkbox
                 id="caseSensitive"
                 checked={caseSensitive}
-                onCheckedChange={setCaseSensitive}
+                onCheckedChange={(checked) => setCaseSensitive(checked === true)}
               />
               <Label htmlFor="caseSensitive">Case Sensitive</Label>
             </div>
@@ -127,7 +127,7 @@ const RemoveDuplicateLines = () => {
               <Checkbox
                 id="trimLines"
                 checked={trimLines}
-                onCheckedChange={setTrimLines}
+                onCheckedChange={(checked) => setTrimLines(checked === true)}
               />
               <Label htmlFor="trimLines">Trim Whitespace</Label>
             </div>
@@ -135,7 +135,7 @@ const RemoveDuplicateLines = () => {
               <Checkbox
                 id="preserveOrder"
                 checked={preserveOrder}
-                onCheckedChange={setPreserveOrder}
+                onCheckedChange={(checked) => setPreserveOrder(checked === true)}
               />
               <Label htmlFor="preserveOrder">Preserve Original Order</Label>
             </div>
