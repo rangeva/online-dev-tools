@@ -16,7 +16,7 @@ const ToolPage = () => {
     "iso-generator", "cron-editor", "json-formatter", "xml-formatter",
     "yaml-converter", "hash-generator", "htpasswd-generator", "uuid-generator", 
     "lorem-generator", "fake-data-generator", "color-palette-generator", 
-    "html-color-codes", "qr-code-generator"
+    "html-color-codes", "qr-code-generator", "wifi-qr-generator"
   ];
 
   if (!toolId || !validToolIds.includes(toolId)) {

@@ -26,7 +26,8 @@ import {
   Filter,
   Trash2,
   Space,
-  QrCode
+  QrCode,
+  Wifi
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -64,6 +65,7 @@ import HtmlEntityCoder from "@/components/tools/HtmlEntityCoder";
 import ColorPaletteGenerator from "@/components/tools/ColorPaletteGenerator";
 import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
+import WifiQrGenerator from "@/components/tools/WifiQrGenerator";
 
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
@@ -365,6 +367,15 @@ export const tools = [
     icon: QrCode,
     component: QrCodeGenerator,
     tags: ["qr", "code", "generator", "url", "text", "download", "colors"]
+  },
+  {
+    id: "wifi-qr-generator",
+    name: "WiFi QR Code Generator",
+    description: "Generate and download QR codes for quick connections to WiFi networks.",
+    category: "graphics",
+    icon: Wifi,
+    component: WifiQrGenerator,
+    tags: ["wifi", "qr", "code", "network", "connection", "wireless"]
   },
   {
     id: "color-palette-generator",
