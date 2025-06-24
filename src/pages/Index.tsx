@@ -48,9 +48,9 @@ const Index = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="min-h-screen flex w-full">
         <AppSidebar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-        <SidebarInset>
+        <SidebarInset className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
           {selectedTool ? (
             <div className="container mx-auto px-4 py-8">
               <SEOBreadcrumbs />
