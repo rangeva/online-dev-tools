@@ -68,6 +68,7 @@ import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import WifiQrGenerator from "@/components/tools/WifiQrGenerator";
 import CameraRecorder from "@/components/tools/CameraRecorder";
+import StrongPasswordGenerator from "@/components/tools/StrongPasswordGenerator";
 
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
@@ -333,6 +334,15 @@ export const tools = [
     icon: Shield,
     component: HtpasswdGenerator,
     tags: ["htpasswd", "auth", "password", "apache"]
+  },
+  {
+    id: "strong-password-generator",
+    name: "Strong Password Generator",
+    description: "Generate secure passwords with customizable options and QR code export",
+    category: "security",
+    icon: Key,
+    component: StrongPasswordGenerator,
+    tags: ["password", "generator", "security", "qr", "strong", "secure"]
   },
   {
     id: "uuid-generator",

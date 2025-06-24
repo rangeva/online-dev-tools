@@ -14,8 +14,8 @@ const ToolPage = () => {
     "html-previewer", "html-to-plain-text", "html-entity-coder",
     "url-encoder", "base64-encoder", "jwt-decoder", "epoch-converter",
     "iso-generator", "cron-editor", "json-formatter", "xml-formatter",
-    "yaml-converter", "hash-generator", "htpasswd-generator", "uuid-generator", 
-    "lorem-generator", "fake-data-generator", "color-palette-generator", 
+    "yaml-converter", "hash-generator", "htpasswd-generator", "strong-password-generator",
+    "uuid-generator", "lorem-generator", "fake-data-generator", "color-palette-generator", 
     "html-color-codes", "qr-code-generator", "wifi-qr-generator", 
     "camera-recorder"
   ];
