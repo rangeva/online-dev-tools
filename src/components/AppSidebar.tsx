@@ -1,4 +1,3 @@
-
 import { Link, useParams } from "react-router-dom";
 import {
   Sidebar,
@@ -9,7 +8,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { tools, toolCategories } from "@/data/toolsData";
@@ -45,13 +43,12 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
   }, {} as Record<string, typeof tools>);
 
   return (
-    <Sidebar className="w-80">
+    <Sidebar className="w-80" collapsible="none">
       <SidebarHeader className="p-4 border-b">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           <Link to="/" className="text-lg font-semibold text-blue-600 dark:text-blue-400">
             IT Tools
           </Link>
-          <SidebarTrigger />
         </div>
         <div className="relative mt-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
