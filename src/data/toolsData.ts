@@ -19,7 +19,13 @@ import {
   Eye,
   AlignLeft,
   Code2,
-  Palette
+  Palette,
+  Plus,
+  Minus,
+  Replace,
+  Filter,
+  Trash2,
+  Space
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -27,6 +33,12 @@ import WordCounter from "@/components/tools/WordCounter";
 import TextDiff from "@/components/tools/TextDiff";
 import CaseConverter from "@/components/tools/CaseConverter";
 import RegexTester from "@/components/tools/RegexTester";
+import AddPrefixSuffix from "@/components/tools/AddPrefixSuffix";
+import LineBreakManager from "@/components/tools/LineBreakManager";
+import FindReplace from "@/components/tools/FindReplace";
+import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
+import RemoveEmptyLines from "@/components/tools/RemoveEmptyLines";
+import RemoveExtraSpaces from "@/components/tools/RemoveExtraSpaces";
 import UrlEncoder from "@/components/tools/UrlEncoder";
 import Base64Encoder from "@/components/tools/Base64Encoder";
 import JwtDecoder from "@/components/tools/JwtDecoder";
@@ -99,6 +111,60 @@ export const tools = [
     icon: Search,
     component: RegexTester,
     tags: ["regex", "pattern", "test", "match"]
+  },
+  {
+    id: "add-prefix-suffix",
+    name: "Add Prefix/Suffix to Lines",
+    description: "Insert a prefix and/or suffix to the content of each line",
+    category: "text",
+    icon: Plus,
+    component: AddPrefixSuffix,
+    tags: ["text", "prefix", "suffix", "lines", "format"]
+  },
+  {
+    id: "line-break-manager",
+    name: "Add/Remove Line Breaks",
+    description: "Add new line breaks and/or remove existing line breaks within your text's formatting",
+    category: "text",
+    icon: AlignLeft,
+    component: LineBreakManager,
+    tags: ["text", "line", "breaks", "format", "wrap"]
+  },
+  {
+    id: "find-replace",
+    name: "Find and Replace Text",
+    description: "Find and replace text matching your search criteria",
+    category: "text",
+    icon: Replace,
+    component: FindReplace,
+    tags: ["text", "find", "replace", "search", "substitute"]
+  },
+  {
+    id: "remove-duplicate-lines",
+    name: "Remove Duplicate Lines",
+    description: "Remove/delete all duplicate lines within your text/list",
+    category: "text",
+    icon: Filter,
+    component: RemoveDuplicateLines,
+    tags: ["text", "duplicate", "lines", "remove", "clean"]
+  },
+  {
+    id: "remove-empty-lines",
+    name: "Remove Empty Lines",
+    description: "Remove/delete all empty lines within your text/list",
+    category: "text",
+    icon: Trash2,
+    component: RemoveEmptyLines,
+    tags: ["text", "empty", "lines", "remove", "clean"]
+  },
+  {
+    id: "remove-extra-spaces",
+    name: "Remove Extra Spaces",
+    description: "Remove leading/trailing/extra/all white-spaces from your text",
+    category: "text",
+    icon: Space,
+    component: RemoveExtraSpaces,
+    tags: ["text", "spaces", "whitespace", "trim", "clean"]
   },
   {
     id: "html-minifier",

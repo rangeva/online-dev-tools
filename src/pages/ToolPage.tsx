@@ -8,6 +8,8 @@ const ToolPage = () => {
   // List of valid tool IDs for SEO purposes
   const validToolIds = [
     "word-counter", "text-diff", "case-converter", "regex-tester",
+    "add-prefix-suffix", "line-break-manager", "find-replace", 
+    "remove-duplicate-lines", "remove-empty-lines", "remove-extra-spaces",
     "html-minifier", "html-beautifier", "html-to-markdown", "html-to-jsx",
     "html-previewer", "html-to-plain-text", "html-entity-coder",
     "url-encoder", "base64-encoder", "jwt-decoder", "epoch-converter",

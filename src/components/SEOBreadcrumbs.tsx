@@ -1,3 +1,4 @@
+
 import { 
   Breadcrumb, 
   BreadcrumbList, 
@@ -27,6 +28,12 @@ const SEOBreadcrumbs = () => {
     { id: "text-diff", name: "Text Diff Checker", category: "text" },
     { id: "case-converter", name: "Case Converter", category: "text" },
     { id: "regex-tester", name: "Regex Tester", category: "text" },
+    { id: "add-prefix-suffix", name: "Add Prefix/Suffix to Lines", category: "text" },
+    { id: "line-break-manager", name: "Add/Remove Line Breaks", category: "text" },
+    { id: "find-replace", name: "Find and Replace Text", category: "text" },
+    { id: "remove-duplicate-lines", name: "Remove Duplicate Lines", category: "text" },
+    { id: "remove-empty-lines", name: "Remove Empty Lines", category: "text" },
+    { id: "remove-extra-spaces", name: "Remove Extra Spaces", category: "text" },
     { id: "html-minifier", name: "HTML Minifier", category: "html" },
     { id: "html-beautifier", name: "HTML Beautifier", category: "html" },
     { id: "html-to-markdown", name: "HTML to Markdown", category: "html" },
