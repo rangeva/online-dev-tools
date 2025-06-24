@@ -52,6 +52,7 @@ import HtmlEntityCoder from "@/components/tools/HtmlEntityCoder";
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
   { id: "text", name: "Text Tools", icon: Type },
+  { id: "html", name: "HTML Tools", icon: Code2 },
   { id: "encoding", name: "Encoding/Decoding", icon: Code },
   { id: "date", name: "Date & Time", icon: Clock },
   { id: "data", name: "Data & Format", icon: Database },
@@ -95,6 +96,69 @@ export const tools = [
     icon: Search,
     component: RegexTester,
     tags: ["regex", "pattern", "test", "match"]
+  },
+  {
+    id: "html-minifier",
+    name: "HTML Minifier",
+    description: "Minify HTML code to reduce file size and optimize performance",
+    category: "html",
+    icon: Minimize2,
+    component: HtmlMinifier,
+    tags: ["html", "minify", "compress", "optimize"]
+  },
+  {
+    id: "html-beautifier",
+    name: "HTML Beautifier",
+    description: "Format and beautify HTML code for better readability",
+    category: "html",
+    icon: Sparkles,
+    component: HtmlBeautifier,
+    tags: ["html", "format", "beautify", "prettify"]
+  },
+  {
+    id: "html-to-markdown",
+    name: "HTML to Markdown",
+    description: "Convert HTML into clean Markdown syntax for documentation",
+    category: "html",
+    icon: FileText,
+    component: HtmlToMarkdown,
+    tags: ["html", "markdown", "convert", "documentation"]
+  },
+  {
+    id: "html-to-jsx",
+    name: "HTML to JSX",
+    description: "Convert HTML to JSX for React development",
+    category: "html",
+    icon: Code2,
+    component: HtmlToJsx,
+    tags: ["html", "jsx", "react", "convert"]
+  },
+  {
+    id: "html-previewer",
+    name: "HTML Previewer",
+    description: "Render and preview HTML code in real-time",
+    category: "html",
+    icon: Eye,
+    component: HtmlPreviewer,
+    tags: ["html", "preview", "render", "visual"]
+  },
+  {
+    id: "html-to-plain-text",
+    name: "HTML to Plain Text",
+    description: "Extract plain text from HTML, removing all tags and formatting",
+    category: "html",
+    icon: AlignLeft,
+    component: HtmlToPlainText,
+    tags: ["html", "text", "extract", "clean"]
+  },
+  {
+    id: "html-entity-coder",
+    name: "HTML Entity Encoder/Decoder",
+    description: "Encode and decode HTML entities for safe rendering",
+    category: "html",
+    icon: Shield,
+    component: HtmlEntityCoder,
+    tags: ["html", "entities", "encode", "decode", "xss"]
   },
   {
     id: "url-encoder",
@@ -176,69 +240,6 @@ export const tools = [
     icon: Shuffle,
     component: YamlConverter,
     tags: ["yaml", "json", "convert", "format"]
-  },
-  {
-    id: "html-minifier",
-    name: "HTML Minifier",
-    description: "Minify HTML code to reduce file size and optimize performance",
-    category: "data",
-    icon: Minimize2,
-    component: HtmlMinifier,
-    tags: ["html", "minify", "compress", "optimize"]
-  },
-  {
-    id: "html-beautifier",
-    name: "HTML Beautifier",
-    description: "Format and beautify HTML code for better readability",
-    category: "data",
-    icon: Sparkles,
-    component: HtmlBeautifier,
-    tags: ["html", "format", "beautify", "prettify"]
-  },
-  {
-    id: "html-to-markdown",
-    name: "HTML to Markdown",
-    description: "Convert HTML into clean Markdown syntax for documentation",
-    category: "data",
-    icon: FileText,
-    component: HtmlToMarkdown,
-    tags: ["html", "markdown", "convert", "documentation"]
-  },
-  {
-    id: "html-to-jsx",
-    name: "HTML to JSX",
-    description: "Convert HTML to JSX for React development",
-    category: "data",
-    icon: Code2,
-    component: HtmlToJsx,
-    tags: ["html", "jsx", "react", "convert"]
-  },
-  {
-    id: "html-previewer",
-    name: "HTML Previewer",
-    description: "Render and preview HTML code in real-time",
-    category: "data",
-    icon: Eye,
-    component: HtmlPreviewer,
-    tags: ["html", "preview", "render", "visual"]
-  },
-  {
-    id: "html-to-plain-text",
-    name: "HTML to Plain Text",
-    description: "Extract plain text from HTML, removing all tags and formatting",
-    category: "data",
-    icon: AlignLeft,
-    component: HtmlToPlainText,
-    tags: ["html", "text", "extract", "clean"]
-  },
-  {
-    id: "html-entity-coder",
-    name: "HTML Entity Encoder/Decoder",
-    description: "Encode and decode HTML entities for safe rendering",
-    category: "encoding",
-    icon: Shield,
-    component: HtmlEntityCoder,
-    tags: ["html", "entities", "encode", "decode", "xss"]
   },
   {
     id: "hash-generator",

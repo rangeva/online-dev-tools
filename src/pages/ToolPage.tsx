@@ -8,12 +8,12 @@ const ToolPage = () => {
   // List of valid tool IDs for SEO purposes
   const validToolIds = [
     "word-counter", "text-diff", "case-converter", "regex-tester",
+    "html-minifier", "html-beautifier", "html-to-markdown", "html-to-jsx",
+    "html-previewer", "html-to-plain-text", "html-entity-coder",
     "url-encoder", "base64-encoder", "jwt-decoder", "epoch-converter",
     "iso-generator", "cron-editor", "json-formatter", "xml-formatter",
-    "yaml-converter", "html-minifier", "html-beautifier", "html-to-markdown",
-    "html-to-jsx", "html-previewer", "html-to-plain-text", "html-entity-coder",
-    "hash-generator", "htpasswd-generator", "uuid-generator", "lorem-generator", 
-    "fake-data-generator"
+    "yaml-converter", "hash-generator", "htpasswd-generator", "uuid-generator", 
+    "lorem-generator", "fake-data-generator"
   ];
 
   if (!toolId || !validToolIds.includes(toolId)) {

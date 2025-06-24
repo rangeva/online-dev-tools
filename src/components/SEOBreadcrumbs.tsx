@@ -14,6 +14,7 @@ const SEOBreadcrumbs = () => {
 
   const toolCategories = [
     { id: "text", name: "Text Tools" },
+    { id: "html", name: "HTML Tools" },
     { id: "encoding", name: "Encoding/Decoding" },
     { id: "date", name: "Date & Time" },
     { id: "data", name: "Data & Format" },
@@ -26,6 +27,13 @@ const SEOBreadcrumbs = () => {
     { id: "text-diff", name: "Text Diff Checker", category: "text" },
     { id: "case-converter", name: "Case Converter", category: "text" },
     { id: "regex-tester", name: "Regex Tester", category: "text" },
+    { id: "html-minifier", name: "HTML Minifier", category: "html" },
+    { id: "html-beautifier", name: "HTML Beautifier", category: "html" },
+    { id: "html-to-markdown", name: "HTML to Markdown", category: "html" },
+    { id: "html-to-jsx", name: "HTML to JSX", category: "html" },
+    { id: "html-previewer", name: "HTML Previewer", category: "html" },
+    { id: "html-to-plain-text", name: "HTML to Plain Text", category: "html" },
+    { id: "html-entity-coder", name: "HTML Entity Encoder/Decoder", category: "html" },
     { id: "url-encoder", name: "URL Encoder/Decoder", category: "encoding" },
     { id: "base64-encoder", name: "Base64 Encoder/Decoder", category: "encoding" },
     { id: "jwt-decoder", name: "JWT Decoder", category: "encoding" },
