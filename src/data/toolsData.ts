@@ -16,7 +16,10 @@ import {
   Sparkles,
   Hash,
   Shield,
-  Zap
+  Zap,
+  Eye,
+  AlignLeft,
+  Code2
 } from "lucide-react";
 
 // Tool components - using default imports
@@ -40,6 +43,11 @@ import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
 import YamlConverter from "@/components/tools/YamlConverter";
 import HtmlMinifier from "@/components/tools/HtmlMinifier";
 import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
+import HtmlToMarkdown from "@/components/tools/HtmlToMarkdown";
+import HtmlToJsx from "@/components/tools/HtmlToJsx";
+import HtmlPreviewer from "@/components/tools/HtmlPreviewer";
+import HtmlToPlainText from "@/components/tools/HtmlToPlainText";
+import HtmlEntityCoder from "@/components/tools/HtmlEntityCoder";
 
 export const toolCategories = [
   { id: "all", name: "All Tools", icon: Settings },
@@ -186,6 +194,51 @@ export const tools = [
     icon: Sparkles,
     component: HtmlBeautifier,
     tags: ["html", "format", "beautify", "prettify"]
+  },
+  {
+    id: "html-to-markdown",
+    name: "HTML to Markdown",
+    description: "Convert HTML into clean Markdown syntax for documentation",
+    category: "data",
+    icon: FileText,
+    component: HtmlToMarkdown,
+    tags: ["html", "markdown", "convert", "documentation"]
+  },
+  {
+    id: "html-to-jsx",
+    name: "HTML to JSX",
+    description: "Convert HTML to JSX for React development",
+    category: "data",
+    icon: Code2,
+    component: HtmlToJsx,
+    tags: ["html", "jsx", "react", "convert"]
+  },
+  {
+    id: "html-previewer",
+    name: "HTML Previewer",
+    description: "Render and preview HTML code in real-time",
+    category: "data",
+    icon: Eye,
+    component: HtmlPreviewer,
+    tags: ["html", "preview", "render", "visual"]
+  },
+  {
+    id: "html-to-plain-text",
+    name: "HTML to Plain Text",
+    description: "Extract plain text from HTML, removing all tags and formatting",
+    category: "data",
+    icon: AlignLeft,
+    component: HtmlToPlainText,
+    tags: ["html", "text", "extract", "clean"]
+  },
+  {
+    id: "html-entity-coder",
+    name: "HTML Entity Encoder/Decoder",
+    description: "Encode and decode HTML entities for safe rendering",
+    category: "encoding",
+    icon: Shield,
+    component: HtmlEntityCoder,
+    tags: ["html", "entities", "encode", "decode", "xss"]
   },
   {
     id: "hash-generator",
