@@ -47,13 +47,14 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
-  if (selectedTool) {
-    return (
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-          <AppSidebar />
-          <SidebarInset>
-            <Header />
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <AppSidebar />
+        <SidebarInset>
+          <Header />
+          
+          {selectedTool ? (
             <div className="container mx-auto px-4 py-8">
               <SEOBreadcrumbs />
               <ToolHeader toolId={toolId!} />
@@ -63,35 +64,28 @@ const Index = () => {
                 <selectedTool.component />
               </div>
             </div>
-            <FeedbackForm />
-          </SidebarInset>
-        </div>
-      </SidebarProvider>
-    );
-  }
+          ) : (
+            <div className="container mx-auto px-4 py-8">
+              <SEOBreadcrumbs />
+              
+              <HeroSection 
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+              />
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <Header />
+              <CategoryTabs 
+                activeCategory={activeCategory}
+                onCategoryChange={handleCategoryChange}
+              />
 
-      <div className="container mx-auto px-4 py-8">
-        <SEOBreadcrumbs />
-        
-        <HeroSection 
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-        />
-
-        <CategoryTabs 
-          activeCategory={activeCategory}
-          onCategoryChange={handleCategoryChange}
-        />
-
-        <ToolsGrid filteredTools={filteredTools} />
+              <ToolsGrid filteredTools={filteredTools} />
+            </div>
+          )}
+          
+          <FeedbackForm />
+        </SidebarInset>
       </div>
-
-      <FeedbackForm />
-    </div>
+    </SidebarProvider>
   );
 };
 
