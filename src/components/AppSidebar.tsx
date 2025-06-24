@@ -12,6 +12,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { tools, toolCategories } from "@/data/toolsData";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -67,47 +68,55 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
       <SidebarContent className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
           <div className="p-2">
-            {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
-              const category = toolCategories.find(cat => cat.id === categoryId);
-              if (!category) return null;
+            <Accordion type="multiple" className="w-full">
+              {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
+                const category = toolCategories.find(cat => cat.id === categoryId);
+                if (!category) return null;
 
-              const Icon = category.icon;
+                const Icon = category.icon;
 
-              return (
-                <SidebarGroup key={categoryId}>
-                  <SidebarGroupLabel className="flex items-center gap-2">
-                    <Icon className="h-4 w-4" />
-                    {category.name}
-                    <Badge variant="secondary" className="ml-auto">
-                      {categoryTools.length}
-                    </Badge>
-                  </SidebarGroupLabel>
-                  <SidebarGroupContent>
-                    <SidebarMenu>
-                      {categoryTools.map((tool) => {
-                        const ToolIcon = tool.icon;
-                        const isActive = toolId === tool.id;
-                        
-                        return (
-                          <SidebarMenuItem key={tool.id}>
-                            <SidebarMenuButton asChild isActive={isActive}>
-                              <Link to={`/tool/${tool.id}`} className="flex items-center gap-3 w-full">
-                                <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
-                                  <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-medium text-sm">{tool.name}</div>
-                                </div>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        );
-                      })}
-                    </SidebarMenu>
-                  </SidebarGroupContent>
-                </SidebarGroup>
-              );
-            })}
+                return (
+                  <AccordionItem key={categoryId} value={categoryId} className="border-b-0">
+                    <AccordionTrigger className="flex items-center gap-2 px-2 py-3 hover:no-underline hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md">
+                      <div className="flex items-center gap-2 flex-1">
+                        <Icon className="h-4 w-4" />
+                        <span className="font-medium text-sm">{category.name}</span>
+                        <Badge variant="secondary" className="ml-auto mr-2">
+                          {categoryTools.length}
+                        </Badge>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-0">
+                      <SidebarGroup>
+                        <SidebarGroupContent>
+                          <SidebarMenu>
+                            {categoryTools.map((tool) => {
+                              const ToolIcon = tool.icon;
+                              const isActive = toolId === tool.id;
+                              
+                              return (
+                                <SidebarMenuItem key={tool.id}>
+                                  <SidebarMenuButton asChild isActive={isActive}>
+                                    <Link to={`/tool/${tool.id}`} className="flex items-center gap-3 w-full">
+                                      <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
+                                        <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="font-medium text-sm">{tool.name}</div>
+                                      </div>
+                                    </Link>
+                                  </SidebarMenuButton>
+                                </SidebarMenuItem>
+                              );
+                            })}
+                          </SidebarMenu>
+                        </SidebarGroupContent>
+                      </SidebarGroup>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
 
             {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
               <div className="p-4 text-center text-slate-500 dark:text-slate-400">
