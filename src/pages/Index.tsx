@@ -1,57 +1,15 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Search, 
-  Code, 
-  Hash, 
-  FileText, 
-  Calendar, 
-  Shield, 
-  Database,
-  Shuffle,
-  Type,
-  Clock,
-  Key,
-  Globe,
-  Settings,
-  Zap,
-  CheckCircle,
-  AlertCircle,
-  Copy,
-  Download,
-  Sparkles,
-  Minimize2
-} from "lucide-react";
 
-// Tool components - using default imports
-import WordCounter from "@/components/tools/WordCounter";
-import TextDiff from "@/components/tools/TextDiff";
-import CaseConverter from "@/components/tools/CaseConverter";
-import RegexTester from "@/components/tools/RegexTester";
-import UrlEncoder from "@/components/tools/UrlEncoder";
-import Base64Encoder from "@/components/tools/Base64Encoder";
-import JwtDecoder from "@/components/tools/JwtDecoder";
-import EpochConverter from "@/components/tools/EpochConverter";
-import IsoGenerator from "@/components/tools/IsoGenerator";
-import CronEditor from "@/components/tools/CronEditor";
-import JsonFormatter from "@/components/tools/JsonFormatter";
-import XmlFormatter from "@/components/tools/XmlFormatter";
-import HashGenerator from "@/components/tools/HashGenerator";
-import HtpasswdGenerator from "@/components/tools/HtpasswdGenerator";
-import UuidGenerator from "@/components/tools/UuidGenerator";
-import LoremGenerator from "@/components/tools/LoremGenerator";
-import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
-import YamlConverter from "@/components/tools/YamlConverter";
-import HtmlMinifier from "@/components/tools/HtmlMinifier";
-import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Header from "@/components/layout/Header";
+import HeroSection from "@/components/layout/HeroSection";
+import CategoryTabs from "@/components/layout/CategoryTabs";
+import ToolsGrid from "@/components/layout/ToolsGrid";
+import ToolHeader from "@/components/layout/ToolHeader";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import SEOBreadcrumbs from "@/components/SEOBreadcrumbs";
+import { tools } from "@/data/toolsData";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const Index = () => {
   const { toolId, category } = useParams();
@@ -59,198 +17,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState(category || "all");
 
-  const toolCategories = [
-    { id: "all", name: "All Tools", icon: Settings },
-    { id: "text", name: "Text Tools", icon: Type },
-    { id: "encoding", name: "Encoding/Decoding", icon: Code },
-    { id: "date", name: "Date & Time", icon: Clock },
-    { id: "data", name: "Data & Format", icon: Database },
-    { id: "security", name: "Security", icon: Shield },
-    { id: "generators", name: "Generators", icon: Zap }
-  ];
-
-  const tools = [
-    {
-      id: "word-counter",
-      name: "Word/Character Counter",
-      description: "Count words, characters, and lines in your text",
-      category: "text",
-      icon: FileText,
-      component: WordCounter,
-      tags: ["text", "count", "words", "characters"]
-    },
-    {
-      id: "text-diff",
-      name: "Text Diff Checker",
-      description: "Compare two texts and highlight differences",
-      category: "text",
-      icon: CheckCircle,
-      component: TextDiff,
-      tags: ["text", "diff", "compare", "differences"]
-    },
-    {
-      id: "case-converter",
-      name: "Case Converter",
-      description: "Convert text between different cases (uppercase, lowercase, camelCase, etc.)",
-      category: "text",
-      icon: Type,
-      component: CaseConverter,
-      tags: ["text", "case", "convert", "uppercase", "lowercase"]
-    },
-    {
-      id: "regex-tester",
-      name: "Regex Tester",
-      description: "Test and debug regular expressions with real-time matching",
-      category: "text",
-      icon: Search,
-      component: RegexTester,
-      tags: ["regex", "pattern", "test", "match"]
-    },
-    {
-      id: "url-encoder",
-      name: "URL Encoder/Decoder",
-      description: "Encode and decode URLs and query parameters",
-      category: "encoding",
-      icon: Globe,
-      component: UrlEncoder,
-      tags: ["url", "encode", "decode", "query"]
-    },
-    {
-      id: "base64-encoder",
-      name: "Base64 Encoder/Decoder",
-      description: "Encode and decode Base64 strings",
-      category: "encoding",
-      icon: Code,
-      component: Base64Encoder,
-      tags: ["base64", "encode", "decode"]
-    },
-    {
-      id: "jwt-decoder",
-      name: "JWT Decoder",
-      description: "Decode and inspect JSON Web Tokens",
-      category: "encoding",
-      icon: Key,
-      component: JwtDecoder,
-      tags: ["jwt", "token", "decode", "json"]
-    },
-    {
-      id: "epoch-converter",
-      name: "Epoch Converter",
-      description: "Convert between Unix timestamps and human-readable dates",
-      category: "date",
-      icon: Clock,
-      component: EpochConverter,
-      tags: ["epoch", "timestamp", "date", "unix"]
-    },
-    {
-      id: "iso-generator",
-      name: "ISO 8601 Generator",
-      description: "Generate and validate ISO 8601 date strings",
-      category: "date",
-      icon: Calendar,
-      component: IsoGenerator,
-      tags: ["iso", "date", "format", "8601"]
-    },
-    {
-      id: "cron-editor",
-      name: "Cron Expression Editor",
-      description: "Create and validate cron expressions with visual editor",
-      category: "date",
-      icon: Settings,
-      component: CronEditor,
-      tags: ["cron", "schedule", "expression", "job"]
-    },
-    {
-      id: "json-formatter",
-      name: "JSON Formatter & Validator",
-      description: "Format, validate, and minify JSON data",
-      category: "data",
-      icon: Database,
-      component: JsonFormatter,
-      tags: ["json", "format", "validate", "minify"]
-    },
-    {
-      id: "xml-formatter",
-      name: "XML Formatter",
-      description: "Format and prettify XML documents",
-      category: "data",
-      icon: FileText,
-      component: XmlFormatter,
-      tags: ["xml", "format", "prettify"]
-    },
-    {
-      id: "yaml-converter",
-      name: "YAML Converter",
-      description: "Convert between YAML and JSON formats",
-      category: "data",
-      icon: Shuffle,
-      component: YamlConverter,
-      tags: ["yaml", "json", "convert", "format"]
-    },
-    {
-      id: "html-minifier",
-      name: "HTML Minifier",
-      description: "Minify HTML code to reduce file size and optimize performance",
-      category: "data",
-      icon: Minimize2,
-      component: HtmlMinifier,
-      tags: ["html", "minify", "compress", "optimize"]
-    },
-    {
-      id: "html-beautifier",
-      name: "HTML Beautifier",
-      description: "Format and beautify HTML code for better readability",
-      category: "data",
-      icon: Sparkles,
-      component: HtmlBeautifier,
-      tags: ["html", "format", "beautify", "prettify"]
-    },
-    {
-      id: "hash-generator",
-      name: "Hash Generator",
-      description: "Generate MD5, SHA1, SHA256 and other hashes",
-      category: "security",
-      icon: Hash,
-      component: HashGenerator,
-      tags: ["hash", "md5", "sha", "security"]
-    },
-    {
-      id: "htpasswd-generator",
-      name: "Htpasswd Generator",
-      description: "Generate htpasswd entries for HTTP authentication",
-      category: "security",
-      icon: Shield,
-      component: HtpasswdGenerator,
-      tags: ["htpasswd", "auth", "password", "apache"]
-    },
-    {
-      id: "uuid-generator",
-      name: "UUID Generator",
-      description: "Generate UUIDs (v1, v4) and validate existing ones",
-      category: "generators",
-      icon: Zap,
-      component: UuidGenerator,
-      tags: ["uuid", "generate", "unique", "identifier"]
-    },
-    {
-      id: "lorem-generator",
-      name: "Lorem Ipsum Generator",
-      description: "Generate placeholder text for your designs",
-      category: "generators",
-      icon: FileText,
-      component: LoremGenerator,
-      tags: ["lorem", "ipsum", "placeholder", "text"]
-    },
-    {
-      id: "fake-data-generator",
-      name: "Fake Data Generator",
-      description: "Generate realistic fake data for testing",
-      category: "generators",
-      icon: Database,
-      component: FakeDataGenerator,
-      tags: ["fake", "data", "generate", "test"]
-    }
-  ];
+  const { selectedTool } = usePageMeta(toolId, activeCategory);
 
   // Update URL when category changes
   useEffect(() => {
@@ -278,189 +45,30 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const selectedTool = toolId ? tools.find(tool => tool.id === toolId) : null;
-
-  // Generate page title and meta description
-  const getPageTitle = () => {
-    if (selectedTool) {
-      return `${selectedTool.name} - Developer Toolbox`;
-    }
-    if (activeCategory !== "all") {
-      const categoryName = toolCategories.find(cat => cat.id === activeCategory)?.name;
-      return `${categoryName} - Developer Toolbox`;
-    }
-    return "Developer Toolbox - Essential Online Tools for Developers";
-  };
-
-  const getPageDescription = () => {
-    if (selectedTool) {
-      return selectedTool.description;
-    }
-    if (activeCategory !== "all") {
-      const categoryName = toolCategories.find(cat => cat.id === activeCategory)?.name;
-      return `${categoryName} for developers - Free online tools with no sign-up required.`;
-    }
-    return "Collection of essential online tools for developers including text utilities, encoding/decoding, date tools, JSON formatters, security tools and more.";
-  };
-
-  // Update document title and meta description
-  useEffect(() => {
-    document.title = getPageTitle();
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', getPageDescription());
-    }
-  }, [selectedTool, activeCategory]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Header */}
-      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <Code className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  Developer Toolbox
-                </h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Essential online tools for developers
-                </p>
-              </div>
-            </Link>
-            <div className="hidden md:flex items-center space-x-2">
-              <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                Free
-              </Badge>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                No Sign-up
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <SEOBreadcrumbs />
         
         {!selectedTool ? (
           <>
-            {/* Hero Section */}
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-                All-in-One Developer Tools
-              </h2>
-              <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto">
-                A comprehensive collection of essential online tools for developers. 
-                No sign-up required, completely free, and works entirely in your browser.
-              </p>
-              
-              {/* Search Bar */}
-              <div className="max-w-md mx-auto relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search tools..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-                />
-              </div>
-            </div>
+            <HeroSection 
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
 
-            {/* Category Tabs */}
-            <Tabs defaultValue="all" value={activeCategory} onValueChange={handleCategoryChange} className="mb-8">
-              <TabsList className="flex justify-center w-full max-w-6xl mx-auto h-auto p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm overflow-x-auto">
-                {toolCategories.map((category) => {
-                  const Icon = category.icon;
-                  return (
-                    <TabsTrigger
-                      key={category.id}
-                      value={category.id}
-                      className="flex flex-col items-center gap-1 p-3 mx-1 min-w-[110px] flex-shrink-0 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 dark:data-[state=active]:bg-blue-900 dark:data-[state=active]:text-blue-100 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 rounded-md"
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-xs font-medium text-center leading-tight">{category.name}</span>
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-            </Tabs>
+            <CategoryTabs 
+              activeCategory={activeCategory}
+              onCategoryChange={handleCategoryChange}
+            />
 
-            {/* Tools Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTools.map((tool) => {
-                const Icon = tool.icon;
-                return (
-                  <Link key={tool.id} to={`/tool/${tool.id}`}>
-                    <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105 h-full">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between">
-                          <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
-                            <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            {toolCategories.find(cat => cat.id === tool.category)?.name}
-                          </Badge>
-                        </div>
-                        <CardTitle className="text-lg font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {tool.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <CardDescription className="text-slate-600 dark:text-slate-400">
-                          {tool.description}
-                        </CardDescription>
-                        <div className="flex flex-wrap gap-1 mt-3">
-                          {tool.tags.slice(0, 3).map(tag => (
-                            <Badge key={tag} variant="secondary" className="text-xs bg-slate-100 dark:bg-slate-700">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                );
-              })}
-            </div>
-
-            {filteredTools.length === 0 && (
-              <div className="text-center py-12">
-                <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-                  No tools found
-                </h3>
-                <p className="text-slate-500 dark:text-slate-500">
-                  Try adjusting your search or category filter
-                </p>
-              </div>
-            )}
+            <ToolsGrid filteredTools={filteredTools} />
           </>
         ) : (
           <div>
-            {/* Tool Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/")}
-                  className="border-slate-200 dark:border-slate-700"
-                >
-                  ← Back to Tools
-                </Button>
-                <Separator orientation="vertical" className="h-6" />
-                <div className="flex items-center space-x-2">
-                  <selectedTool.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                    {selectedTool.name}
-                  </h2>
-                </div>
-              </div>
-            </div>
+            <ToolHeader toolId={toolId!} />
 
             {/* Tool Component */}
             <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -470,7 +78,6 @@ const Index = () => {
         )}
       </div>
 
-      {/* Feedback Form */}
       <FeedbackForm />
     </div>
   );
