@@ -8,6 +8,8 @@ import ToolsGrid from "@/components/layout/ToolsGrid";
 import ToolHeader from "@/components/layout/ToolHeader";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import SEOBreadcrumbs from "@/components/SEOBreadcrumbs";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { tools } from "@/data/toolsData";
 import { usePageMeta } from "@/hooks/usePageMeta";
 
@@ -45,6 +47,29 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
+  if (selectedTool) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+          <AppSidebar />
+          <SidebarInset>
+            <Header />
+            <div className="container mx-auto px-4 py-8">
+              <SEOBreadcrumbs />
+              <ToolHeader toolId={toolId!} />
+              
+              {/* Tool Component */}
+              <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                <selectedTool.component />
+              </div>
+            </div>
+            <FeedbackForm />
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <Header />
@@ -52,30 +77,17 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         <SEOBreadcrumbs />
         
-        {!selectedTool ? (
-          <>
-            <HeroSection 
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-            />
+        <HeroSection 
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
 
-            <CategoryTabs 
-              activeCategory={activeCategory}
-              onCategoryChange={handleCategoryChange}
-            />
+        <CategoryTabs 
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
+        />
 
-            <ToolsGrid filteredTools={filteredTools} />
-          </>
-        ) : (
-          <div>
-            <ToolHeader toolId={toolId!} />
-
-            {/* Tool Component */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-              <selectedTool.component />
-            </div>
-          </div>
-        )}
+        <ToolsGrid filteredTools={filteredTools} />
       </div>
 
       <FeedbackForm />
