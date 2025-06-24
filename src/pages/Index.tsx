@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SimpleHeroSection from "@/components/layout/SimpleHeroSection";
-import CategoryTabs from "@/components/layout/CategoryTabs";
 import ToolsGrid from "@/components/layout/ToolsGrid";
 import ToolHeader from "@/components/layout/ToolHeader";
 import { FeedbackForm } from "@/components/FeedbackForm";
@@ -66,11 +65,6 @@ const Index = () => {
               <SEOBreadcrumbs />
               
               <SimpleHeroSection />
-
-              <CategoryTabs 
-                activeCategory={activeCategory}
-                onCategoryChange={handleCategoryChange}
-              />
 
               <ToolsGrid filteredTools={filteredTools} />
             </div>
