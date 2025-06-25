@@ -15,6 +15,7 @@ const ToolPage = () => {
     "url-encoder", "base64-encoder", "jwt-decoder", 
     "date-time-converter", "integer-base-converter", "roman-numeral-converter",
     "base64-string-encoder", "color-converter", "text-to-nato-alphabet",
+    "text-to-ascii-binary", "text-to-unicode", "yaml-to-json-converter", "yaml-to-toml",
     "epoch-converter", "iso-generator", "cron-editor", "json-formatter", "xml-formatter",
     "yaml-converter", "hash-generator", "htpasswd-generator", "strong-password-generator",
     "uuid-generator", "lorem-generator", "fake-data-generator", "color-palette-generator", 

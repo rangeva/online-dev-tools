@@ -1,4 +1,3 @@
-
 // Tool components - using default imports
 import WordCounter from "@/components/tools/WordCounter";
 import TextDiff from "@/components/tools/TextDiff";
@@ -43,6 +42,10 @@ import RomanNumeralConverter from "@/components/tools/RomanNumeralConverter";
 import Base64StringEncoder from "@/components/tools/Base64StringEncoder";
 import ColorConverter from "@/components/tools/ColorConverter";
 import TextToNatoAlphabet from "@/components/tools/TextToNatoAlphabet";
+import TextToAsciiBinary from "@/components/tools/TextToAsciiBinary";
+import TextToUnicode from "@/components/tools/TextToUnicode";
+import YamlToJsonConverter from "@/components/tools/YamlToJsonConverter";
+import YamlToToml from "@/components/tools/YamlToToml";
 
 export const toolComponents = {
   WordCounter,
@@ -87,5 +90,9 @@ export const toolComponents = {
   RomanNumeralConverter,
   Base64StringEncoder,
   ColorConverter,
-  TextToNatoAlphabet
+  TextToNatoAlphabet,
+  TextToAsciiBinary,
+  TextToUnicode,
+  YamlToJsonConverter,
+  YamlToToml
 };

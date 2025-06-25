@@ -5,7 +5,11 @@ import {
   Crown,
   Code,
   Palette,
-  Radio
+  Radio,
+  Binary,
+  Globe,
+  FileText,
+  Settings
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -64,5 +68,41 @@ export const convertorTools: Tool[] = [
     icon: Radio,
     component: toolComponents.TextToNatoAlphabet,
     tags: ["nato", "phonetic", "alphabet", "radio", "communication"]
+  },
+  {
+    id: "text-to-ascii-binary",
+    name: "Text to ASCII Binary",
+    description: "Convert text to its ASCII binary representation and vice-versa",
+    category: "convertors",
+    icon: Binary,
+    component: toolComponents.TextToAsciiBinary,
+    tags: ["ascii", "binary", "text", "convert", "encoding"]
+  },
+  {
+    id: "text-to-unicode",
+    name: "Text to Unicode",
+    description: "Parse and convert text to unicode and vice-versa",
+    category: "convertors",
+    icon: Globe,
+    component: toolComponents.TextToUnicode,
+    tags: ["unicode", "text", "convert", "encoding", "utf"]
+  },
+  {
+    id: "yaml-to-json-converter",
+    name: "YAML to JSON Converter",
+    description: "Simply convert YAML to JSON with this online live converter",
+    category: "convertors",
+    icon: FileText,
+    component: toolComponents.YamlToJsonConverter,
+    tags: ["yaml", "json", "convert", "format", "data"]
+  },
+  {
+    id: "yaml-to-toml",
+    name: "YAML to TOML",
+    description: "Parse and convert YAML to TOML",
+    category: "convertors",
+    icon: Settings,
+    component: toolComponents.YamlToToml,
+    tags: ["yaml", "toml", "convert", "format", "config"]
   }
 ];
