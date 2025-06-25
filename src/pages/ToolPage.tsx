@@ -11,7 +11,7 @@ const ToolPage = () => {
     "add-prefix-suffix", "line-break-manager", "find-replace", 
     "remove-duplicate-lines", "remove-empty-lines", "remove-extra-spaces",
     "html-minifier", "html-beautifier", "html-to-markdown", "html-to-jsx",
-    "html-previewer", "html-to-plain-text", "html-entity-coder",
+    "html-previewer", "html-to-plain-text", "html-entity-coder", "html-wysiwyg-editor",
     "url-encoder", "base64-encoder", "jwt-decoder", 
     "date-time-converter", "integer-base-converter", "roman-numeral-converter",
     "base64-string-encoder", "color-converter", "text-to-nato-alphabet",

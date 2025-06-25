@@ -6,7 +6,8 @@ import {
   Code2,
   Eye,
   AlignLeft,
-  Shield
+  Shield,
+  Edit3
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -74,5 +75,14 @@ export const htmlTools: Tool[] = [
     icon: Shield,
     component: toolComponents.HtmlEntityCoder,
     tags: ["html", "entities", "encode", "decode", "xss"]
+  },
+  {
+    id: "html-wysiwyg-editor",
+    name: "HTML WYSIWYG Editor",
+    description: "Online, feature-rich WYSIWYG HTML editor which generates the source code of the content immediately",
+    category: "html",
+    icon: Edit3,
+    component: toolComponents.HtmlWysiwygEditor,
+    tags: ["html", "wysiwyg", "editor", "visual", "rich-text"]
   }
 ];

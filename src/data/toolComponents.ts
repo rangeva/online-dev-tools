@@ -31,6 +31,7 @@ import HtmlToJsx from "@/components/tools/HtmlToJsx";
 import HtmlPreviewer from "@/components/tools/HtmlPreviewer";
 import HtmlToPlainText from "@/components/tools/HtmlToPlainText";
 import HtmlEntityCoder from "@/components/tools/HtmlEntityCoder";
+import HtmlWysiwygEditor from "@/components/tools/HtmlWysiwygEditor";
 import ColorPaletteGenerator from "@/components/tools/ColorPaletteGenerator";
 import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
@@ -91,6 +92,7 @@ export const toolComponents = {
   HtmlPreviewer,
   HtmlToPlainText,
   HtmlEntityCoder,
+  HtmlWysiwygEditor,
   ColorPaletteGenerator,
   HtmlColorCodes,
   QrCodeGenerator,
