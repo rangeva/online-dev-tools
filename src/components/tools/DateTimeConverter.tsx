@@ -1,17 +1,22 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Copy, Calendar, Clock, RotateCcw } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Copy, Calendar as CalendarIcon, Clock, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const DateTimeConverter = () => {
   const [inputValue, setInputValue] = useState("");
   const [inputFormat, setInputFormat] = useState("iso");
   const [results, setResults] = useState<Record<string, string>>({});
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState("12:00");
   const { toast } = useToast();
 
   const formatDate = (date: Date) => {
@@ -51,6 +56,23 @@ const DateTimeConverter = () => {
     if (Math.abs(diffDays) < 30) return `${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'} ${diffDays < 0 ? 'from now' : 'ago'}`;
     
     return date.toLocaleDateString();
+  };
+
+  const handleDateTimeSelect = () => {
+    if (!selectedDate) return;
+    
+    const [hours, minutes] = selectedTime.split(':').map(Number);
+    const combinedDate = new Date(selectedDate);
+    combinedDate.setHours(hours, minutes, 0, 0);
+    
+    setInputValue(combinedDate.toISOString());
+    setInputFormat("iso");
+    setResults(formatDate(combinedDate));
+    
+    toast({
+      title: "Date & Time Selected",
+      description: "Input updated with selected date and time"
+    });
   };
 
   const handleConvert = () => {
@@ -106,6 +128,8 @@ const DateTimeConverter = () => {
     setInputValue(now.toISOString());
     setInputFormat("iso");
     setResults(formatDate(now));
+    setSelectedDate(now);
+    setSelectedTime(format(now, "HH:mm"));
     toast({
       title: "Current Time Set",
       description: "Input set to current date and time"
@@ -116,6 +140,8 @@ const DateTimeConverter = () => {
     setInputValue("");
     setResults({});
     setInputFormat("iso");
+    setSelectedDate(undefined);
+    setSelectedTime("12:00");
   };
 
   const copyToClipboard = (text: string) => {
@@ -138,7 +164,7 @@ const DateTimeConverter = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
+            <CalendarIcon className="h-5 w-5" />
             <CardTitle>Date-time Converter</CardTitle>
           </div>
           <CardDescription>
@@ -146,6 +172,58 @@ const DateTimeConverter = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Date/Time Picker Section */}
+          <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+            <Label className="text-sm font-medium">Visual Date & Time Picker</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date-picker">Select Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !selectedDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="time-picker">Select Time</Label>
+                <Input
+                  id="time-picker"
+                  type="time"
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+            </div>
+            <Button 
+              onClick={handleDateTimeSelect} 
+              disabled={!selectedDate}
+              className="w-full"
+            >
+              <Clock className="h-4 w-4 mr-2" />
+              Use Selected Date & Time
+            </Button>
+          </div>
+
+          {/* Original Input Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="input-date">Input Date/Time</Label>
@@ -174,7 +252,7 @@ const DateTimeConverter = () => {
           
           <div className="flex flex-wrap gap-3">
             <Button onClick={handleConvert} className="flex-1 min-w-fit">
-              <Calendar className="h-4 w-4 mr-2" />
+              <CalendarIcon className="h-4 w-4 mr-2" />
               Convert Date
             </Button>
             <Button onClick={setCurrentTime} variant="outline" className="flex items-center gap-2">
@@ -222,6 +300,7 @@ const DateTimeConverter = () => {
 
           <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1">
             <div><strong>Tips:</strong></div>
+            <div>• Use the visual date & time picker for easy date selection</div>
             <div>• Unix timestamps can be in seconds (10 digits) or milliseconds (13 digits)</div>
             <div>• Auto-detect works with most common date formats</div>
             <div>• Use "Current Time" to quickly get the current date and time</div>
