@@ -164,7 +164,7 @@ const RandomEmailGenerator = () => {
                   <Checkbox
                     id="includeNumbers"
                     checked={includeNumbers}
-                    onCheckedChange={setIncludeNumbers}
+                    onCheckedChange={(checked) => setIncludeNumbers(checked === true)}
                   />
                   <Label htmlFor="includeNumbers">Include Numbers</Label>
                 </div>
@@ -173,7 +173,7 @@ const RandomEmailGenerator = () => {
                   <Checkbox
                     id="includeDots"
                     checked={includeDots}
-                    onCheckedChange={setIncludeDots}
+                    onCheckedChange={(checked) => setIncludeDots(checked === true)}
                   />
                   <Label htmlFor="includeDots">Include Dots (.)</Label>
                 </div>
@@ -182,7 +182,7 @@ const RandomEmailGenerator = () => {
                   <Checkbox
                     id="includeUnderscores"
                     checked={includeUnderscores}
-                    onCheckedChange={setIncludeUnderscores}
+                    onCheckedChange={(checked) => setIncludeUnderscores(checked === true)}
                   />
                   <Label htmlFor="includeUnderscores">Include Underscores (_)</Label>
                 </div>
