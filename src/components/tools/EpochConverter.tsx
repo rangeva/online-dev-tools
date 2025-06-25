@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const EpochConverter = () => {
   const [currentEpoch, setCurrentEpoch] = useState(Math.floor(Date.now() / 1000));
@@ -24,6 +27,10 @@ const EpochConverter = () => {
   const [startEndResults, setStartEndResults] = useState<any>(null);
   const [secondsToConvert, setSecondsToConvert] = useState('90061');
   const [timeConversionResult, setTimeConversionResult] = useState<any>(null);
+  
+  // Date picker states
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   // Update current epoch every second
   useEffect(() => {
@@ -48,6 +55,40 @@ const EpochConverter = () => {
         return num / 1000000;
       default:
         return num * 1000;
+    }
+  };
+
+  const setCurrentTimestamp = () => {
+    const now = Math.floor(Date.now() / 1000);
+    let timestamp;
+    
+    switch (timestampFormat) {
+      case 'milliseconds':
+        timestamp = now * 1000;
+        break;
+      case 'microseconds':
+        timestamp = now * 1000000;
+        break;
+      case 'nanoseconds':
+        timestamp = now * 1000000000;
+        break;
+      default:
+        timestamp = now;
+    }
+    
+    setSingleTimestamp(timestamp.toString());
+  };
+
+  const setCurrentHumanDate = () => {
+    const now = new Date();
+    setHumanDate(now.toUTCString());
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      setHumanDate(date.toUTCString());
+      setIsDatePickerOpen(false);
     }
   };
 
@@ -202,6 +243,7 @@ const EpochConverter = () => {
     setHumanToTimestampResults([]);
     setStartEndResults(null);
     setTimeConversionResult(null);
+    setSelectedDate(undefined);
   };
 
   // Keyboard shortcut for clearing
@@ -273,6 +315,9 @@ const EpochConverter = () => {
                     <SelectItem value="nanoseconds">Nanoseconds</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button onClick={setCurrentTimestamp} variant="outline">
+                  Now
+                </Button>
                 <Button onClick={convertSingleTimestamp}>Convert</Button>
               </div>
               
@@ -332,6 +377,32 @@ const EpochConverter = () => {
                   onChange={(e) => setHumanDate(e.target.value)}
                   className="flex-1"
                 />
+                <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !selectedDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDate ? format(selectedDate, "PPP") : "Pick date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={handleDateSelect}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button onClick={setCurrentHumanDate} variant="outline">
+                  Now
+                </Button>
                 <Button onClick={convertSingleHumanDate}>Convert</Button>
               </div>
               <p className="text-sm text-gray-600">
