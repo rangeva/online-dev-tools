@@ -9,7 +9,8 @@ import {
   Binary,
   Globe,
   FileText,
-  Settings
+  Settings,
+  List
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -104,5 +105,32 @@ export const convertorTools: Tool[] = [
     icon: Settings,
     component: toolComponents.YamlToToml,
     tags: ["yaml", "toml", "convert", "format", "config"]
+  },
+  {
+    id: "json-to-yaml-converter",
+    name: "JSON to YAML Converter",
+    description: "Simply convert JSON to YAML with this online live converter",
+    category: "convertors",
+    icon: FileText,
+    component: toolComponents.JsonToYamlConverter,
+    tags: ["json", "yaml", "convert", "format", "data"]
+  },
+  {
+    id: "json-to-toml-converter",
+    name: "JSON to TOML",
+    description: "Parse and convert JSON to TOML",
+    category: "convertors",
+    icon: Settings,
+    component: toolComponents.JsonToTomlConverter,
+    tags: ["json", "toml", "convert", "format", "config"]
+  },
+  {
+    id: "list-converter",
+    name: "List Converter",
+    description: "This tool can process column-based data and apply various changes (transpose, add prefix and suffix, reverse list, sort list, lowercase values, truncate values) to each row",
+    category: "convertors",
+    icon: List,
+    component: toolComponents.ListConverter,
+    tags: ["list", "convert", "transpose", "prefix", "suffix", "sort", "reverse", "data"]
   }
 ];
