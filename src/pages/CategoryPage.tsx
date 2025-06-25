@@ -7,7 +7,7 @@ const CategoryPage = () => {
   
   // List of valid categories for SEO purposes
   const validCategories = [
-    "text", "html", "encoding", "date", "data", "security", "generators", "color"
+    "text", "html", "encoding", "convertors", "date", "data", "security", "generators", "graphics"
   ];
 
   if (!category || !validCategories.includes(category)) {

@@ -37,6 +37,12 @@ import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import WifiQrGenerator from "@/components/tools/WifiQrGenerator";
 import CameraRecorder from "@/components/tools/CameraRecorder";
 import StrongPasswordGenerator from "@/components/tools/StrongPasswordGenerator";
+import DateTimeConverter from "@/components/tools/DateTimeConverter";
+import IntegerBaseConverter from "@/components/tools/IntegerBaseConverter";
+import RomanNumeralConverter from "@/components/tools/RomanNumeralConverter";
+import Base64StringEncoder from "@/components/tools/Base64StringEncoder";
+import ColorConverter from "@/components/tools/ColorConverter";
+import TextToNatoAlphabet from "@/components/tools/TextToNatoAlphabet";
 
 export const toolComponents = {
   WordCounter,
@@ -75,5 +81,11 @@ export const toolComponents = {
   QrCodeGenerator,
   WifiQrGenerator,
   CameraRecorder,
-  StrongPasswordGenerator
+  StrongPasswordGenerator,
+  DateTimeConverter,
+  IntegerBaseConverter,
+  RomanNumeralConverter,
+  Base64StringEncoder,
+  ColorConverter,
+  TextToNatoAlphabet
 };
