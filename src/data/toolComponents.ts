@@ -1,4 +1,3 @@
-
 // Tool components - using default imports
 import WordCounter from "@/components/tools/WordCounter";
 import TextDiff from "@/components/tools/TextDiff";
@@ -50,6 +49,11 @@ import YamlToToml from "@/components/tools/YamlToToml";
 import JsonToYamlConverter from "@/components/tools/JsonToYamlConverter";
 import JsonToTomlConverter from "@/components/tools/JsonToTomlConverter";
 import ListConverter from "@/components/tools/ListConverter";
+import TomlToJsonConverter from "@/components/tools/TomlToJsonConverter";
+import TomlToYamlConverter from "@/components/tools/TomlToYamlConverter";
+import XmlToJsonConverter from "@/components/tools/XmlToJsonConverter";
+import JsonToXmlConverter from "@/components/tools/JsonToXmlConverter";
+import MarkdownToHtmlConverter from "@/components/tools/MarkdownToHtmlConverter";
 
 export const toolComponents = {
   WordCounter,
@@ -101,5 +105,10 @@ export const toolComponents = {
   YamlToToml,
   JsonToYamlConverter,
   JsonToTomlConverter,
-  ListConverter
+  ListConverter,
+  TomlToJsonConverter,
+  TomlToYamlConverter,
+  XmlToJsonConverter,
+  JsonToXmlConverter,
+  MarkdownToHtmlConverter
 };

@@ -1,4 +1,3 @@
-
 import { 
   Clock,
   Hash,
@@ -10,7 +9,8 @@ import {
   Globe,
   FileText,
   Settings,
-  List
+  List,
+  Code2
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -132,5 +132,50 @@ export const convertorTools: Tool[] = [
     icon: List,
     component: toolComponents.ListConverter,
     tags: ["list", "convert", "transpose", "prefix", "suffix", "sort", "reverse", "data"]
+  },
+  {
+    id: "toml-to-json-converter",
+    name: "TOML to JSON",
+    description: "Parse and convert TOML to JSON",
+    category: "convertors",
+    icon: Settings,
+    component: toolComponents.TomlToJsonConverter,
+    tags: ["toml", "json", "convert", "format", "config"]
+  },
+  {
+    id: "toml-to-yaml-converter",
+    name: "TOML to YAML",
+    description: "Parse and convert TOML to YAML",
+    category: "convertors",
+    icon: Settings,
+    component: toolComponents.TomlToYamlConverter,
+    tags: ["toml", "yaml", "convert", "format", "config"]
+  },
+  {
+    id: "xml-to-json-converter",
+    name: "XML to JSON",
+    description: "Convert XML to JSON",
+    category: "convertors",
+    icon: Code2,
+    component: toolComponents.XmlToJsonConverter,
+    tags: ["xml", "json", "convert", "format", "data"]
+  },
+  {
+    id: "json-to-xml-converter",
+    name: "JSON to XML",
+    description: "Convert JSON to XML",
+    category: "convertors",
+    icon: Code2,
+    component: toolComponents.JsonToXmlConverter,
+    tags: ["json", "xml", "convert", "format", "data"]
+  },
+  {
+    id: "markdown-to-html-converter",
+    name: "Markdown to HTML",
+    description: "Convert Markdown to HTML and allow to print (as PDF)",
+    category: "convertors",
+    icon: FileText,
+    component: toolComponents.MarkdownToHtmlConverter,
+    tags: ["markdown", "html", "convert", "pdf", "print", "format"]
   }
 ];
