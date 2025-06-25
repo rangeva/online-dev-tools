@@ -12,11 +12,13 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const DateTimeConverter = () => {
-  const [inputValue, setInputValue] = useState("");
+  // Initialize with current date and time
+  const now = new Date();
+  const [inputValue, setInputValue] = useState(now.toISOString());
   const [inputFormat, setInputFormat] = useState("iso");
   const [results, setResults] = useState<Record<string, string>>({});
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState("12:00");
+  const [selectedDate, setSelectedDate] = useState<Date>(now);
+  const [selectedTime, setSelectedTime] = useState(format(now, "HH:mm"));
   const { toast } = useToast();
 
   const formatDate = (date: Date) => {
