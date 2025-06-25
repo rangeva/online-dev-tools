@@ -14,9 +14,9 @@ import { cn } from '@/lib/utils';
 
 const EpochConverter = () => {
   const [currentEpoch, setCurrentEpoch] = useState(Math.floor(Date.now() / 1000));
-  const [singleTimestamp, setSingleTimestamp] = useState('');
+  const [singleTimestamp, setSingleTimestamp] = useState(Math.floor(Date.now() / 1000).toString());
   const [batchTimestamps, setBatchTimestamps] = useState('');
-  const [humanDate, setHumanDate] = useState('');
+  const [humanDate, setHumanDate] = useState(new Date().toUTCString());
   const [batchHumanDates, setBatchHumanDates] = useState('');
   const [timestampFormat, setTimestampFormat] = useState('seconds');
   const [convertedResults, setConvertedResults] = useState<any[]>([]);
