@@ -57,6 +57,7 @@ import JsonToXmlConverter from "@/components/tools/JsonToXmlConverter";
 import MarkdownToHtmlConverter from "@/components/tools/MarkdownToHtmlConverter";
 import RandomPhoneGenerator from "@/components/tools/RandomPhoneGenerator";
 import RandomEmailGenerator from "@/components/tools/RandomEmailGenerator";
+import TemperatureConverter from "@/components/tools/TemperatureConverter";
 
 export const toolComponents = {
   WordCounter,
@@ -115,5 +116,6 @@ export const toolComponents = {
   JsonToXmlConverter,
   MarkdownToHtmlConverter,
   RandomPhoneGenerator,
-  RandomEmailGenerator
+  RandomEmailGenerator,
+  TemperatureConverter
 };

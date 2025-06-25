@@ -22,7 +22,8 @@ const ToolPage = () => {
     "uuid-generator", "lorem-generator", "fake-data-generator", "color-palette-generator", 
     "html-color-codes", "qr-code-generator", "wifi-qr-generator", 
     "camera-recorder", "toml-to-json-converter", "toml-to-yaml-converter", "xml-to-json-converter",
-    "json-to-xml-converter", "markdown-to-html-converter", "random-phone-generator", "random-email-generator"
+    "json-to-xml-converter", "markdown-to-html-converter", "random-phone-generator", "random-email-generator",
+    "temperature-converter"
   ];
 
   if (!toolId || !validToolIds.includes(toolId)) {

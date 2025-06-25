@@ -1,3 +1,4 @@
+
 import { 
   Clock,
   Hash,
@@ -10,7 +11,8 @@ import {
   FileText,
   Settings,
   List,
-  Code2
+  Code2,
+  Thermometer
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -177,5 +179,14 @@ export const convertorTools: Tool[] = [
     icon: FileText,
     component: toolComponents.MarkdownToHtmlConverter,
     tags: ["markdown", "html", "convert", "pdf", "print", "format"]
+  },
+  {
+    id: "temperature-converter",
+    name: "Temperature Converter",
+    description: "Degrees temperature conversions for Kelvin, Celsius, Fahrenheit, Rankine, Delisle, Newton, Réaumur, and Rømer",
+    category: "convertors",
+    icon: Thermometer,
+    component: toolComponents.TemperatureConverter,
+    tags: ["temperature", "convert", "celsius", "fahrenheit", "kelvin", "rankine", "delisle", "newton", "reaumur", "romer", "degrees"]
   }
 ];
