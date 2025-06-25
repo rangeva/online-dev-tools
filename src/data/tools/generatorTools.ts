@@ -2,7 +2,9 @@
 import { 
   Zap,
   FileText,
-  Database
+  Database,
+  Phone,
+  Mail
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -34,5 +36,23 @@ export const generatorTools: Tool[] = [
     icon: Database,
     component: toolComponents.FakeDataGenerator,
     tags: ["fake", "data", "generate", "test"]
+  },
+  {
+    id: "random-phone-generator",
+    name: "Random Phone Number Generator",
+    description: "Generate random phone numbers by country with proper formatting",
+    category: "generators",
+    icon: Phone,
+    component: toolComponents.RandomPhoneGenerator,
+    tags: ["phone", "number", "random", "country", "generate"]
+  },
+  {
+    id: "random-email-generator",
+    name: "Random Email Generator",
+    description: "Generate random email addresses with customizable options",
+    category: "generators",
+    icon: Mail,
+    component: toolComponents.RandomEmailGenerator,
+    tags: ["email", "random", "generate", "address", "fake"]
   }
 ];

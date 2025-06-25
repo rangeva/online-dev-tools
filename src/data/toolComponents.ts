@@ -1,3 +1,4 @@
+
 // Tool components - using default imports
 import WordCounter from "@/components/tools/WordCounter";
 import TextDiff from "@/components/tools/TextDiff";
@@ -54,6 +55,8 @@ import TomlToYamlConverter from "@/components/tools/TomlToYamlConverter";
 import XmlToJsonConverter from "@/components/tools/XmlToJsonConverter";
 import JsonToXmlConverter from "@/components/tools/JsonToXmlConverter";
 import MarkdownToHtmlConverter from "@/components/tools/MarkdownToHtmlConverter";
+import RandomPhoneGenerator from "@/components/tools/RandomPhoneGenerator";
+import RandomEmailGenerator from "@/components/tools/RandomEmailGenerator";
 
 export const toolComponents = {
   WordCounter,
@@ -110,5 +113,7 @@ export const toolComponents = {
   TomlToYamlConverter,
   XmlToJsonConverter,
   JsonToXmlConverter,
-  MarkdownToHtmlConverter
+  MarkdownToHtmlConverter,
+  RandomPhoneGenerator,
+  RandomEmailGenerator
 };
