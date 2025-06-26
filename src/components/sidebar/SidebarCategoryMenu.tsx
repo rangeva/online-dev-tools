@@ -39,6 +39,13 @@ export function SidebarCategoryMenu({
     return acc;
   }, {} as Record<string, typeof tools>);
 
+  const handleToolClick = () => {
+    // Close mobile menu when a tool is selected
+    if (onMobileMenuClose) {
+      onMobileMenuClose();
+    }
+  };
+
   return (
     <div className="flex-1 overflow-hidden">
       <ScrollArea className="h-full">
@@ -78,7 +85,7 @@ export function SidebarCategoryMenu({
                               <Link 
                                 to={`/tool/${tool.id}`} 
                                 className={`peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground ${isActive ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground' : ''}`}
-                                onClick={onMobileMenuClose}
+                                onClick={handleToolClick}
                               >
                                 <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
                                   <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
