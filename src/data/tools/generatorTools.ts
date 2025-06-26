@@ -4,7 +4,8 @@ import {
   FileText,
   Database,
   Phone,
-  Mail
+  Mail,
+  Calendar
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -54,5 +55,14 @@ export const generatorTools: Tool[] = [
     icon: Mail,
     component: toolComponents.RandomEmailGenerator,
     tags: ["email", "random", "generate", "address", "fake"]
+  },
+  {
+    id: "iso-generator",
+    name: "ISO 8601 Generator",
+    description: "Generate and validate ISO 8601 date strings",
+    category: "generators",
+    icon: Calendar,
+    component: toolComponents.IsoGenerator,
+    tags: ["iso", "date", "format", "8601", "generate"]
   }
 ];

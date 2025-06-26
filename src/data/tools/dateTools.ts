@@ -1,7 +1,6 @@
 
 import { 
   Clock,
-  Calendar,
   Settings
 } from "lucide-react";
 import { Tool } from "@/types/tools";
@@ -16,15 +15,6 @@ export const dateTools: Tool[] = [
     icon: Clock,
     component: toolComponents.EpochConverter,
     tags: ["epoch", "timestamp", "date", "unix"]
-  },
-  {
-    id: "iso-generator",
-    name: "ISO 8601 Generator",
-    description: "Generate and validate ISO 8601 date strings",
-    category: "date",
-    icon: Calendar,
-    component: toolComponents.IsoGenerator,
-    tags: ["iso", "date", "format", "8601"]
   },
   {
     id: "cron-editor",
