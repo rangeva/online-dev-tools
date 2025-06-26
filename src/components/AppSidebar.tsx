@@ -1,209 +1,42 @@
 
-import { Link, useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { tools, toolCategories } from "@/data/toolsData";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Search, Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSidebarAccordion } from "@/hooks/useSidebarAccordion";
+import { SidebarHeader } from "./sidebar/SidebarHeader";
+import { SidebarCategoryMenu } from "./sidebar/SidebarCategoryMenu";
+import { SidebarMobileWrapper } from "./sidebar/SidebarMobileWrapper";
 
 interface AppSidebarProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }
 
-const ACCORDION_STATE_COOKIE = "sidebar-accordion-state";
-
 export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
-  const { toolId } = useParams();
-  const [accordionValue, setAccordionValue] = useState<string[]>([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  // Initialize accordion state
-  useEffect(() => {
-    // Try to load saved state from cookie
-    const savedState = document.cookie
-      .split('; ')
-      .find(row => row.startsWith(ACCORDION_STATE_COOKIE + '='));
-    
-    if (savedState) {
-      try {
-        const state = JSON.parse(decodeURIComponent(savedState.split('=')[1]));
-        setAccordionValue(state);
-      } catch (error) {
-        // If parsing fails, default to all categories open
-        setAccordionValue(toolCategories.map(cat => cat.id));
-      }
-    } else {
-      // Default to all categories open
-      setAccordionValue(toolCategories.map(cat => cat.id));
-    }
-  }, []);
-
-  // Save accordion state to cookie whenever it changes
-  const handleAccordionChange = (value: string[]) => {
-    setAccordionValue(value);
-    // Save to cookie with 30 days expiration
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 30);
-    document.cookie = `${ACCORDION_STATE_COOKIE}=${encodeURIComponent(JSON.stringify(value))}; expires=${expirationDate.toUTCString()}; path=/`;
-  };
-
-  // Handle search input change with focus preservation
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    onSearchChange(value);
-  };
-
-  // Group tools by category
-  const toolsByCategory = toolCategories.reduce((acc, category) => {
-    acc[category.id] = tools.filter(tool => tool.category === category.id);
-    return acc;
-  }, {} as Record<string, typeof tools>);
-
-  // Filter tools based on search term
-  const filteredToolsByCategory = Object.entries(toolsByCategory).reduce((acc, [categoryId, categoryTools]) => {
-    const filteredTools = categoryTools.filter(tool =>
-      tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tool.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-    if (filteredTools.length > 0) {
-      acc[categoryId] = filteredTools;
-    }
-    return acc;
-  }, {} as Record<string, typeof tools>);
+  const { accordionValue, handleAccordionChange } = useSidebarAccordion();
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-4 border-b flex-shrink-0">
-        <div className="flex items-center">
-          <Link 
-            to="/" 
-            className="text-lg font-semibold text-blue-600 dark:text-blue-400"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            OnlineDevTools.io
-          </Link>
-        </div>
-        <div className="relative mt-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search tools..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="pl-10"
-          />
-        </div>
-      </div>
-      
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full">
-          <div className="p-2">
-            <Accordion 
-              type="multiple" 
-              className="w-full" 
-              value={accordionValue}
-              onValueChange={handleAccordionChange}
-            >
-              {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
-                const category = toolCategories.find(cat => cat.id === categoryId);
-                if (!category) return null;
-
-                const Icon = category.icon;
-
-                return (
-                  <AccordionItem key={categoryId} value={categoryId} className="border-b-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-3 py-3 hover:no-underline bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md mb-1">
-                      <div className="flex items-center gap-2 flex-1">
-                        <Icon className="h-4 w-4" />
-                        <span className="font-medium text-sm">{category.name}</span>
-                        <Badge variant="secondary" className="ml-auto mr-2">
-                          {categoryTools.length}
-                        </Badge>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-0">
-                      <div className="w-full text-sm ml-4">
-                        <ul className="flex w-full min-w-0 flex-col gap-1">
-                          {categoryTools.map((tool) => {
-                            const ToolIcon = tool.icon;
-                            const isActive = toolId === tool.id;
-                            
-                            return (
-                              <li key={tool.id} className="group/menu-item relative">
-                                <Link 
-                                  to={`/tool/${tool.id}`} 
-                                  className={`peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground ${isActive ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground' : ''}`}
-                                  onClick={() => setMobileMenuOpen(false)}
-                                >
-                                  <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
-                                    <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-sm">{tool.name}</div>
-                                  </div>
-                                </Link>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              })}
-            </Accordion>
-
-            {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
-              <div className="p-4 text-center text-slate-500 dark:text-slate-400">
-                No tools found matching "{searchTerm}"
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
+      <SidebarHeader 
+        searchTerm={searchTerm} 
+        onSearchChange={onSearchChange}
+      />
+      <SidebarCategoryMenu 
+        searchTerm={searchTerm}
+        accordionValue={accordionValue}
+        onAccordionChange={handleAccordionChange}
+      />
     </div>
   );
 
   // Mobile version with Sheet (drawer)
   if (isMobile) {
     return (
-      <>
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="fixed top-4 left-4 z-50 md:hidden bg-white/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800/90"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-80 p-0 bg-sidebar border-sidebar-border">
-            <SidebarContent />
-          </SheetContent>
-        </Sheet>
-      </>
+      <SidebarMobileWrapper 
+        searchTerm={searchTerm}
+        onSearchChange={onSearchChange}
+        accordionValue={accordionValue}
+        onAccordionChange={handleAccordionChange}
+      />
     );
   }
 
