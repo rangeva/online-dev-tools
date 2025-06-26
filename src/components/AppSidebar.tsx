@@ -14,10 +14,13 @@ import {
 } from "@/components/ui/sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { tools, toolCategories } from "@/data/toolsData";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Menu } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AppSidebarProps {
   searchTerm: string;
@@ -29,6 +32,8 @@ const ACCORDION_STATE_COOKIE = "sidebar-accordion-state";
 export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
   const { toolId } = useParams();
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Initialize accordion state
   useEffect(() => {
@@ -79,93 +84,125 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
     return acc;
   }, {} as Record<string, typeof tools>);
 
-  return (
-    <div className="fixed left-0 top-0 z-40 h-screen w-80 bg-sidebar border-r border-sidebar-border">
-      <div className="flex flex-col h-full">
-        <div className="p-4 border-b flex-shrink-0">
-          <div className="flex items-center">
-            <Link to="/" className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-              OnlineDevTools.io
-            </Link>
-          </div>
-          <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input
-              type="text"
-              placeholder="Search tools..."
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      <div className="p-4 border-b flex-shrink-0">
+        <div className="flex items-center">
+          <Link 
+            to="/" 
+            className="text-lg font-semibold text-blue-600 dark:text-blue-400"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            OnlineDevTools.io
+          </Link>
         </div>
-        
-        <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full">
-            <div className="p-2">
-              <Accordion 
-                type="multiple" 
-                className="w-full" 
-                value={accordionValue}
-                onValueChange={handleAccordionChange}
-              >
-                {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
-                  const category = toolCategories.find(cat => cat.id === categoryId);
-                  if (!category) return null;
-
-                  const Icon = category.icon;
-
-                  return (
-                    <AccordionItem key={categoryId} value={categoryId} className="border-b-0">
-                      <AccordionTrigger className="flex items-center gap-2 px-3 py-3 hover:no-underline bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md mb-1">
-                        <div className="flex items-center gap-2 flex-1">
-                          <Icon className="h-4 w-4" />
-                          <span className="font-medium text-sm">{category.name}</span>
-                          <Badge variant="secondary" className="ml-auto mr-2">
-                            {categoryTools.length}
-                          </Badge>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="pb-0">
-                        <div className="w-full text-sm ml-4">
-                          <ul className="flex w-full min-w-0 flex-col gap-1">
-                            {categoryTools.map((tool) => {
-                              const ToolIcon = tool.icon;
-                              const isActive = toolId === tool.id;
-                              
-                              return (
-                                <li key={tool.id} className="group/menu-item relative">
-                                  <Link 
-                                    to={`/tool/${tool.id}`} 
-                                    className={`peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground ${isActive ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground' : ''}`}
-                                  >
-                                    <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
-                                      <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="font-medium text-sm">{tool.name}</div>
-                                    </div>
-                                  </Link>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  );
-                })}
-              </Accordion>
-
-              {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
-                <div className="p-4 text-center text-slate-500 dark:text-slate-400">
-                  No tools found matching "{searchTerm}"
-                </div>
-              )}
-            </div>
-          </ScrollArea>
+        <div className="relative mt-4">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Input
+            type="text"
+            placeholder="Search tools..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="pl-10"
+          />
         </div>
       </div>
+      
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full">
+          <div className="p-2">
+            <Accordion 
+              type="multiple" 
+              className="w-full" 
+              value={accordionValue}
+              onValueChange={handleAccordionChange}
+            >
+              {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
+                const category = toolCategories.find(cat => cat.id === categoryId);
+                if (!category) return null;
+
+                const Icon = category.icon;
+
+                return (
+                  <AccordionItem key={categoryId} value={categoryId} className="border-b-0">
+                    <AccordionTrigger className="flex items-center gap-2 px-3 py-3 hover:no-underline bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md mb-1">
+                      <div className="flex items-center gap-2 flex-1">
+                        <Icon className="h-4 w-4" />
+                        <span className="font-medium text-sm">{category.name}</span>
+                        <Badge variant="secondary" className="ml-auto mr-2">
+                          {categoryTools.length}
+                        </Badge>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-0">
+                      <div className="w-full text-sm ml-4">
+                        <ul className="flex w-full min-w-0 flex-col gap-1">
+                          {categoryTools.map((tool) => {
+                            const ToolIcon = tool.icon;
+                            const isActive = toolId === tool.id;
+                            
+                            return (
+                              <li key={tool.id} className="group/menu-item relative">
+                                <Link 
+                                  to={`/tool/${tool.id}`} 
+                                  className={`peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground ${isActive ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground' : ''}`}
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
+                                    <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-medium text-sm">{tool.name}</div>
+                                  </div>
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+
+            {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
+              <div className="p-4 text-center text-slate-500 dark:text-slate-400">
+                No tools found matching "{searchTerm}"
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  );
+
+  // Mobile version with Sheet (drawer)
+  if (isMobile) {
+    return (
+      <>
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="fixed top-4 left-4 z-50 md:hidden bg-white/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800/90"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-80 p-0 bg-sidebar border-sidebar-border">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </>
+    );
+  }
+
+  // Desktop version with fixed sidebar
+  return (
+    <div className="fixed left-0 top-0 z-40 h-screen w-80 bg-sidebar border-r border-sidebar-border">
+      <SidebarContent />
     </div>
   );
 }

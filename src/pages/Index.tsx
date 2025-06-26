@@ -9,12 +9,14 @@ import SEOBreadcrumbs from "@/components/SEOBreadcrumbs";
 import { AppSidebar } from "@/components/AppSidebar";
 import { tools } from "@/data/toolsData";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
   const { toolId, category } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState(category || "all");
+  const isMobile = useIsMobile();
 
   const { selectedTool } = usePageMeta(toolId, activeCategory);
 
@@ -47,7 +49,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex w-full">
       <AppSidebar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-      <main className="flex-1 ml-80 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <main className={`flex-1 ${!isMobile ? 'ml-80' : ''} bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800`}>
         {selectedTool ? (
           <div className="container mx-auto px-4 py-8">
             <SEOBreadcrumbs />
