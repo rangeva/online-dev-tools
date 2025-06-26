@@ -1,4 +1,9 @@
-# Welcome to your Lovable project
+
+# Developer Toolbox - Online Developer Tools
+
+🚀 **Live Project**: This project is currently live and accessible at [http://onlinedevtools.io/](http://onlinedevtools.io/)
+
+A comprehensive collection of essential online tools for developers, including text utilities, encoding/decoding tools, date converters, JSON formatters, security tools, and much more.
 
 ## Project info
 
