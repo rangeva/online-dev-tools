@@ -1,6 +1,6 @@
 
 import { Link, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +34,7 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize accordion state
   useEffect(() => {
@@ -63,6 +64,12 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 30);
     document.cookie = `${ACCORDION_STATE_COOKIE}=${encodeURIComponent(JSON.stringify(value))}; expires=${expirationDate.toUTCString()}; path=/`;
+  };
+
+  // Handle search input change with focus preservation
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    onSearchChange(value);
   };
 
   // Group tools by category
@@ -99,10 +106,11 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
         <div className="relative mt-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
+            ref={searchInputRef}
             type="text"
             placeholder="Search tools..."
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-10"
           />
         </div>
