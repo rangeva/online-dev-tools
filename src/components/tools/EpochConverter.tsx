@@ -31,17 +31,34 @@ const EpochConverter = () => {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6">
       <CurrentEpochDisplay />
 
       <Tabs defaultValue="timestamp-to-human" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="timestamp-to-human">Timestamp to Human</TabsTrigger>
-          <TabsTrigger value="human-to-timestamp">Human to Timestamp</TabsTrigger>
-          <TabsTrigger value="start-end-dates">Start/End Dates</TabsTrigger>
-          <TabsTrigger value="seconds-converter">Seconds Converter</TabsTrigger>
-          <TabsTrigger value="dynamic-dates">Dynamic Dates</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid grid-cols-5 min-w-max md:w-full text-xs md:text-sm">
+            <TabsTrigger value="timestamp-to-human" className="px-2 md:px-4">
+              <span className="hidden sm:inline">Timestamp to Human</span>
+              <span className="sm:hidden">TS→Human</span>
+            </TabsTrigger>
+            <TabsTrigger value="human-to-timestamp" className="px-2 md:px-4">
+              <span className="hidden sm:inline">Human to Timestamp</span>
+              <span className="sm:hidden">Human→TS</span>
+            </TabsTrigger>
+            <TabsTrigger value="start-end-dates" className="px-2 md:px-4">
+              <span className="hidden sm:inline">Start/End Dates</span>
+              <span className="sm:hidden">Start/End</span>
+            </TabsTrigger>
+            <TabsTrigger value="seconds-converter" className="px-2 md:px-4">
+              <span className="hidden sm:inline">Seconds Converter</span>
+              <span className="sm:hidden">Seconds</span>
+            </TabsTrigger>
+            <TabsTrigger value="dynamic-dates" className="px-2 md:px-4">
+              <span className="hidden sm:inline">Dynamic Dates</span>
+              <span className="sm:hidden">Dynamic</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="timestamp-to-human" className="space-y-4">
           <TimestampToHuman />
@@ -65,7 +82,7 @@ const EpochConverter = () => {
       </Tabs>
 
       <div className="text-center">
-        <Button variant="outline" onClick={clearAllForms}>
+        <Button variant="outline" onClick={clearAllForms} className="w-full sm:w-auto">
           Clear All Forms
         </Button>
         <p className="text-sm text-gray-600 mt-2">

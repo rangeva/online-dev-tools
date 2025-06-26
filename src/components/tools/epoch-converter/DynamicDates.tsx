@@ -10,27 +10,29 @@ const DynamicDates = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Dynamic Date List</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Dynamic Date List</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Description</TableHead>
-              <TableHead>Unix Timestamp</TableHead>
-              <TableHead>Date</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {dynamicDates.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{item.label}</TableCell>
-                <TableCell className="font-mono">{item.epoch}</TableCell>
-                <TableCell>{item.date.toUTCString()}</TableCell>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="min-w-[120px]">Description</TableHead>
+                <TableHead className="min-w-[100px]">Unix Timestamp</TableHead>
+                <TableHead className="min-w-[150px]">Date</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {dynamicDates.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium text-xs md:text-sm">{item.label}</TableCell>
+                  <TableCell className="font-mono text-xs md:text-sm">{item.epoch}</TableCell>
+                  <TableCell className="text-xs md:text-sm break-all">{item.date.toUTCString()}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );
