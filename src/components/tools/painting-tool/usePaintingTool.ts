@@ -354,10 +354,34 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
       const img = new Image();
       img.onload = () => {
         saveCanvasState();
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Calculate new dimensions with max width of 1920
+        let newWidth = img.width;
+        let newHeight = img.height;
+        
+        if (newWidth > 1920) {
+          const aspectRatio = newHeight / newWidth;
+          newWidth = 1920;
+          newHeight = Math.round(newWidth * aspectRatio);
+        }
+        
+        // Create a temporary canvas for resizing
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        if (!tempCtx) return;
+        
+        tempCanvas.width = newWidth;
+        tempCanvas.height = newHeight;
+        
+        // Draw resized image to temp canvas
+        tempCtx.drawImage(img, 0, 0, newWidth, newHeight);
+        
+        // Draw the resized image to the main canvas
+        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+        
         toast({
           title: "Image Uploaded",
-          description: "Image has been loaded onto the canvas.",
+          description: `Image has been loaded onto the canvas${newWidth !== img.width || newHeight !== img.height ? ` and resized to ${newWidth}x${newHeight}` : ''}.`,
         });
       };
       img.src = e.target?.result as string;
