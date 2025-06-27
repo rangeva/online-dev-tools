@@ -27,7 +27,7 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
   
   const [currentTool, setCurrentTool] = useState<Tool>('brush');
   const [brushSettings, setBrushSettings] = useState<BrushSettings>({
-    size: 10,
+    size: 2,
     opacity: 1,
     flow: 1,
     hardness: 1,
