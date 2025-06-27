@@ -1,18 +1,18 @@
-
 import { useState, useCallback, RefObject, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eyedropper } from "lucide-react";
+import { Pipette } from "lucide-react";
+import { Tool } from "./usePaintingTool";
 
 interface ColorPanelProps {
   currentColor: string;
   onColorChange: (color: string) => void;
   canvasRef: RefObject<HTMLCanvasElement>;
-  currentTool: string;
-  onToolChange: (tool: string) => void;
+  currentTool: Tool;
+  onToolChange: (tool: Tool) => void;
 }
 
 const colorPalette = [
@@ -151,7 +151,7 @@ export const ColorPanel = ({ currentColor, onColorChange, canvasRef, currentTool
           variant={currentTool === 'eyedropper' ? "default" : "outline"} 
           className="w-full"
         >
-          <Eyedropper className="w-4 h-4 mr-2" />
+          <Pipette className="w-4 h-4 mr-2" />
           {currentTool === 'eyedropper' ? 'Eyedropper Active' : 'Activate Eyedropper'}
         </Button>
 
