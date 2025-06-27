@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Shield, Lock, Code } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, Shield, Lock, Code, Info, AlertTriangle } from "lucide-react";
 
 const CredentialFormatDetector = () => {
   const [input, setInput] = useState("");
@@ -14,11 +15,15 @@ const CredentialFormatDetector = () => {
     entropy: number;
     length: number;
     details: string;
+    confidence: number;
+    patterns: string[];
+    recommendations: string[];
   } | null>(null);
 
   const isBase64 = (s: string): boolean => {
     try {
-      return btoa(atob(s)) === s;
+      const decoded = atob(s);
+      return btoa(decoded) === s && s.length % 4 === 0;
     } catch {
       return false;
     }
@@ -26,6 +31,23 @@ const CredentialFormatDetector = () => {
 
   const isHex = (s: string): boolean => {
     return /^[0-9a-fA-F]+$/.test(s);
+  };
+
+  const isUUID = (s: string): boolean => {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+  };
+
+  const hasCommonPatterns = (s: string): string[] => {
+    const patterns = [];
+    if (/[A-Z]/.test(s)) patterns.push("uppercase");
+    if (/[a-z]/.test(s)) patterns.push("lowercase");
+    if (/[0-9]/.test(s)) patterns.push("digits");
+    if (/[^A-Za-z0-9]/.test(s)) patterns.push("special-chars");
+    if (/\s/.test(s)) patterns.push("whitespace");
+    if (/(.)\1{2,}/.test(s)) patterns.push("repeating-chars");
+    if (/^[a-zA-Z]+$/.test(s)) patterns.push("alphabetic-only");
+    if (/^[0-9]+$/.test(s)) patterns.push("numeric-only");
+    return patterns;
   };
 
   const shannonEntropy = (s: string): number => {
@@ -49,77 +71,176 @@ const CredentialFormatDetector = () => {
     const password = passwordInput.trim();
     const entropy = shannonEntropy(password);
     const length = password.length;
+    const patterns = hasCommonPatterns(password);
 
-    // Step 1: Check for common hash patterns
-    if (/^[a-fA-F0-9]{64}$/.test(password)) {
-      return {
-        state: "hashed",
-        entropy,
-        length,
-        details: "SHA-256 hash pattern detected (64 hex characters)"
-      };
+    // Enhanced hash pattern detection
+    const hashPatterns = [
+      { regex: /^[a-fA-F0-9]{32}$/, name: "MD5", confidence: 95 },
+      { regex: /^[a-fA-F0-9]{40}$/, name: "SHA-1", confidence: 95 },
+      { regex: /^[a-fA-F0-9]{56}$/, name: "SHA-224", confidence: 90 },
+      { regex: /^[a-fA-F0-9]{64}$/, name: "SHA-256", confidence: 95 },
+      { regex: /^[a-fA-F0-9]{96}$/, name: "SHA-384", confidence: 90 },
+      { regex: /^[a-fA-F0-9]{128}$/, name: "SHA-512", confidence: 95 },
+      { regex: /^\$2[ayb]\$.{56}$/, name: "bcrypt", confidence: 98 },
+      { regex: /^\$argon2[id]\$v=19\$m=\d+,t=\d+,p=\d+\$.+/, name: "Argon2", confidence: 98 },
+      { regex: /^\$6\$.{86}$/, name: "SHA-512 crypt", confidence: 95 },
+      { regex: /^{SSHA}/, name: "SSHA", confidence: 90 },
+      { regex: /^[a-fA-F0-9]{96}:[a-fA-F0-9]{32}$/, name: "PBKDF2", confidence: 85 }
+    ];
+
+    // Check for hash patterns first
+    for (const pattern of hashPatterns) {
+      if (pattern.regex.test(password)) {
+        return {
+          state: "hashed",
+          entropy,
+          length,
+          details: `${pattern.name} hash pattern detected with ${pattern.confidence}% confidence`,
+          confidence: pattern.confidence,
+          patterns,
+          recommendations: [
+            `This appears to be a ${pattern.name} hash`,
+            pattern.name === "MD5" || pattern.name === "SHA-1" ? 
+              "⚠️ This hash algorithm is considered weak - migrate to stronger alternatives" :
+              "✅ This is a secure hashing algorithm",
+            "Ensure proper salt usage if applicable",
+            "Store hashes securely and never transmit them in plain text"
+          ]
+        };
+      }
     }
-    if (/^[a-fA-F0-9]{32}$/.test(password)) {
+
+    // UUID detection
+    if (isUUID(password)) {
       return {
-        state: "hashed",
+        state: "uuid",
         entropy,
         length,
-        details: "MD5 hash pattern detected (32 hex characters)"
-      };
-    }
-    if (/^[a-fA-F0-9]{128}$/.test(password)) {
-      return {
-        state: "hashed",
-        entropy,
-        length,
-        details: "SHA-512 hash pattern detected (128 hex characters)"
+        details: "UUID format detected - typically used as unique identifiers",
+        confidence: 95,
+        patterns,
+        recommendations: [
+          "This appears to be a UUID (Universally Unique Identifier)",
+          "UUIDs are not passwords and should not be used for authentication",
+          "If used as a token, ensure proper expiration and rotation"
+        ]
       };
     }
 
-    // Step 2: Base64 or Hex encoding
-    if (isBase64(password)) {
+    // Base64 encoding detection
+    if (isBase64(password) && password.length > 8) {
+      const decodedLength = atob(password).length;
       return {
         state: "base64-encoded",
         entropy,
         length,
-        details: "Valid Base64 encoding detected"
+        details: `Valid Base64 encoding detected (decodes to ${decodedLength} bytes)`,
+        confidence: 85,
+        patterns,
+        recommendations: [
+          "This is Base64 encoded data, not encrypted",
+          "Base64 is encoding, not encryption - data can be easily decoded",
+          "If this contains sensitive data, proper encryption should be used instead",
+          "Consider what the decoded content represents"
+        ]
       };
     }
-    if (isHex(password) && length % 2 === 0) {
+
+    // Hex encoding detection
+    if (isHex(password) && length % 2 === 0 && length > 8) {
       return {
         state: "hex-encoded",
         entropy,
         length,
-        details: "Hexadecimal encoding detected"
+        details: `Hexadecimal encoding detected (${length/2} bytes when decoded)`,
+        confidence: 80,
+        patterns,
+        recommendations: [
+          "This appears to be hexadecimal encoded data",
+          "Hex encoding is not encryption - easily reversible",
+          "Could be a hash, encoded binary data, or encrypted content",
+          "Verify the source and purpose of this hex data"
+        ]
       };
     }
 
-    // Step 3: Encrypted or Obfuscated (high entropy, strange characters)
-    if (entropy > 4.5 && length > 20) {
+    // High entropy analysis for encrypted/obfuscated content
+    if (entropy > 4.8 && length > 20 && !patterns.includes("repeating-chars")) {
       return {
         state: "encrypted",
         entropy,
         length,
-        details: "High entropy and length suggest encryption or obfuscation"
+        details: "Very high entropy suggests strong encryption or compression",
+        confidence: 75,
+        patterns,
+        recommendations: [
+          "High entropy indicates encrypted, compressed, or random data",
+          "If encrypted, verify the encryption method and key management",
+          "Ensure proper key storage and rotation practices",
+          "Document the encryption algorithm and parameters used"
+        ]
+      };
+    } else if (entropy > 4.0 && length > 15) {
+      return {
+        state: "obfuscated",
+        entropy,
+        length,
+        details: "High entropy suggests obfuscation, encoding, or weak encryption",
+        confidence: 60,
+        patterns,
+        recommendations: [
+          "Moderate entropy suggests obfuscation or simple encoding",
+          "May be weakly encrypted or scrambled data",
+          "Consider using stronger encryption methods if security is required",
+          "Obfuscation is not a security measure"
+        ]
       };
     }
 
-    // Step 4: Plaintext check (low entropy, reasonable length)
-    if (entropy < 3.5 && length < 20) {
+    // Plaintext analysis
+    if (entropy < 3.5 && length < 50) {
+      const strengthIndicators = [];
+      if (length >= 12) strengthIndicators.push("adequate length");
+      if (patterns.includes("uppercase") && patterns.includes("lowercase")) strengthIndicators.push("mixed case");
+      if (patterns.includes("digits")) strengthIndicators.push("contains digits");
+      if (patterns.includes("special-chars")) strengthIndicators.push("special characters");
+
+      const isStrong = strengthIndicators.length >= 3 && length >= 12;
+      
       return {
         state: "plaintext",
         entropy,
         length,
-        details: "Low entropy and reasonable length suggest plaintext"
+        details: `Plaintext password detected - ${isStrong ? 'relatively strong' : 'weak'} (${strengthIndicators.length}/4 strength criteria)`,
+        confidence: 90,
+        patterns,
+        recommendations: [
+          isStrong ? 
+            "✅ This plaintext password meets basic strength criteria" :
+            "⚠️ This plaintext password is weak",
+          "Plaintext passwords should be hashed before storage",
+          "Use strong hashing algorithms like bcrypt, Argon2, or PBKDF2",
+          length < 12 ? "Increase length to at least 12 characters" : "",
+          !patterns.includes("special-chars") ? "Add special characters for better security" : "",
+          "Never store or transmit passwords in plain text"
+        ].filter(Boolean)
       };
     }
 
-    // Default
+    // Default case for unclear patterns
     return {
       state: "unknown",
       entropy,
       length,
-      details: "Unable to determine format with confidence"
+      details: "Unable to determine format with high confidence - may be custom encoding",
+      confidence: 30,
+      patterns,
+      recommendations: [
+        "Format could not be definitively identified",
+        "May be custom encoding, proprietary format, or corrupted data",
+        "Verify the source and expected format",
+        "Consider the context in which this credential was found"
+      ]
     };
   };
 
@@ -140,8 +261,12 @@ const CredentialFormatDetector = () => {
       case "base64-encoded":
       case "hex-encoded":
         return <Code className="h-4 w-4" />;
+      case "uuid":
+        return <Code className="h-4 w-4" />;
+      case "obfuscated":
+        return <AlertTriangle className="h-4 w-4" />;
       default:
-        return <Shield className="h-4 w-4" />;
+        return <Info className="h-4 w-4" />;
     }
   };
 
@@ -155,10 +280,21 @@ const CredentialFormatDetector = () => {
         return "secondary";
       case "base64-encoded":
       case "hex-encoded":
+      case "uuid":
         return "outline";
+      case "obfuscated":
+        return "destructive";
       default:
         return "secondary";
     }
+  };
+
+  const getEntropyDescription = (entropy: number) => {
+    if (entropy < 2) return "Very low - highly predictable";
+    if (entropy < 3) return "Low - somewhat predictable";
+    if (entropy < 4) return "Moderate - reasonably random";
+    if (entropy < 5) return "High - quite random";
+    return "Very high - extremely random";
   };
 
   return (
@@ -168,7 +304,7 @@ const CredentialFormatDetector = () => {
           Credential Format Detector
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          Analyze passwords and credentials to detect their format: plaintext, hashed, encrypted, or encoded
+          Advanced analysis of passwords and credentials to detect format, security level, and provide recommendations
         </p>
       </div>
 
@@ -179,7 +315,7 @@ const CredentialFormatDetector = () => {
             Password Analysis
           </CardTitle>
           <CardDescription>
-            Enter a password or credential to analyze its format and security state
+            Enter a password or credential to analyze its format and security characteristics
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -200,83 +336,107 @@ const CredentialFormatDetector = () => {
           </Button>
 
           {result && (
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {getStateIcon(result.state)}
-                  Analysis Result
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">Detected State:</span>
-                  <Badge variant={getStateColor(result.state) as any} className="flex items-center gap-1">
+            <div className="space-y-4 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
                     {getStateIcon(result.state)}
-                    {result.state.toUpperCase()}
-                  </Badge>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Shannon Entropy
+                    Analysis Result
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Detected Format:</span>
+                    <Badge variant={getStateColor(result.state) as any} className="flex items-center gap-1">
+                      {getStateIcon(result.state)}
+                      {result.state.toUpperCase().replace('-', ' ')}
+                    </Badge>
+                    <span className="text-sm text-slate-500">
+                      ({result.confidence}% confidence)
                     </span>
-                    <div className="text-lg font-mono">
-                      {result.entropy.toFixed(2)}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Shannon Entropy
+                      </span>
+                      <div className="text-lg font-mono">
+                        {result.entropy.toFixed(2)}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {getEntropyDescription(result.entropy)}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Length
+                      </span>
+                      <div className="text-lg font-mono">
+                        {result.length} chars
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {result.length < 8 ? "Too short" : result.length < 12 ? "Adequate" : result.length < 16 ? "Good" : "Excellent"}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Character Types
+                      </span>
+                      <div className="text-sm">
+                        {result.patterns.length} types
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {result.patterns.join(", ") || "None detected"}
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-1">
+
+                  <div className="space-y-2">
                     <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Length
+                      Analysis Details
                     </span>
-                    <div className="text-lg font-mono">
-                      {result.length} characters
-                    </div>
+                    <p className="text-sm bg-slate-50 dark:bg-slate-800 p-3 rounded">
+                      {result.details}
+                    </p>
                   </div>
-                </div>
+                </CardContent>
+              </Card>
 
-                <div className="space-y-2">
-                  <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                    Details
-                  </span>
-                  <p className="text-sm bg-slate-50 dark:bg-slate-800 p-3 rounded">
-                    {result.details}
-                  </p>
-                </div>
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Understanding the Results:</h4>
+                    <ul className="text-sm space-y-1 ml-4">
+                      <li><strong>Shannon Entropy:</strong> Measures randomness (0-8 scale). Higher values indicate more random/complex data.</li>
+                      <li><strong>Length:</strong> Number of characters. Longer is generally more secure for passwords.</li>
+                      <li><strong>Character Types:</strong> Variety of character classes used (uppercase, lowercase, digits, symbols).</li>
+                      <li><strong>Confidence:</strong> How certain the analysis is about the detected format.</li>
+                    </ul>
+                  </div>
+                </AlertDescription>
+              </Alert>
 
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
                     Security Recommendations
-                  </h4>
-                  <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                    {result.state === "plaintext" && (
-                      <>
-                        <li>• This appears to be a plaintext password - consider hashing it</li>
-                        <li>• Use strong hashing algorithms like bcrypt, Argon2, or PBKDF2</li>
-                      </>
-                    )}
-                    {result.state === "hashed" && (
-                      <>
-                        <li>• This appears to be a hashed password</li>
-                        <li>• Ensure proper salt usage and secure hashing algorithms</li>
-                      </>
-                    )}
-                    {result.state === "encrypted" && (
-                      <>
-                        <li>• This appears to be encrypted or obfuscated data</li>
-                        <li>• Verify the encryption method and key management</li>
-                      </>
-                    )}
-                    {(result.state === "base64-encoded" || result.state === "hex-encoded") && (
-                      <>
-                        <li>• This appears to be encoded data, not encrypted</li>
-                        <li>• Encoding is not encryption - data can be easily decoded</li>
-                      </>
-                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm space-y-2">
+                    {result.recommendations.map((rec, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
+                        <span>{rec}</span>
+                      </li>
+                    ))}
                   </ul>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </CardContent>
       </Card>
