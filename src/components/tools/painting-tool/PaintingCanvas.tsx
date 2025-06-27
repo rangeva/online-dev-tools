@@ -1,5 +1,4 @@
-
-import { forwardRef, useState, useEffect } from "react";
+import { forwardRef, useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { BrushSettings, CanvasSize, Position, Tool, SelectionArea } from "./usePaintingTool";
 import { ShapePreview } from "./ShapePreview";
@@ -48,6 +47,8 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
     const [shapeStartPosition, setShapeStartPosition] = useState<Position | null>(null);
     const [pastedImagePosition, setPastedImagePosition] = useState<Position | null>(null);
     const [isDraggingPastedImage, setIsDraggingPastedImage] = useState(false);
+    const canvasContainerRef = useRef<HTMLDivElement>(null);
+    const [canvasDisplaySize, setCanvasDisplaySize] = useState<{ width: number; height: number } | null>(null);
 
     const { previewCanvasRef, drawShapePreview, clearShapePreview } = ShapePreview({
       canvasSize,
@@ -81,6 +82,27 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       isDraggingPastedImage,
       setIsDraggingPastedImage
     });
+
+    // Calculate actual canvas display size for overlay positioning
+    useEffect(() => {
+      if (!ref || typeof ref === 'function' || !ref.current) return;
+      
+      const updateCanvasSize = () => {
+        const canvas = ref.current;
+        if (!canvas) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        setCanvasDisplaySize({
+          width: rect.width,
+          height: rect.height
+        });
+      };
+      
+      updateCanvasSize();
+      window.addEventListener('resize', updateCanvasSize);
+      
+      return () => window.removeEventListener('resize', updateCanvasSize);
+    }, [ref]);
 
     // Render pasted image on canvas
     useEffect(() => {
@@ -153,9 +175,37 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       }
     };
 
+    const getSelectionOverlayStyle = (area: SelectionArea) => {
+      if (!canvasDisplaySize) return {};
+      
+      const scaleX = canvasDisplaySize.width / canvasSize.width;
+      const scaleY = canvasDisplaySize.height / canvasSize.height;
+      
+      return {
+        left: `${area.startX * scaleX}px`,
+        top: `${area.startY * scaleY}px`,
+        width: `${area.width * scaleX}px`,
+        height: `${area.height * scaleY}px`,
+      };
+    };
+
+    const getPastedImageOverlayStyle = (position: Position, imageData: ImageData) => {
+      if (!canvasDisplaySize) return {};
+      
+      const scaleX = canvasDisplaySize.width / canvasSize.width;
+      const scaleY = canvasDisplaySize.height / canvasSize.height;
+      
+      return {
+        left: `${position.x * scaleX}px`,
+        top: `${position.y * scaleY}px`,
+        width: `${imageData.width * scaleX}px`,
+        height: `${imageData.height * scaleY}px`,
+      };
+    };
+
     return (
       <Card className="p-4">
-        <div className="relative">
+        <div className="relative" ref={canvasContainerRef}>
           <CanvasRenderer
             ref={ref}
             canvasSize={canvasSize}
@@ -168,47 +218,32 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
           />
           
           {/* Selection preview overlay - shown while dragging */}
-          {currentTool === 'select' && isDrawing && selectionArea && (
+          {currentTool === 'select' && isDrawing && selectionArea && canvasDisplaySize && (
             <div
               className="absolute border-2 border-dashed border-blue-500 bg-blue-200 bg-opacity-30 pointer-events-none"
-              style={{
-                left: `${(selectionArea.startX / canvasSize.width) * 100}%`,
-                top: `${(selectionArea.startY / canvasSize.height) * 100}%`,
-                width: `${(selectionArea.width / canvasSize.width) * 100}%`,
-                height: `${(selectionArea.height / canvasSize.height) * 100}%`,
-              }}
+              style={getSelectionOverlayStyle(selectionArea)}
             />
           )}
           
           {/* Final selection overlay - shown after selection is made */}
-          {currentTool === 'select' && !isDrawing && selectionArea && (
+          {currentTool === 'select' && !isDrawing && selectionArea && canvasDisplaySize && (
             <div
               className="absolute border-2 border-solid border-blue-600 bg-blue-300 bg-opacity-20 pointer-events-none"
-              style={{
-                left: `${(selectionArea.startX / canvasSize.width) * 100}%`,
-                top: `${(selectionArea.startY / canvasSize.height) * 100}%`,
-                width: `${(selectionArea.width / canvasSize.width) * 100}%`,
-                height: `${(selectionArea.height / canvasSize.height) * 100}%`,
-              }}
+              style={getSelectionOverlayStyle(selectionArea)}
             >
-              <div className="absolute -top-6 left-0 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute -top-6 left-0 bg-blue-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 {Math.round(selectionArea.width)} × {Math.round(selectionArea.height)}
               </div>
             </div>
           )}
 
           {/* Pasted image overlay */}
-          {pastedImagePosition && copiedImageData && (
+          {pastedImagePosition && copiedImageData && canvasDisplaySize && (
             <div
               className={`absolute border-2 border-dashed border-green-500 bg-green-200 bg-opacity-20 pointer-events-none ${isDraggingPastedImage ? 'border-green-600' : ''}`}
-              style={{
-                left: `${(pastedImagePosition.x / canvasSize.width) * 100}%`,
-                top: `${(pastedImagePosition.y / canvasSize.height) * 100}%`,
-                width: `${(copiedImageData.width / canvasSize.width) * 100}%`,
-                height: `${(copiedImageData.height / canvasSize.height) * 100}%`,
-              }}
+              style={getPastedImageOverlayStyle(pastedImagePosition, copiedImageData)}
             >
-              <div className="absolute -top-6 left-0 bg-green-600 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute -top-6 left-0 bg-green-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Pasted - Click to move
               </div>
             </div>
