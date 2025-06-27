@@ -18,13 +18,28 @@ export const SelectionOverlay = ({
     const scaleX = canvasDisplaySize.width / canvasSize.width;
     const scaleY = canvasDisplaySize.height / canvasSize.height;
     
+    // Handle negative width/height by adjusting the position and making dimensions positive
+    const actualStartX = area.width < 0 ? area.startX + area.width : area.startX;
+    const actualStartY = area.height < 0 ? area.startY + area.height : area.startY;
+    const actualWidth = Math.abs(area.width);
+    const actualHeight = Math.abs(area.height);
+    
     return {
-      left: `${area.startX * scaleX}px`,
-      top: `${area.startY * scaleY}px`,
-      width: `${area.width * scaleX}px`,
-      height: `${area.height * scaleY}px`,
+      left: `${actualStartX * scaleX}px`,
+      top: `${actualStartY * scaleY}px`,
+      width: `${actualWidth * scaleX}px`,
+      height: `${actualHeight * scaleY}px`,
     };
   };
+
+  const getDisplayDimensions = (area: SelectionArea) => {
+    return {
+      width: Math.abs(area.width),
+      height: Math.abs(area.height)
+    };
+  };
+
+  const dimensions = getDisplayDimensions(selectionArea);
 
   if (isDrawing) {
     return (
@@ -41,7 +56,7 @@ export const SelectionOverlay = ({
       style={getSelectionOverlayStyle(selectionArea)}
     >
       <div className="absolute -top-6 left-0 bg-blue-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-        {Math.round(selectionArea.width)} × {Math.round(selectionArea.height)}
+        {Math.round(dimensions.width)} × {Math.round(dimensions.height)}
       </div>
     </div>
   );

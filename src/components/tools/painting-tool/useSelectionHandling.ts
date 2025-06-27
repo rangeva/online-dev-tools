@@ -1,4 +1,3 @@
-
 import { useCallback } from "react";
 import { Position, SelectionArea } from "./usePaintingTool";
 
@@ -45,11 +44,13 @@ export const useSelectionHandling = ({
       const height = currentPosition.y - shapeStartPosition.y;
       
       if (setSelectionArea) {
+        // Keep the original start position and let width/height be signed
+        // This allows the selection box to grow in any direction from the start point
         const newSelection = {
-          startX: Math.min(shapeStartPosition.x, currentPosition.x),
-          startY: Math.min(shapeStartPosition.y, currentPosition.y),
-          width: Math.abs(width),
-          height: Math.abs(height)
+          startX: shapeStartPosition.x,
+          startY: shapeStartPosition.y,
+          width: width,
+          height: height
         };
         console.log('Setting selection area:', newSelection);
         setSelectionArea(newSelection);
