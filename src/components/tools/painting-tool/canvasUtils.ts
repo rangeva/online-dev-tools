@@ -1,6 +1,7 @@
 
 import { RefObject } from "react";
-import { CanvasSize, SelectionArea } from "./useCanvasState";
+import { CanvasSize } from "./useCanvasState";
+import { SelectionArea } from "./useSelectionTool";
 
 export const clearCanvas = (
   canvasRef: RefObject<HTMLCanvasElement>,
