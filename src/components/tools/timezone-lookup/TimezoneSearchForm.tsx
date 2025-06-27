@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import USStatesDropdown from './USStatesDropdown';
+import CitiesDropdown from './CitiesDropdown';
+import { useState } from 'react';
 
 interface TimezoneSearchFormProps {
   searchQuery: string;
@@ -18,13 +20,26 @@ const TimezoneSearchForm = ({
   onSearch,
   isLoading
 }: TimezoneSearchFormProps) => {
+  const [selectedState, setSelectedState] = useState("");
+
   const handleStateSelect = (state: string) => {
+    setSelectedState(state);
     onSearchQueryChange(state);
+  };
+
+  const handleCitySelect = (cityWithState: string) => {
+    onSearchQueryChange(cityWithState);
   };
 
   return (
     <div className="space-y-4">
       <USStatesDropdown onStateSelect={handleStateSelect} isLoading={isLoading} />
+      
+      <CitiesDropdown 
+        selectedState={selectedState}
+        onCitySelect={handleCitySelect}
+        isLoading={isLoading}
+      />
       
       <div className="flex gap-2">
         <div className="flex-1">
