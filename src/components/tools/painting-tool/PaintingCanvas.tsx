@@ -1,5 +1,4 @@
-
-import { forwardRef, useEffect, useCallback, useState } from "react";
+import { forwardRef, useEffect, useCallback, useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { BrushSettings, CanvasSize, Position, Tool } from "./usePaintingTool";
 
@@ -20,6 +19,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
   ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState, onColorPicked }, ref) => {
     
     const [shapeStartPosition, setShapeStartPosition] = useState<Position | null>(null);
+    const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
     const getCanvasCoordinates = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return { x: 0, y: 0 };
@@ -102,6 +102,66 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       ctx.globalAlpha = 1;
     }, [brushSettings, currentColor]);
 
+    const drawShapePreview = useCallback((start: Position, end: Position, shape: Tool) => {
+      const previewCanvas = previewCanvasRef.current;
+      if (!previewCanvas) return;
+      
+      const ctx = previewCanvas.getContext('2d');
+      if (!ctx) return;
+      
+      // Clear preview canvas
+      ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      
+      // Set preview style (lighter/dashed)
+      ctx.globalAlpha = 0.7;
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = brushSettings.size;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.setLineDash([5, 5]); // Dashed line for preview
+      
+      ctx.beginPath();
+      
+      switch (shape) {
+        case 'rectangle':
+          const width = end.x - start.x;
+          const height = end.y - start.y;
+          ctx.rect(start.x, start.y, width, height);
+          break;
+        case 'circle':
+          const radius = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+          ctx.arc(start.x, start.y, radius, 0, 2 * Math.PI);
+          break;
+        case 'line':
+          ctx.moveTo(start.x, start.y);
+          ctx.lineTo(end.x, end.y);
+          break;
+        case 'polygon':
+          // Simple triangle for now
+          ctx.moveTo(start.x, start.y);
+          ctx.lineTo(end.x, end.y);
+          ctx.lineTo(start.x - (end.x - start.x), end.y);
+          ctx.closePath();
+          break;
+      }
+      
+      ctx.stroke();
+      
+      // Reset styles
+      ctx.globalAlpha = 1;
+      ctx.setLineDash([]);
+    }, [currentColor, brushSettings.size]);
+
+    const clearShapePreview = useCallback(() => {
+      const previewCanvas = previewCanvasRef.current;
+      if (!previewCanvas) return;
+      
+      const ctx = previewCanvas.getContext('2d');
+      if (!ctx) return;
+      
+      ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+    }, []);
+
     const pickColor = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
       const imageData = ctx.getImageData(Math.floor(position.x), Math.floor(position.y), 1, 1);
       const [r, g, b, a] = imageData.data;
@@ -172,9 +232,11 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
         setLastPosition(currentPosition);
       }
       
-      // For shape tools, we don't draw during mouse move to avoid multiple overlapping shapes
-      // The actual shape will be drawn on mouse up
-    }, [isDrawing, lastPosition, ref, getCanvasCoordinates, currentTool, drawLine, setLastPosition]);
+      // Handle shape preview
+      if (isShapeTool(currentTool) && shapeStartPosition) {
+        drawShapePreview(shapeStartPosition, currentPosition, currentTool);
+      }
+    }, [isDrawing, lastPosition, ref, getCanvasCoordinates, currentTool, drawLine, setLastPosition, isShapeTool, shapeStartPosition, drawShapePreview]);
 
     const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!isDrawing) return;
@@ -190,19 +252,21 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       
       // Draw shape if using a shape tool
       if (isShapeTool(currentTool) && shapeStartPosition) {
+        clearShapePreview(); // Clear the preview
         drawShape(shapeStartPosition, currentPosition, ctx, currentTool);
         setShapeStartPosition(null);
       }
       
       setIsDrawing(false);
       setLastPosition(null);
-    }, [isDrawing, ref, getCanvasCoordinates, currentTool, isShapeTool, shapeStartPosition, drawShape, setIsDrawing, setLastPosition]);
+    }, [isDrawing, ref, getCanvasCoordinates, currentTool, isShapeTool, shapeStartPosition, drawShape, setIsDrawing, setLastPosition, clearShapePreview]);
 
     const handleMouseLeave = useCallback(() => {
       setIsDrawing(false);
       setLastPosition(null);
       setShapeStartPosition(null);
-    }, [setIsDrawing, setLastPosition]);
+      clearShapePreview(); // Clear preview when mouse leaves
+    }, [setIsDrawing, setLastPosition, clearShapePreview]);
 
     // Initialize canvas
     useEffect(() => {
@@ -221,6 +285,16 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       ctx.fillStyle = 'white';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }, [ref, canvasSize]);
+
+    // Initialize preview canvas
+    useEffect(() => {
+      const previewCanvas = previewCanvasRef.current;
+      if (!previewCanvas) return;
+      
+      // Set preview canvas size to match main canvas
+      previewCanvas.width = canvasSize.width;
+      previewCanvas.height = canvasSize.height;
+    }, [canvasSize]);
 
     const getCursorStyle = () => {
       switch (currentTool) {
@@ -243,19 +317,30 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
     return (
       <Card className="p-4">
         <div className="flex justify-center">
-          <canvas
-            ref={ref}
-            className="border border-gray-300 rounded-lg"
-            style={{ 
-              maxWidth: '100%', 
-              maxHeight: '70vh',
-              cursor: getCursorStyle()
-            }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-          />
+          <div className="relative">
+            <canvas
+              ref={ref}
+              className="border border-gray-300 rounded-lg"
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '70vh',
+                cursor: getCursorStyle()
+              }}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+            />
+            {/* Preview canvas overlay */}
+            <canvas
+              ref={previewCanvasRef}
+              className="absolute top-0 left-0 pointer-events-none"
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '70vh'
+              }}
+            />
+          </div>
         </div>
         {currentTool === 'eyedropper' && (
           <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
