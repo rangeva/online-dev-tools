@@ -15,7 +15,7 @@ interface CanvasRendererProps {
 export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>(
   ({ canvasSize, currentTool, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, previewCanvasRef }, ref) => {
     
-    // Initialize canvas
+    // Initialize canvas only once
     useEffect(() => {
       if (!ref || typeof ref === 'function') return;
       const canvas = ref.current;
@@ -24,13 +24,49 @@ export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      // Set canvas size
-      canvas.width = canvasSize.width;
-      canvas.height = canvasSize.height;
+      // Only initialize if canvas is empty (first time setup)
+      if (canvas.width === 0 || canvas.height === 0) {
+        canvas.width = canvasSize.width;
+        canvas.height = canvasSize.height;
+        
+        // Initialize with white background only for new canvas
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    }, [ref]); // Only run when ref changes, not when canvasSize changes
+
+    // Handle canvas size changes without clearing content
+    useEffect(() => {
+      if (!ref || typeof ref === 'function') return;
+      const canvas = ref.current;
+      if (!canvas) return;
       
-      // Initialize with white background
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Only update size if it's different (avoid unnecessary updates)
+      if (canvas.width !== canvasSize.width || canvas.height !== canvasSize.height) {
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        // Save current content before resizing
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // Update canvas size
+        canvas.width = canvasSize.width;
+        canvas.height = canvasSize.height;
+        
+        // Only restore if we had content before
+        if (imageData.data.some(pixel => pixel !== 0)) {
+          // Fill with white background first
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Restore previous content
+          ctx.putImageData(imageData, 0, 0);
+        } else {
+          // If no content, just fill with white
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+      }
     }, [ref, canvasSize]);
 
     const getCursorStyle = () => {
