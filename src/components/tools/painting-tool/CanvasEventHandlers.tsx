@@ -1,10 +1,10 @@
 
-import { useCallback, RefObject } from "react";
+import { useCallback, RefObject, ForwardedRef } from "react";
 import { Position, Tool, BrushSettings } from "./usePaintingTool";
 import { useCanvasDrawingLogic } from "./CanvasDrawingLogic";
 
 interface CanvasEventHandlersProps {
-  canvasRef: RefObject<HTMLCanvasElement>;
+  canvasRef: ForwardedRef<HTMLCanvasElement>;
   currentTool: Tool;
   brushSettings: BrushSettings;
   currentColor: string;
@@ -45,10 +45,14 @@ export const useCanvasEventHandlers = ({
     currentColor
   });
 
+  const getCanvas = useCallback(() => {
+    if (!canvasRef) return null;
+    if (typeof canvasRef === 'function') return null;
+    return canvasRef.current;
+  }, [canvasRef]);
+
   const getCanvasCoordinates = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef || typeof canvasRef === 'function') return { x: 0, y: 0 };
-    
-    const canvas = canvasRef.current;
+    const canvas = getCanvas();
     if (!canvas) return { x: 0, y: 0 };
     
     const rect = canvas.getBoundingClientRect();
@@ -59,7 +63,7 @@ export const useCanvasEventHandlers = ({
       x: (e.clientX - rect.left) * scaleX,
       y: (e.clientY - rect.top) * scaleY
     };
-  }, [canvasRef]);
+  }, [getCanvas]);
 
   const previewColor = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
     const color = pickColor(position, ctx);
@@ -69,8 +73,7 @@ export const useCanvasEventHandlers = ({
   }, [pickColor, onColorPreview]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef || typeof canvasRef === 'function') return;
-    const canvas = canvasRef.current;
+    const canvas = getCanvas();
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -101,11 +104,10 @@ export const useCanvasEventHandlers = ({
       ctx.fill();
       ctx.globalAlpha = 1;
     }
-  }, [canvasRef, getCanvasCoordinates, currentTool, pickColor, onColorPicked, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor, isShapeTool, setShapeStartPosition]);
+  }, [getCanvas, getCanvasCoordinates, currentTool, pickColor, onColorPicked, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor, isShapeTool, setShapeStartPosition]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef || typeof canvasRef === 'function') return;
-    const canvas = canvasRef.current;
+    const canvas = getCanvas();
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -131,13 +133,12 @@ export const useCanvasEventHandlers = ({
     if (isShapeTool(currentTool) && shapeStartPosition) {
       drawShapePreview(shapeStartPosition, currentPosition, currentTool);
     }
-  }, [isDrawing, lastPosition, canvasRef, getCanvasCoordinates, currentTool, previewColor, drawLine, setLastPosition, isShapeTool, shapeStartPosition, drawShapePreview]);
+  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, previewColor, drawLine, setLastPosition, isShapeTool, shapeStartPosition, drawShapePreview]);
 
   const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     
-    if (!canvasRef || typeof canvasRef === 'function') return;
-    const canvas = canvasRef.current;
+    const canvas = getCanvas();
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -154,7 +155,7 @@ export const useCanvasEventHandlers = ({
     
     setIsDrawing(false);
     setLastPosition(null);
-  }, [isDrawing, canvasRef, getCanvasCoordinates, currentTool, isShapeTool, shapeStartPosition, drawShape, setIsDrawing, setLastPosition, clearShapePreview]);
+  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, isShapeTool, shapeStartPosition, drawShape, setIsDrawing, setLastPosition, clearShapePreview]);
 
   const handleMouseLeave = useCallback(() => {
     setIsDrawing(false);

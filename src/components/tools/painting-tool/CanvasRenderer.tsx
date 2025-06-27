@@ -1,5 +1,5 @@
 
-import { forwardRef, useEffect } from "react";
+import { forwardRef, useEffect, ForwardedRef } from "react";
 import { CanvasSize, Tool } from "./usePaintingTool";
 
 interface CanvasRendererProps {
