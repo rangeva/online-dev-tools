@@ -16,6 +16,7 @@ import { usePaintingTool } from "./painting-tool/usePaintingTool";
 const PaintingDrawingTool = () => {
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [previewColor, setPreviewColor] = useState<string | null>(null);
   
   const {
     currentTool,
@@ -47,6 +48,10 @@ const PaintingDrawingTool = () => {
       title: "Color Picked",
       description: `Selected color: ${color}`,
     });
+  };
+
+  const handleColorPreview = (color: string | null) => {
+    setPreviewColor(color);
   };
 
   return (
@@ -100,6 +105,7 @@ const PaintingDrawingTool = () => {
                     canvasRef={canvasRef}
                     currentTool={currentTool}
                     onToolChange={setCurrentTool}
+                    previewColor={previewColor}
                   />
                 </TabsContent>
                 
@@ -134,6 +140,7 @@ const PaintingDrawingTool = () => {
                 setLastPosition={setLastPosition}
                 saveCanvasState={saveCanvasState}
                 onColorPicked={handleColorPicked}
+                onColorPreview={handleColorPreview}
               />
             </div>
           </div>

@@ -1,8 +1,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Palette } from "lucide-react";
+import { Palette, Pipette } from "lucide-react";
 import { RefObject } from "react";
 import { ColorPalette } from "./ColorPalette";
 import { CurrentColorDisplay } from "./CurrentColorDisplay";
@@ -16,6 +17,7 @@ interface ColorPanelProps {
   canvasRef: RefObject<HTMLCanvasElement>;
   currentTool: Tool;
   onToolChange: (tool: Tool) => void;
+  previewColor?: string;
 }
 
 export const ColorPanel = ({ 
@@ -23,7 +25,8 @@ export const ColorPanel = ({
   onColorChange, 
   canvasRef, 
   currentTool, 
-  onToolChange 
+  onToolChange,
+  previewColor 
 }: ColorPanelProps) => {
   const handleColorChange = (color: string) => {
     onColorChange(color);
@@ -31,6 +34,10 @@ export const ColorPanel = ({
     if (currentTool !== 'eyedropper') {
       onToolChange('brush');
     }
+  };
+
+  const handleEyedropper = () => {
+    onToolChange('eyedropper');
   };
 
   return (
@@ -44,6 +51,31 @@ export const ColorPanel = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
+        {/* Eyedropper Tool */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Eyedropper Tool</Label>
+          <Button 
+            onClick={handleEyedropper} 
+            variant={currentTool === 'eyedropper' ? "default" : "outline"} 
+            className="w-full"
+          >
+            <Pipette className="w-4 h-4 mr-2" />
+            {currentTool === 'eyedropper' ? 'Eyedropper Active' : 'Activate Eyedropper'}
+          </Button>
+          {currentTool === 'eyedropper' && previewColor && (
+            <div className="space-y-1">
+              <div className="text-xs text-gray-600 dark:text-gray-400">Preview:</div>
+              <div 
+                className="w-full h-6 border rounded-md shadow-inner"
+                style={{ backgroundColor: previewColor }}
+              />
+              <div className="text-xs text-center font-mono text-gray-600 dark:text-gray-400">
+                {previewColor.toUpperCase()}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Color Preview */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">Selected Color</Label>

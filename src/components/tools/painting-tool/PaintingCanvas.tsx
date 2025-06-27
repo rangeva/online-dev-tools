@@ -13,10 +13,11 @@ interface PaintingCanvasProps {
   setLastPosition: (position: Position | null) => void;
   saveCanvasState: () => void;
   onColorPicked: (color: string) => void;
+  onColorPreview?: (color: string | null) => void;
 }
 
 export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>(
-  ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState, onColorPicked }, ref) => {
+  ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState, onColorPicked, onColorPreview }, ref) => {
     
     const [shapeStartPosition, setShapeStartPosition] = useState<Position | null>(null);
     const previewCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -169,9 +170,17 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       // Only pick color if the pixel has some opacity
       if (a > 0) {
         const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-        onColorPicked(hex);
+        return hex;
       }
-    }, [onColorPicked]);
+      return null;
+    }, []);
+
+    const previewColor = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
+      const color = pickColor(position, ctx);
+      if (onColorPreview) {
+        onColorPreview(color);
+      }
+    }, [pickColor, onColorPreview]);
 
     const isShapeTool = (tool: Tool) => {
       return ['rectangle', 'circle', 'line', 'polygon'].includes(tool);
@@ -188,7 +197,10 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       const position = getCanvasCoordinates(e);
       
       if (currentTool === 'eyedropper') {
-        pickColor(position, ctx);
+        const color = pickColor(position, ctx);
+        if (color) {
+          onColorPicked(color);
+        }
         return;
       }
       
@@ -207,7 +219,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
         ctx.fill();
         ctx.globalAlpha = 1;
       }
-    }, [ref, getCanvasCoordinates, currentTool, pickColor, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor, isShapeTool]);
+    }, [ref, getCanvasCoordinates, currentTool, pickColor, onColorPicked, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor, isShapeTool]);
 
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return;
@@ -221,6 +233,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       
       // Handle eyedropper hover preview
       if (currentTool === 'eyedropper') {
+        previewColor(currentPosition, ctx);
         return;
       }
       
@@ -236,7 +249,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       if (isShapeTool(currentTool) && shapeStartPosition) {
         drawShapePreview(shapeStartPosition, currentPosition, currentTool);
       }
-    }, [isDrawing, lastPosition, ref, getCanvasCoordinates, currentTool, drawLine, setLastPosition, isShapeTool, shapeStartPosition, drawShapePreview]);
+    }, [isDrawing, lastPosition, ref, getCanvasCoordinates, currentTool, previewColor, drawLine, setLastPosition, isShapeTool, shapeStartPosition, drawShapePreview]);
 
     const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!isDrawing) return;
@@ -266,7 +279,12 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       setLastPosition(null);
       setShapeStartPosition(null);
       clearShapePreview(); // Clear preview when mouse leaves
-    }, [setIsDrawing, setLastPosition, clearShapePreview]);
+      
+      // Clear color preview when mouse leaves
+      if (currentTool === 'eyedropper' && onColorPreview) {
+        onColorPreview(null);
+      }
+    }, [setIsDrawing, setLastPosition, clearShapePreview, currentTool, onColorPreview]);
 
     // Initialize canvas
     useEffect(() => {
@@ -344,7 +362,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
         </div>
         {currentTool === 'eyedropper' && (
           <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Click anywhere on the canvas to pick a color
+            Hover over the canvas to preview colors, click to select
           </div>
         )}
         {isShapeTool(currentTool) && (
