@@ -10,10 +10,11 @@ interface CanvasRendererProps {
   onMouseUp: (e: React.MouseEvent<HTMLCanvasElement>) => void;
   onMouseLeave: () => void;
   previewCanvasRef: React.RefObject<HTMLCanvasElement>;
+  isDrawing?: boolean;
 }
 
 export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>(
-  ({ canvasSize, currentTool, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, previewCanvasRef }, ref) => {
+  ({ canvasSize, currentTool, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, previewCanvasRef, isDrawing = false }, ref) => {
     
     // Initialize canvas only once
     useEffect(() => {
@@ -77,6 +78,9 @@ export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>
           return 'grab';
         case 'brush':
           return 'crosshair';
+        case 'select':
+          // When dragging, use nw-resize cursor to make the pointer appear at bottom-right
+          return isDrawing ? 'nw-resize' : 'crosshair';
         case 'rectangle':
         case 'circle':
         case 'line':

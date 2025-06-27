@@ -112,6 +112,7 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
           previewCanvasRef={previewCanvasRef}
+          isDrawing={isDrawing}
         />
         
         {/* Selection overlay - show when select tool is active and has selection area */}
