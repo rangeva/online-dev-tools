@@ -1,18 +1,20 @@
 
-import { useState, useEffect, RefObject } from "react";
+import { useState, useEffect, ForwardedRef } from "react";
 
 interface CanvasDisplaySize {
   width: number;
   height: number;
 }
 
-export const useCanvasDisplaySize = (canvasRef: RefObject<HTMLCanvasElement>) => {
+export const useCanvasDisplaySize = (canvasRef: ForwardedRef<HTMLCanvasElement>) => {
   const [canvasDisplaySize, setCanvasDisplaySize] = useState<CanvasDisplaySize | null>(null);
 
   useEffect(() => {
-    if (!canvasRef || typeof canvasRef === 'function' || !canvasRef.current) return;
+    if (!canvasRef || typeof canvasRef === 'function') return;
+    if (!canvasRef.current) return;
     
     const updateCanvasSize = () => {
+      if (!canvasRef || typeof canvasRef === 'function') return;
       const canvas = canvasRef.current;
       if (!canvas) return;
       

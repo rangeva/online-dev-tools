@@ -1,9 +1,9 @@
 
-import { useEffect, RefObject } from "react";
+import { useEffect, ForwardedRef } from "react";
 import { Position } from "./usePaintingTool";
 
 interface UsePastedImageRendererProps {
-  canvasRef: RefObject<HTMLCanvasElement>;
+  canvasRef: ForwardedRef<HTMLCanvasElement>;
   pastedImagePosition: Position | null;
   copiedImageData: ImageData | null;
 }
@@ -14,7 +14,8 @@ export const usePastedImageRenderer = ({
   copiedImageData
 }: UsePastedImageRendererProps) => {
   useEffect(() => {
-    if (!canvasRef || typeof canvasRef === 'function' || !canvasRef.current) return;
+    if (!canvasRef || typeof canvasRef === 'function') return;
+    if (!canvasRef.current) return;
     if (!pastedImagePosition || !copiedImageData) return;
     
     const canvas = canvasRef.current;
