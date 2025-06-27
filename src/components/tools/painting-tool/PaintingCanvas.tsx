@@ -1,5 +1,5 @@
 
-import { forwardRef, useEffect, useCallback } from "react";
+import { forwardRef, useEffect, useCallback, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { BrushSettings, CanvasSize, Position, Tool } from "./usePaintingTool";
 
@@ -19,6 +19,8 @@ interface PaintingCanvasProps {
 export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>(
   ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState, onColorPicked }, ref) => {
     
+    const [shapeStartPosition, setShapeStartPosition] = useState<Position | null>(null);
+
     const getCanvasCoordinates = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return { x: 0, y: 0 };
       
@@ -64,15 +66,20 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
     }, [currentTool, brushSettings, currentColor]);
 
     const drawShape = useCallback((start: Position, end: Position, ctx: CanvasRenderingContext2D, shape: Tool) => {
+      ctx.globalCompositeOperation = 'source-over';
       ctx.globalAlpha = brushSettings.opacity;
       ctx.strokeStyle = currentColor;
       ctx.lineWidth = brushSettings.size;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       
       ctx.beginPath();
       
       switch (shape) {
         case 'rectangle':
-          ctx.rect(start.x, start.y, end.x - start.x, end.y - start.y);
+          const width = end.x - start.x;
+          const height = end.y - start.y;
+          ctx.rect(start.x, start.y, width, height);
           break;
         case 'circle':
           const radius = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
@@ -81,6 +88,13 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
         case 'line':
           ctx.moveTo(start.x, start.y);
           ctx.lineTo(end.x, end.y);
+          break;
+        case 'polygon':
+          // Simple triangle for now
+          ctx.moveTo(start.x, start.y);
+          ctx.lineTo(end.x, end.y);
+          ctx.lineTo(start.x - (end.x - start.x), end.y);
+          ctx.closePath();
           break;
       }
       
@@ -98,6 +112,10 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
         onColorPicked(hex);
       }
     }, [onColorPicked]);
+
+    const isShapeTool = (tool: Tool) => {
+      return ['rectangle', 'circle', 'line', 'polygon'].includes(tool);
+    };
 
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return;
@@ -118,7 +136,9 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       setIsDrawing(true);
       setLastPosition(position);
       
-      if (currentTool === 'brush' || currentTool === 'eraser') {
+      if (isShapeTool(currentTool)) {
+        setShapeStartPosition(position);
+      } else if (currentTool === 'brush' || currentTool === 'eraser') {
         ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
         ctx.globalAlpha = brushSettings.opacity;
         ctx.fillStyle = currentColor;
@@ -127,7 +147,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
         ctx.fill();
         ctx.globalAlpha = 1;
       }
-    }, [ref, getCanvasCoordinates, currentTool, pickColor, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor]);
+    }, [ref, getCanvasCoordinates, currentTool, pickColor, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor, isShapeTool]);
 
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return;
@@ -141,22 +161,47 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       
       // Handle eyedropper hover preview
       if (currentTool === 'eyedropper') {
-        // You could add hover preview functionality here
         return;
       }
       
       if (!isDrawing || !lastPosition) return;
       
+      // Handle brush and eraser tools
       if (currentTool === 'brush' || currentTool === 'eraser') {
         drawLine(lastPosition, currentPosition, ctx);
+        setLastPosition(currentPosition);
       }
       
-      setLastPosition(currentPosition);
+      // For shape tools, we don't draw during mouse move to avoid multiple overlapping shapes
+      // The actual shape will be drawn on mouse up
     }, [isDrawing, lastPosition, ref, getCanvasCoordinates, currentTool, drawLine, setLastPosition]);
 
-    const handleMouseUp = useCallback(() => {
+    const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!isDrawing) return;
+      
+      if (!ref || typeof ref === 'function') return;
+      const canvas = ref.current;
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      const currentPosition = getCanvasCoordinates(e);
+      
+      // Draw shape if using a shape tool
+      if (isShapeTool(currentTool) && shapeStartPosition) {
+        drawShape(shapeStartPosition, currentPosition, ctx, currentTool);
+        setShapeStartPosition(null);
+      }
+      
       setIsDrawing(false);
       setLastPosition(null);
+    }, [isDrawing, ref, getCanvasCoordinates, currentTool, isShapeTool, shapeStartPosition, drawShape, setIsDrawing, setLastPosition]);
+
+    const handleMouseLeave = useCallback(() => {
+      setIsDrawing(false);
+      setLastPosition(null);
+      setShapeStartPosition(null);
     }, [setIsDrawing, setLastPosition]);
 
     // Initialize canvas
@@ -185,6 +230,11 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
           return 'grab';
         case 'brush':
           return 'crosshair';
+        case 'rectangle':
+        case 'circle':
+        case 'line':
+        case 'polygon':
+          return 'crosshair';
         default:
           return 'crosshair';
       }
@@ -204,12 +254,17 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
           />
         </div>
         {currentTool === 'eyedropper' && (
           <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
             Click anywhere on the canvas to pick a color
+          </div>
+        )}
+        {isShapeTool(currentTool) && (
+          <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            Click and drag to draw a {currentTool}
           </div>
         )}
       </Card>
