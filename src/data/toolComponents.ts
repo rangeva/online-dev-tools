@@ -59,6 +59,7 @@ import MarkdownToHtmlConverter from "@/components/tools/MarkdownToHtmlConverter"
 import RandomPhoneGenerator from "@/components/tools/RandomPhoneGenerator";
 import RandomEmailGenerator from "@/components/tools/RandomEmailGenerator";
 import TemperatureConverter from "@/components/tools/TemperatureConverter";
+import CredentialFormatDetector from "@/components/tools/CredentialFormatDetector";
 
 export const toolComponents = {
   WordCounter,
@@ -119,5 +120,6 @@ export const toolComponents = {
   MarkdownToHtmlConverter,
   RandomPhoneGenerator,
   RandomEmailGenerator,
-  TemperatureConverter
+  TemperatureConverter,
+  CredentialFormatDetector
 };

@@ -2,7 +2,8 @@
 import { 
   Hash,
   Shield,
-  Key
+  Key,
+  Search
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -34,5 +35,14 @@ export const securityTools: Tool[] = [
     icon: Key,
     component: toolComponents.StrongPasswordGenerator,
     tags: ["password", "generator", "security", "qr", "strong", "secure"]
+  },
+  {
+    id: "credential-format-detector",
+    name: "Credential Format Detector",
+    description: "Analyze passwords and credentials to detect their format: plaintext, hashed, encrypted, or encoded",
+    category: "security",
+    icon: Search,
+    component: toolComponents.CredentialFormatDetector,
+    tags: ["password", "credential", "hash", "security", "analysis", "detector", "format"]
   }
 ];
