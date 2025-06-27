@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Resize, Crop } from "lucide-react";
+import { Move, Crop } from "lucide-react";
 import { CanvasSize, SelectionArea } from "./usePaintingTool";
 import { useState } from "react";
 
@@ -38,7 +38,7 @@ export const ResizeCropPanel = ({
     <Card>
       <CardHeader>
         <CardTitle className="text-sm flex items-center gap-2">
-          <Resize className="w-4 h-4" />
+          <Move className="w-4 h-4" />
           Resize & Crop
         </CardTitle>
       </CardHeader>
@@ -46,7 +46,7 @@ export const ResizeCropPanel = ({
         {/* Resize Section */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Resize className="w-4 h-4" />
+            <Move className="w-4 h-4" />
             <span className="text-sm font-medium">Resize Canvas</span>
           </div>
           
@@ -82,7 +82,7 @@ export const ResizeCropPanel = ({
           </div>
 
           <Button onClick={handleResize} size="sm" className="w-full">
-            <Resize className="w-4 h-4 mr-2" />
+            <Move className="w-4 h-4 mr-2" />
             Apply Resize
           </Button>
         </div>

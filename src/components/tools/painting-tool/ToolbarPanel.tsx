@@ -1,9 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool } from "./usePaintingTool";
-import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown, RectangleSelect, Type, Crop, Resize, Copy, Scissors } from "lucide-react";
+import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown, Square, Type, Crop, Move, Copy, Scissors } from "lucide-react";
 
 interface ToolbarPanelProps {
   currentTool: Tool;
@@ -36,10 +35,10 @@ export const ToolbarPanel = ({
     { tool: 'brush' as Tool, name: 'Brush', icon: Brush },
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
     { tool: 'eyedropper' as Tool, name: 'Eyedropper', icon: Pipette },
-    { tool: 'select' as Tool, name: 'Select', icon: RectangleSelect },
+    { tool: 'select' as Tool, name: 'Select', icon: Square },
     { tool: 'text' as Tool, name: 'Text', icon: Type },
     { tool: 'crop' as Tool, name: 'Crop', icon: Crop },
-    { tool: 'resize' as Tool, name: 'Resize', icon: Resize },
+    { tool: 'resize' as Tool, name: 'Resize', icon: Move },
   ];
 
   const exportFormats = [
