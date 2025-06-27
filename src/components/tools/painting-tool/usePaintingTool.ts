@@ -96,7 +96,7 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
     });
 
   const handleUploadImage = (file: File) => 
-    uploadImage(file, canvasRef, saveCanvasState, (message) => {
+    uploadImage(file, canvasRef, saveCanvasState, setCanvasSize, (message) => {
       toast({ title: "Image Uploaded", description: message });
     });
 

@@ -151,6 +151,7 @@ export const uploadImage = (
   file: File,
   canvasRef: RefObject<HTMLCanvasElement>,
   saveCanvasState: () => void,
+  setCanvasSize: (size: CanvasSize) => void,
   onSuccess: (message: string) => void
 ) => {
   if (!canvasRef.current) return;
@@ -175,21 +176,21 @@ export const uploadImage = (
         newHeight = Math.round(newWidth * aspectRatio);
       }
       
-      // Create a temporary canvas for resizing
-      const tempCanvas = document.createElement('canvas');
-      const tempCtx = tempCanvas.getContext('2d');
-      if (!tempCtx) return;
+      // Resize canvas to match image dimensions
+      canvas.width = newWidth;
+      canvas.height = newHeight;
       
-      tempCanvas.width = newWidth;
-      tempCanvas.height = newHeight;
+      // Update canvas size state
+      setCanvasSize({ width: newWidth, height: newHeight });
       
-      // Draw resized image to temp canvas
-      tempCtx.drawImage(img, 0, 0, newWidth, newHeight);
+      // Fill with white background
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Draw the resized image to the main canvas
-      ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+      // Draw the image to fit the canvas
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
       
-      onSuccess(`Image has been loaded onto the canvas${newWidth !== img.width || newHeight !== img.height ? ` and resized to ${newWidth}x${newHeight}` : ''}.`);
+      onSuccess(`Image has been loaded and canvas resized to ${newWidth}x${newHeight}${newWidth !== img.width || newHeight !== img.height ? ' (resized from original)' : ''}.`);
     };
     img.src = e.target?.result as string;
   };
