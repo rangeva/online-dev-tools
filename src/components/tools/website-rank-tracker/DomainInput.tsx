@@ -33,7 +33,7 @@ const DomainInput = ({
       <CardHeader>
         <CardTitle>Domain Input</CardTitle>
         <CardDescription>
-          Enter website domains to compare (e.g., example.com or https://www.example.com)
+          Enter website domains to compare (e.g., example.com or https://www.example.com). You can compare up to 2 domains.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -67,7 +67,7 @@ const DomainInput = ({
         ))}
         
         <div className="flex gap-2">
-          {domains.length < 4 && (
+          {domains.length < 2 && (
             <Button 
               variant="outline" 
               onClick={onAddDomain}

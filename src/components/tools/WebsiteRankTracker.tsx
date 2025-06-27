@@ -13,7 +13,7 @@ const WebsiteRankTracker = () => {
   const [error, setError] = useState<string | null>(null);
 
   const addDomainInput = () => {
-    if (domains.length < 4) {
+    if (domains.length < 2) {
       setDomains([...domains, ""]);
     }
   };
@@ -65,7 +65,7 @@ const WebsiteRankTracker = () => {
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">Website Rank Tracker</h2>
         <p className="text-muted-foreground">
-          Track and compare website rankings over time using Tranco data. Add up to 4 domains for comparison.
+          Track and compare website rankings over time using Tranco data. Compare up to 2 domains side by side.
         </p>
       </div>
 
