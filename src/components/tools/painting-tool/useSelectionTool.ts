@@ -19,6 +19,42 @@ export const useSelectionTool = () => {
   const [selectionArea, setSelectionArea] = useState<SelectionArea | null>(null);
   const [copiedImageData, setCopiedImageData] = useState<ImageData | null>(null);
 
+  const copyToClipboard = useCallback(async (canvas: HTMLCanvasElement, area: SelectionArea) => {
+    try {
+      // Create a temporary canvas with just the selected area
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = Math.round(area.width);
+      tempCanvas.height = Math.round(area.height);
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      if (!tempCtx) return;
+      
+      // Draw the selected area to the temporary canvas
+      tempCtx.drawImage(
+        canvas,
+        Math.round(area.startX), Math.round(area.startY), 
+        Math.round(area.width), Math.round(area.height),
+        0, 0, 
+        Math.round(area.width), Math.round(area.height)
+      );
+      
+      // Convert to blob and copy to clipboard
+      tempCanvas.toBlob(async (blob) => {
+        if (blob && navigator.clipboard && navigator.clipboard.write) {
+          try {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': blob })
+            ]);
+          } catch (error) {
+            console.log('Clipboard write failed, fallback to internal copy only');
+          }
+        }
+      });
+    } catch (error) {
+      console.log('Clipboard operation failed, using internal copy only');
+    }
+  }, []);
+
   const copySelection = useCallback((canvasRef: RefObject<HTMLCanvasElement>) => {
     if (!canvasRef.current || !selectionArea) return;
     
@@ -35,11 +71,14 @@ export const useSelectionTool = () => {
     
     setCopiedImageData(imageData);
     
+    // Also copy to system clipboard
+    copyToClipboard(canvas, selectionArea);
+    
     toast({
       title: "Selection Copied",
-      description: "The selected area has been copied and can be pasted.",
+      description: "The selected area has been copied to clipboard and can be pasted.",
     });
-  }, [selectionArea, toast]);
+  }, [selectionArea, toast, copyToClipboard]);
 
   const pasteSelection = useCallback((
     position: Position, 
@@ -73,7 +112,7 @@ export const useSelectionTool = () => {
 
     saveCanvasState();
     
-    // Copy first
+    // Copy first (both internal and clipboard)
     const imageData = ctx.getImageData(
       Math.round(selectionArea.startX), 
       Math.round(selectionArea.startY), 
@@ -81,6 +120,9 @@ export const useSelectionTool = () => {
       Math.round(selectionArea.height)
     );
     setCopiedImageData(imageData);
+    
+    // Copy to system clipboard
+    copyToClipboard(canvas, selectionArea);
     
     // Then clear the area
     ctx.fillStyle = 'white';
@@ -95,9 +137,9 @@ export const useSelectionTool = () => {
     
     toast({
       title: "Selection Cut",
-      description: "The selected area has been cut and copied. It can now be pasted.",
+      description: "The selected area has been cut and copied to clipboard.",
     });
-  }, [selectionArea, toast]);
+  }, [selectionArea, toast, copyToClipboard]);
 
   return {
     selectionArea,
