@@ -200,7 +200,7 @@ export const useCanvasEventHandlers = (props: CanvasEventHandlersProps) => {
     }
   }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, handleEyedropperPreview, shapeStartPosition, handlePastedImageMouseMove, isDraggingPastedImage, handleSelectionMouseMove, handleBrushMouseMove, handleShapeMouseMove]);
 
-  const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasCanvas>) => {
+  const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     
     const canvas = getCanvas();
