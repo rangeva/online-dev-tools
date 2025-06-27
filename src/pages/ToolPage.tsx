@@ -23,7 +23,7 @@ const ToolPage = () => {
     "html-color-codes", "qr-code-generator", "wifi-qr-generator", 
     "camera-recorder", "toml-to-json-converter", "toml-to-yaml-converter", "xml-to-json-converter",
     "json-to-xml-converter", "markdown-to-html-converter", "random-phone-generator", "random-email-generator",
-    "temperature-converter", "credential-format-detector", "tokenizer"
+    "temperature-converter", "credential-format-detector", "tokenizer", "website-rank-tracker"
   ];
 
   if (!toolId || !validToolIds.includes(toolId)) {

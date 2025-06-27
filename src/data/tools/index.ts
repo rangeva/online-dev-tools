@@ -8,6 +8,7 @@ import { dataTools } from "./dataTools";
 import { securityTools } from "./securityTools";
 import { generatorTools } from "./generatorTools";
 import { graphicsTools } from "./graphicsTools";
+import { marketingTools } from "./marketingTools";
 import { aiTools } from "./aiTools";
 
 export const allTools = [
@@ -20,6 +21,7 @@ export const allTools = [
   ...securityTools,
   ...generatorTools,
   ...graphicsTools,
+  ...marketingTools,
   ...aiTools
 ];
 
@@ -33,5 +35,6 @@ export {
   securityTools,
   generatorTools,
   graphicsTools,
+  marketingTools,
   aiTools
 };

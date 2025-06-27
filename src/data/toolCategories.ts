@@ -10,7 +10,8 @@ import {
   Zap,
   Eye,
   RefreshCw,
-  Brain
+  Brain,
+  TrendingUp
 } from "lucide-react";
 import { ToolCategory } from "@/types/tools";
 
@@ -25,5 +26,6 @@ export const toolCategories: ToolCategory[] = [
   { id: "security", name: "Security", icon: Shield },
   { id: "generators", name: "Generators", icon: Zap },
   { id: "graphics", name: "Graphics (Image & Video)", icon: Eye },
+  { id: "marketing", name: "Marketing Tools", icon: TrendingUp },
   { id: "ai", name: "AI Tools", icon: Brain }
 ];
