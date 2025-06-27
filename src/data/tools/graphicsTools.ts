@@ -3,7 +3,8 @@ import {
   QrCode,
   Wifi,
   Palette,
-  Camera
+  Camera,
+  Brush
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -53,5 +54,14 @@ export const graphicsTools: Tool[] = [
     icon: Camera,
     component: toolComponents.CameraRecorder,
     tags: ["camera", "webcam", "photo", "video", "record", "capture"]
+  },
+  {
+    id: "painting-drawing-tool",
+    name: "Painting & Drawing Tool",
+    description: "Create digital art with brushes, shapes, and image editing tools. Upload images, draw with various brushes, use color picker, and save your artwork.",
+    category: "graphics",
+    icon: Brush,
+    component: toolComponents.PaintingDrawingTool,
+    tags: ["paint", "draw", "brush", "canvas", "art", "edit", "image", "digital art"]
   }
 ];

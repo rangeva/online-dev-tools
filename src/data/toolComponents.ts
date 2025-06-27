@@ -37,6 +37,7 @@ import HtmlColorCodes from "@/components/tools/HtmlColorCodes";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import WifiQrGenerator from "@/components/tools/WifiQrGenerator";
 import CameraRecorder from "@/components/tools/CameraRecorder";
+import PaintingDrawingTool from "@/components/tools/PaintingDrawingTool";
 import StrongPasswordGenerator from "@/components/tools/StrongPasswordGenerator";
 import DateTimeConverter from "@/components/tools/DateTimeConverter";
 import IntegerBaseConverter from "@/components/tools/IntegerBaseConverter";
@@ -101,6 +102,7 @@ export const toolComponents = {
   QrCodeGenerator,
   WifiQrGenerator,
   CameraRecorder,
+  PaintingDrawingTool,
   StrongPasswordGenerator,
   DateTimeConverter,
   IntegerBaseConverter,
