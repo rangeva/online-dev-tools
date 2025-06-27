@@ -51,10 +51,11 @@ export function SidebarCategoryMenu({
       <ScrollArea className="h-full">
         <div className="p-2">
           <Accordion 
-            type="multiple" 
+            type="single" 
             className="w-full" 
-            value={accordionValue}
-            onValueChange={onAccordionChange}
+            value={accordionValue[0] || ""}
+            onValueChange={(value) => onAccordionChange(value ? [value] : [])}
+            collapsible
           >
             {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
               const category = toolCategories.find(cat => cat.id === categoryId);

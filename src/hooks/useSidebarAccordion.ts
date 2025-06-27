@@ -19,12 +19,12 @@ export function useSidebarAccordion() {
         const state = JSON.parse(decodeURIComponent(savedState.split('=')[1]));
         setAccordionValue(state);
       } catch (error) {
-        // If parsing fails, default to all categories open
-        setAccordionValue(toolCategories.map(cat => cat.id));
+        // If parsing fails, default to all categories closed
+        setAccordionValue([]);
       }
     } else {
-      // Default to all categories open
-      setAccordionValue(toolCategories.map(cat => cat.id));
+      // Default to all categories closed
+      setAccordionValue([]);
     }
   }, []);
 
