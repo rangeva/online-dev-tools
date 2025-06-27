@@ -102,14 +102,61 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
     });
   }, [canvasRef, saveCanvasState, toast]);
 
-  const exportCanvas = useCallback((format: 'png' | 'jpg' = 'png') => {
+  const exportCanvas = useCallback((format: 'png' | 'jpg' | 'gif' | 'bmp' = 'png') => {
     if (!canvasRef.current) return;
     
     const canvas = canvasRef.current;
-    const link = document.createElement('a');
-    link.download = `artwork.${format}`;
-    link.href = canvas.toDataURL(`image/${format}`);
-    link.click();
+    
+    // Convert format to MIME type
+    let mimeType: string;
+    let fileExtension: string;
+    
+    switch (format) {
+      case 'jpg':
+        mimeType = 'image/jpeg';
+        fileExtension = 'jpg';
+        break;
+      case 'gif':
+        mimeType = 'image/gif';
+        fileExtension = 'gif';
+        break;
+      case 'bmp':
+        mimeType = 'image/bmp';
+        fileExtension = 'bmp';
+        break;
+      case 'png':
+      default:
+        mimeType = 'image/png';
+        fileExtension = 'png';
+        break;
+    }
+    
+    // For JPEG, we need to handle transparency by adding a white background
+    if (format === 'jpg') {
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      if (!tempCtx) return;
+      
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      
+      // Fill with white background
+      tempCtx.fillStyle = 'white';
+      tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+      
+      // Draw the original canvas on top
+      tempCtx.drawImage(canvas, 0, 0);
+      
+      const link = document.createElement('a');
+      link.download = `artwork.${fileExtension}`;
+      link.href = tempCanvas.toDataURL(mimeType, 0.9); // 0.9 quality for JPEG
+      link.click();
+    } else {
+      const link = document.createElement('a');
+      link.download = `artwork.${fileExtension}`;
+      link.href = canvas.toDataURL(mimeType);
+      link.click();
+    }
     
     toast({
       title: "Image Exported",

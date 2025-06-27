@@ -54,6 +54,10 @@ const PaintingDrawingTool = () => {
     setPreviewColor(color);
   };
 
+  const handleExport = (format?: 'png' | 'jpg' | 'gif' | 'bmp') => {
+    exportCanvas(format);
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
       <Card>
@@ -77,7 +81,7 @@ const PaintingDrawingTool = () => {
             onUndo={undo}
             onRedo={redo}
             onClear={clearCanvas}
-            onExport={exportCanvas}
+            onExport={handleExport}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

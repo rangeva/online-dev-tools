@@ -1,8 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool } from "./usePaintingTool";
-import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download } from "lucide-react";
+import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown } from "lucide-react";
 
 interface ToolbarPanelProps {
   currentTool: Tool;
@@ -12,7 +13,7 @@ interface ToolbarPanelProps {
   onUndo: () => void;
   onRedo: () => void;
   onClear: () => void;
-  onExport: () => void;
+  onExport: (format?: 'png' | 'jpg' | 'gif' | 'bmp') => void;
 }
 
 export const ToolbarPanel = ({
@@ -29,6 +30,13 @@ export const ToolbarPanel = ({
     { tool: 'brush' as Tool, name: 'Brush', icon: Brush },
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
     { tool: 'eyedropper' as Tool, name: 'Eyedropper', icon: Pipette },
+  ];
+
+  const exportFormats = [
+    { format: 'png' as const, name: 'PNG', description: 'Portable Network Graphics' },
+    { format: 'jpg' as const, name: 'JPG', description: 'JPEG Image' },
+    { format: 'gif' as const, name: 'GIF', description: 'Graphics Interchange Format' },
+    { format: 'bmp' as const, name: 'BMP', description: 'Bitmap Image' },
   ];
 
   return (
@@ -98,16 +106,33 @@ export const ToolbarPanel = ({
           <Trash2 className="w-4 h-4 mr-1.5" />
           Clear
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onExport}
-          title="Export as PNG"
-          className="bg-white dark:bg-gray-800 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400"
-        >
-          <Download className="w-4 h-4 mr-1.5" />
-          Export
-        </Button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              title="Export Canvas"
+              className="bg-white dark:bg-gray-800 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400"
+            >
+              <Download className="w-4 h-4 mr-1.5" />
+              Export
+              <ChevronDown className="w-3 h-3 ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            {exportFormats.map((format) => (
+              <DropdownMenuItem
+                key={format.format}
+                onClick={() => onExport(format.format)}
+                className="flex flex-col items-start gap-1 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+              >
+                <div className="font-medium text-sm">{format.name}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{format.description}</div>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
