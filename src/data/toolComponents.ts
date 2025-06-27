@@ -60,6 +60,7 @@ import RandomPhoneGenerator from "@/components/tools/RandomPhoneGenerator";
 import RandomEmailGenerator from "@/components/tools/RandomEmailGenerator";
 import TemperatureConverter from "@/components/tools/TemperatureConverter";
 import CredentialFormatDetector from "@/components/tools/CredentialFormatDetector";
+import Tokenizer from "@/components/tools/Tokenizer";
 
 export const toolComponents = {
   WordCounter,
@@ -121,5 +122,6 @@ export const toolComponents = {
   RandomPhoneGenerator,
   RandomEmailGenerator,
   TemperatureConverter,
-  CredentialFormatDetector
+  CredentialFormatDetector,
+  Tokenizer
 };

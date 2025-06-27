@@ -8,6 +8,7 @@ import { dataTools } from "./dataTools";
 import { securityTools } from "./securityTools";
 import { generatorTools } from "./generatorTools";
 import { graphicsTools } from "./graphicsTools";
+import { aiTools } from "./aiTools";
 
 export const allTools = [
   ...textTools,
@@ -18,7 +19,8 @@ export const allTools = [
   ...dataTools,
   ...securityTools,
   ...generatorTools,
-  ...graphicsTools
+  ...graphicsTools,
+  ...aiTools
 ];
 
 export {
@@ -30,5 +32,6 @@ export {
   dataTools,
   securityTools,
   generatorTools,
-  graphicsTools
+  graphicsTools,
+  aiTools
 };

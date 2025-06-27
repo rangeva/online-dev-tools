@@ -9,7 +9,8 @@ import {
   Shield,
   Zap,
   Eye,
-  RefreshCw
+  RefreshCw,
+  Brain
 } from "lucide-react";
 import { ToolCategory } from "@/types/tools";
 
@@ -23,5 +24,6 @@ export const toolCategories: ToolCategory[] = [
   { id: "data", name: "Data & Format", icon: Database },
   { id: "security", name: "Security", icon: Shield },
   { id: "generators", name: "Generators", icon: Zap },
-  { id: "graphics", name: "Graphics (Image & Video)", icon: Eye }
+  { id: "graphics", name: "Graphics (Image & Video)", icon: Eye },
+  { id: "ai", name: "AI Tools", icon: Brain }
 ];
