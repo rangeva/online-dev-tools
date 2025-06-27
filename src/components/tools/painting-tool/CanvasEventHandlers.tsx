@@ -1,7 +1,12 @@
 
 import { useCallback, RefObject, ForwardedRef } from "react";
 import { Position, Tool, BrushSettings, SelectionArea } from "./usePaintingTool";
-import { useCanvasDrawingLogic } from "./CanvasDrawingLogic";
+import { useMouseCoordinates } from "./useMouseCoordinates";
+import { useEyedropperTool } from "./useEyedropperTool";
+import { usePastedImageHandling } from "./usePastedImageHandling";
+import { useSelectionHandling } from "./useSelectionHandling";
+import { useBrushHandling } from "./useBrushHandling";
+import { useShapeToolHandling } from "./useShapeToolHandling";
 
 interface CanvasEventHandlersProps {
   canvasRef: ForwardedRef<HTMLCanvasElement>;
@@ -30,74 +35,87 @@ interface CanvasEventHandlersProps {
   setIsDraggingPastedImage?: (dragging: boolean) => void;
 }
 
-export const useCanvasEventHandlers = ({
-  canvasRef,
-  currentTool,
-  brushSettings,
-  currentColor,
-  isDrawing,
-  setIsDrawing,
-  lastPosition,
-  setLastPosition,
-  saveCanvasState,
-  onColorPicked,
-  onColorPreview,
-  shapeStartPosition,
-  setShapeStartPosition,
-  drawShapePreview,
-  clearShapePreview,
-  selectionArea,
-  setSelectionArea,
-  onTextClick,
-  onPasteAt,
-  copiedImageData,
-  pastedImagePosition,
-  setPastedImagePosition,
-  isDraggingPastedImage,
-  setIsDraggingPastedImage
-}: CanvasEventHandlersProps) => {
-  
-  const { drawLine, drawShape, pickColor, isShapeTool } = useCanvasDrawingLogic({
+export const useCanvasEventHandlers = (props: CanvasEventHandlersProps) => {
+  const {
+    canvasRef,
     currentTool,
     brushSettings,
-    currentColor
+    currentColor,
+    isDrawing,
+    setIsDrawing,
+    lastPosition,
+    setLastPosition,
+    saveCanvasState,
+    onColorPicked,
+    onColorPreview,
+    shapeStartPosition,
+    setShapeStartPosition,
+    drawShapePreview,
+    clearShapePreview,
+    selectionArea,
+    setSelectionArea,
+    onTextClick,
+    onPasteAt,
+    copiedImageData,
+    pastedImagePosition,
+    setPastedImagePosition,
+    isDraggingPastedImage,
+    setIsDraggingPastedImage
+  } = props;
+
+  const { getCanvas, getCanvasCoordinates } = useMouseCoordinates({ canvasRef });
+  
+  const { handleEyedropperClick, handleEyedropperPreview, clearEyedropperPreview } = useEyedropperTool({
+    currentTool,
+    onColorPicked,
+    onColorPreview
   });
 
-  const getCanvas = useCallback(() => {
-    if (!canvasRef) return null;
-    if (typeof canvasRef === 'function') return null;
-    return canvasRef.current;
-  }, [canvasRef]);
+  const {
+    handlePastedImageMouseDown,
+    handlePastedImageMouseMove,
+    handlePastedImageMouseUp,
+    handlePastedImageMouseLeave
+  } = usePastedImageHandling({
+    pastedImagePosition,
+    copiedImageData,
+    setPastedImagePosition,
+    setIsDraggingPastedImage,
+    setIsDrawing,
+    setLastPosition
+  });
 
-  const getCanvasCoordinates = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = getCanvas();
-    if (!canvas) return { x: 0, y: 0 };
-    
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY
-    };
-  }, [getCanvas]);
+  const {
+    handleSelectionMouseDown,
+    handleSelectionMouseMove,
+    handleSelectionMouseUp
+  } = useSelectionHandling({
+    setIsDrawing,
+    setShapeStartPosition,
+    setSelectionArea,
+    setPastedImagePosition
+  });
 
-  const previewColor = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
-    const color = pickColor(position, ctx);
-    if (onColorPreview) {
-      onColorPreview(color);
-    }
-  }, [pickColor, onColorPreview]);
+  const { handleBrushMouseDown, handleBrushMouseMove } = useBrushHandling({
+    currentTool,
+    brushSettings,
+    currentColor,
+    setLastPosition
+  });
 
-  const isPointInPastedImage = useCallback((position: Position) => {
-    if (!pastedImagePosition || !copiedImageData) return false;
-    
-    return position.x >= pastedImagePosition.x &&
-           position.x <= pastedImagePosition.x + copiedImageData.width &&
-           position.y >= pastedImagePosition.y &&
-           position.y <= pastedImagePosition.y + copiedImageData.height;
-  }, [pastedImagePosition, copiedImageData]);
+  const {
+    handleShapeMouseDown,
+    handleShapeMouseMove,
+    handleShapeMouseUp,
+    isShapeTool
+  } = useShapeToolHandling({
+    currentTool,
+    brushSettings,
+    currentColor,
+    setShapeStartPosition,
+    drawShapePreview,
+    clearShapePreview
+  });
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = getCanvas();
@@ -109,22 +127,14 @@ export const useCanvasEventHandlers = ({
     const position = getCanvasCoordinates(e);
     
     // Check if clicking on pasted image first
-    if (pastedImagePosition && copiedImageData && isPointInPastedImage(position)) {
-      if (setIsDraggingPastedImage) {
-        setIsDraggingPastedImage(true);
-        setIsDrawing(true);
-        setLastPosition(position);
-        return;
-      }
+    if (handlePastedImageMouseDown(position)) {
+      return;
     }
     
     // Handle different tools
     switch (currentTool) {
       case 'eyedropper':
-        const color = pickColor(position, ctx);
-        if (color) {
-          onColorPicked(color);
-        }
+        handleEyedropperClick(position, ctx);
         return;
         
       case 'text':
@@ -134,22 +144,7 @@ export const useCanvasEventHandlers = ({
         return;
         
       case 'select':
-        console.log('Select tool mouse down at:', position);
-        setIsDrawing(true);
-        setShapeStartPosition(position);
-        if (setSelectionArea) {
-          // Initialize selection area with zero dimensions
-          setSelectionArea({
-            startX: position.x,
-            startY: position.y,
-            width: 0,
-            height: 0
-          });
-        }
-        // Clear any pasted image when making new selection
-        if (setPastedImagePosition) {
-          setPastedImagePosition(null);
-        }
+        handleSelectionMouseDown(position);
         return;
         
       default:
@@ -159,19 +154,13 @@ export const useCanvasEventHandlers = ({
         setLastPosition(position);
         
         if (isShapeTool(currentTool)) {
-          setShapeStartPosition(position);
+          handleShapeMouseDown(position);
         } else if (currentTool === 'brush' || currentTool === 'eraser') {
-          ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
-          ctx.globalAlpha = brushSettings.opacity;
-          ctx.fillStyle = currentColor;
-          ctx.beginPath();
-          ctx.arc(position.x, position.y, brushSettings.size / 2, 0, 2 * Math.PI);
-          ctx.fill();
-          ctx.globalAlpha = 1;
+          handleBrushMouseDown(position, ctx);
         }
         break;
     }
-  }, [getCanvas, getCanvasCoordinates, currentTool, pickColor, onColorPicked, onTextClick, setIsDrawing, setShapeStartPosition, setSelectionArea, saveCanvasState, setLastPosition, brushSettings, currentColor, isShapeTool, pastedImagePosition, copiedImageData, isPointInPastedImage, setIsDraggingPastedImage, setPastedImagePosition]);
+  }, [getCanvas, getCanvasCoordinates, currentTool, handleEyedropperClick, onTextClick, handleSelectionMouseDown, saveCanvasState, setIsDrawing, setLastPosition, isShapeTool, handleShapeMouseDown, handleBrushMouseDown, handlePastedImageMouseDown]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = getCanvas();
@@ -184,58 +173,34 @@ export const useCanvasEventHandlers = ({
     
     // Handle eyedropper hover preview
     if (currentTool === 'eyedropper') {
-      previewColor(currentPosition, ctx);
+      handleEyedropperPreview(currentPosition, ctx);
       return;
     }
     
     if (!isDrawing) return;
     
     // Handle dragging pasted image
-    if (isDraggingPastedImage && pastedImagePosition && setPastedImagePosition && lastPosition) {
-      const deltaX = currentPosition.x - lastPosition.x;
-      const deltaY = currentPosition.y - lastPosition.y;
-      
-      setPastedImagePosition({
-        x: pastedImagePosition.x + deltaX,
-        y: pastedImagePosition.y + deltaY
-      });
-      
-      setLastPosition(currentPosition);
+    if (handlePastedImageMouseMove(currentPosition, lastPosition, isDraggingPastedImage)) {
       return;
     }
     
     // Handle selection tool
-    if (currentTool === 'select' && shapeStartPosition) {
-      console.log('Select tool mouse move, start:', shapeStartPosition, 'current:', currentPosition);
-      const width = currentPosition.x - shapeStartPosition.x;
-      const height = currentPosition.y - shapeStartPosition.y;
-      
-      if (setSelectionArea) {
-        const newSelection = {
-          startX: Math.min(shapeStartPosition.x, currentPosition.x),
-          startY: Math.min(shapeStartPosition.y, currentPosition.y),
-          width: Math.abs(width),
-          height: Math.abs(height)
-        };
-        console.log('Setting selection area:', newSelection);
-        setSelectionArea(newSelection);
-      }
+    if (currentTool === 'select' && handleSelectionMouseMove(currentPosition, shapeStartPosition)) {
       return;
     }
     
     // Handle brush and eraser tools
-    if ((currentTool === 'brush' || currentTool === 'eraser') && lastPosition) {
-      drawLine(lastPosition, currentPosition, ctx);
-      setLastPosition(currentPosition);
+    if ((currentTool === 'brush' || currentTool === 'eraser') && handleBrushMouseMove(currentPosition, lastPosition, ctx)) {
+      return;
     }
     
     // Handle shape preview
-    if (isShapeTool(currentTool) && shapeStartPosition) {
-      drawShapePreview(shapeStartPosition, currentPosition, currentTool);
+    if (handleShapeMouseMove(currentPosition, shapeStartPosition)) {
+      return;
     }
-  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, previewColor, shapeStartPosition, setSelectionArea, drawLine, setLastPosition, isShapeTool, drawShapePreview, isDraggingPastedImage, pastedImagePosition, setPastedImagePosition]);
+  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, handleEyedropperPreview, shapeStartPosition, handlePastedImageMouseMove, isDraggingPastedImage, handleSelectionMouseMove, handleBrushMouseMove, handleShapeMouseMove]);
 
-  const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasCanvas>) => {
     if (!isDrawing) return;
     
     const canvas = getCanvas();
@@ -247,48 +212,37 @@ export const useCanvasEventHandlers = ({
     const currentPosition = getCanvasCoordinates(e);
     
     // Handle dragging pasted image
-    if (isDraggingPastedImage && setIsDraggingPastedImage) {
-      setIsDraggingPastedImage(false);
-      setIsDrawing(false);
-      setLastPosition(null);
+    if (handlePastedImageMouseUp(isDraggingPastedImage)) {
       return;
     }
     
     // Handle selection tool
-    if (currentTool === 'select' && shapeStartPosition) {
-      console.log('Select tool mouse up');
-      // Selection area is already set in mousemove, just clean up
-      setShapeStartPosition(null);
-      setIsDrawing(false);
+    if (currentTool === 'select' && handleSelectionMouseUp(shapeStartPosition)) {
       return;
     }
     
     // Draw shape if using a shape tool
-    if (isShapeTool(currentTool) && shapeStartPosition) {
-      clearShapePreview(); // Clear the preview
-      drawShape(shapeStartPosition, currentPosition, ctx, currentTool);
-      setShapeStartPosition(null);
+    if (handleShapeMouseUp(currentPosition, shapeStartPosition, ctx)) {
+      // Shape handling is complete
     }
     
     setIsDrawing(false);
     setLastPosition(null);
-  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, shapeStartPosition, setShapeStartPosition, setIsDrawing, isShapeTool, drawShape, setLastPosition, clearShapePreview, isDraggingPastedImage, setIsDraggingPastedImage]);
+  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, shapeStartPosition, setIsDrawing, setLastPosition, handlePastedImageMouseUp, isDraggingPastedImage, handleSelectionMouseUp, handleShapeMouseUp]);
 
   const handleMouseLeave = useCallback(() => {
     setIsDrawing(false);
     setLastPosition(null);
     setShapeStartPosition(null);
-    clearShapePreview(); // Clear preview when mouse leaves
+    clearShapePreview();
     
-    if (setIsDraggingPastedImage) {
-      setIsDraggingPastedImage(false);
-    }
+    handlePastedImageMouseLeave();
     
     // Clear color preview when mouse leaves
-    if (currentTool === 'eyedropper' && onColorPreview) {
-      onColorPreview(null);
+    if (currentTool === 'eyedropper') {
+      clearEyedropperPreview();
     }
-  }, [setIsDrawing, setLastPosition, setShapeStartPosition, clearShapePreview, currentTool, onColorPreview, setIsDraggingPastedImage]);
+  }, [setIsDrawing, setLastPosition, setShapeStartPosition, clearShapePreview, currentTool, clearEyedropperPreview, handlePastedImageMouseLeave]);
 
   return {
     handleMouseDown,
