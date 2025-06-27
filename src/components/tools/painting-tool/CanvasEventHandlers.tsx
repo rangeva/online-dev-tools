@@ -24,6 +24,10 @@ interface CanvasEventHandlersProps {
   onTextClick?: (position: Position) => void;
   onPasteAt?: (position: Position) => void;
   copiedImageData?: ImageData | null;
+  pastedImagePosition?: Position | null;
+  setPastedImagePosition?: (position: Position | null) => void;
+  isDraggingPastedImage?: boolean;
+  setIsDraggingPastedImage?: (dragging: boolean) => void;
 }
 
 export const useCanvasEventHandlers = ({
@@ -46,7 +50,11 @@ export const useCanvasEventHandlers = ({
   setSelectionArea,
   onTextClick,
   onPasteAt,
-  copiedImageData
+  copiedImageData,
+  pastedImagePosition,
+  setPastedImagePosition,
+  isDraggingPastedImage,
+  setIsDraggingPastedImage
 }: CanvasEventHandlersProps) => {
   
   const { drawLine, drawShape, pickColor, isShapeTool } = useCanvasDrawingLogic({
@@ -82,6 +90,15 @@ export const useCanvasEventHandlers = ({
     }
   }, [pickColor, onColorPreview]);
 
+  const isPointInPastedImage = useCallback((position: Position) => {
+    if (!pastedImagePosition || !copiedImageData) return false;
+    
+    return position.x >= pastedImagePosition.x &&
+           position.x <= pastedImagePosition.x + copiedImageData.width &&
+           position.y >= pastedImagePosition.y &&
+           position.y <= pastedImagePosition.y + copiedImageData.height;
+  }, [pastedImagePosition, copiedImageData]);
+
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = getCanvas();
     if (!canvas) return;
@@ -90,6 +107,16 @@ export const useCanvasEventHandlers = ({
     if (!ctx) return;
     
     const position = getCanvasCoordinates(e);
+    
+    // Check if clicking on pasted image first
+    if (pastedImagePosition && copiedImageData && isPointInPastedImage(position)) {
+      if (setIsDraggingPastedImage) {
+        setIsDraggingPastedImage(true);
+        setIsDrawing(true);
+        setLastPosition(position);
+        return;
+      }
+    }
     
     // Handle different tools
     switch (currentTool) {
@@ -112,6 +139,10 @@ export const useCanvasEventHandlers = ({
         if (setSelectionArea) {
           setSelectionArea(null);
         }
+        // Clear any pasted image when making new selection
+        if (setPastedImagePosition) {
+          setPastedImagePosition(null);
+        }
         return;
         
       default:
@@ -133,7 +164,7 @@ export const useCanvasEventHandlers = ({
         }
         break;
     }
-  }, [getCanvas, getCanvasCoordinates, currentTool, pickColor, onColorPicked, onTextClick, setIsDrawing, setShapeStartPosition, setSelectionArea, saveCanvasState, setLastPosition, brushSettings, currentColor, isShapeTool]);
+  }, [getCanvas, getCanvasCoordinates, currentTool, pickColor, onColorPicked, onTextClick, setIsDrawing, setShapeStartPosition, setSelectionArea, saveCanvasState, setLastPosition, brushSettings, currentColor, isShapeTool, pastedImagePosition, copiedImageData, isPointInPastedImage, setIsDraggingPastedImage, setPastedImagePosition]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = getCanvas();
@@ -151,6 +182,20 @@ export const useCanvasEventHandlers = ({
     }
     
     if (!isDrawing || !lastPosition) return;
+    
+    // Handle dragging pasted image
+    if (isDraggingPastedImage && pastedImagePosition && setPastedImagePosition) {
+      const deltaX = currentPosition.x - lastPosition.x;
+      const deltaY = currentPosition.y - lastPosition.y;
+      
+      setPastedImagePosition({
+        x: pastedImagePosition.x + deltaX,
+        y: pastedImagePosition.y + deltaY
+      });
+      
+      setLastPosition(currentPosition);
+      return;
+    }
     
     // Handle selection tool
     if (currentTool === 'select' && shapeStartPosition) {
@@ -178,7 +223,7 @@ export const useCanvasEventHandlers = ({
     if (isShapeTool(currentTool) && shapeStartPosition) {
       drawShapePreview(shapeStartPosition, currentPosition, currentTool);
     }
-  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, previewColor, shapeStartPosition, setSelectionArea, drawLine, setLastPosition, isShapeTool, drawShapePreview]);
+  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, previewColor, shapeStartPosition, setSelectionArea, drawLine, setLastPosition, isShapeTool, drawShapePreview, isDraggingPastedImage, pastedImagePosition, setPastedImagePosition]);
 
   const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
@@ -190,6 +235,14 @@ export const useCanvasEventHandlers = ({
     if (!ctx) return;
     
     const currentPosition = getCanvasCoordinates(e);
+    
+    // Handle dragging pasted image
+    if (isDraggingPastedImage && setIsDraggingPastedImage) {
+      setIsDraggingPastedImage(false);
+      setIsDrawing(false);
+      setLastPosition(null);
+      return;
+    }
     
     // Handle selection tool
     if (currentTool === 'select' && shapeStartPosition) {
@@ -208,7 +261,7 @@ export const useCanvasEventHandlers = ({
     
     setIsDrawing(false);
     setLastPosition(null);
-  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, shapeStartPosition, setShapeStartPosition, setIsDrawing, isShapeTool, drawShape, setLastPosition, clearShapePreview]);
+  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, shapeStartPosition, setShapeStartPosition, setIsDrawing, isShapeTool, drawShape, setLastPosition, clearShapePreview, isDraggingPastedImage, setIsDraggingPastedImage]);
 
   const handleMouseLeave = useCallback(() => {
     setIsDrawing(false);
@@ -216,11 +269,15 @@ export const useCanvasEventHandlers = ({
     setShapeStartPosition(null);
     clearShapePreview(); // Clear preview when mouse leaves
     
+    if (setIsDraggingPastedImage) {
+      setIsDraggingPastedImage(false);
+    }
+    
     // Clear color preview when mouse leaves
     if (currentTool === 'eyedropper' && onColorPreview) {
       onColorPreview(null);
     }
-  }, [setIsDrawing, setLastPosition, setShapeStartPosition, clearShapePreview, currentTool, onColorPreview]);
+  }, [setIsDrawing, setLastPosition, setShapeStartPosition, clearShapePreview, currentTool, onColorPreview, setIsDraggingPastedImage]);
 
   return {
     handleMouseDown,

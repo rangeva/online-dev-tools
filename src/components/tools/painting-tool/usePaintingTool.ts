@@ -194,17 +194,17 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
     if (!ctx) return;
 
     const imageData = ctx.getImageData(
-      selectionArea.startX, 
-      selectionArea.startY, 
-      selectionArea.width, 
-      selectionArea.height
+      Math.round(selectionArea.startX), 
+      Math.round(selectionArea.startY), 
+      Math.round(selectionArea.width), 
+      Math.round(selectionArea.height)
     );
     
     setCopiedImageData(imageData);
     
     toast({
       title: "Selection Copied",
-      description: "The selected area has been copied to clipboard.",
+      description: "The selected area has been copied and can be pasted.",
     });
   }, [canvasRef, selectionArea, toast]);
 
@@ -216,11 +216,11 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
     if (!ctx) return;
 
     saveCanvasState();
-    ctx.putImageData(copiedImageData, position.x, position.y);
+    ctx.putImageData(copiedImageData, Math.round(position.x), Math.round(position.y));
     
     toast({
       title: "Selection Pasted",
-      description: "The copied content has been pasted.",
+      description: "The copied content has been pasted. Click and drag to move it.",
     });
   }, [canvasRef, copiedImageData, saveCanvasState, toast]);
 
@@ -235,22 +235,27 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
     
     // Copy first
     const imageData = ctx.getImageData(
-      selectionArea.startX, 
-      selectionArea.startY, 
-      selectionArea.width, 
-      selectionArea.height
+      Math.round(selectionArea.startX), 
+      Math.round(selectionArea.startY), 
+      Math.round(selectionArea.width), 
+      Math.round(selectionArea.height)
     );
     setCopiedImageData(imageData);
     
     // Then clear the area
     ctx.fillStyle = 'white';
-    ctx.fillRect(selectionArea.startX, selectionArea.startY, selectionArea.width, selectionArea.height);
+    ctx.fillRect(
+      Math.round(selectionArea.startX), 
+      Math.round(selectionArea.startY), 
+      Math.round(selectionArea.width), 
+      Math.round(selectionArea.height)
+    );
     
     setSelectionArea(null);
     
     toast({
       title: "Selection Cut",
-      description: "The selected area has been cut and copied.",
+      description: "The selected area has been cut and copied. It can now be pasted.",
     });
   }, [canvasRef, selectionArea, saveCanvasState, toast]);
 
