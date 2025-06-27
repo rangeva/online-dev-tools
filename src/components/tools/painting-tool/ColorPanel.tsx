@@ -1,3 +1,4 @@
+
 import { useState, useCallback, RefObject, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pipette } from "lucide-react";
 import { Tool } from "./usePaintingTool";
+import { ColorPickerWidget } from "./ColorPickerWidget";
 
 interface ColorPanelProps {
   currentColor: string;
@@ -155,13 +157,21 @@ export const ColorPanel = ({ currentColor, onColorChange, canvasRef, currentTool
           {currentTool === 'eyedropper' ? 'Eyedropper Active' : 'Activate Eyedropper'}
         </Button>
 
-        <Tabs defaultValue="palette" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="widget" className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="widget">Widget</TabsTrigger>
             <TabsTrigger value="palette">Palette</TabsTrigger>
             <TabsTrigger value="hex">HEX</TabsTrigger>
             <TabsTrigger value="rgb">RGB</TabsTrigger>
             <TabsTrigger value="hsl">HSL</TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="widget" className="space-y-3">
+            <ColorPickerWidget
+              currentColor={currentColor}
+              onColorChange={onColorChange}
+            />
+          </TabsContent>
           
           <TabsContent value="palette" className="space-y-3">
             <div className="grid grid-cols-6 gap-2">
