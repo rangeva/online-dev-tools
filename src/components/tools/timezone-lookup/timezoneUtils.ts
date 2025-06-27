@@ -3,7 +3,24 @@ import { TimezoneInfo } from './types';
 import { timezoneMap } from './timezoneData';
 
 export const getTimezoneInfo = async (location: string): Promise<TimezoneInfo> => {
-  const normalizedLocation = location.toLowerCase().trim();
+  let normalizedLocation = location.toLowerCase().trim();
+  
+  // Handle cases where location is in format "City, State" or "City, Country"
+  // Extract just the city name for lookup
+  if (normalizedLocation.includes(',')) {
+    const parts = normalizedLocation.split(',');
+    const cityName = parts[0].trim();
+    
+    // Try the city name first
+    if (timezoneMap[cityName]) {
+      normalizedLocation = cityName;
+    } else {
+      // If city name doesn't work, try the full location
+      // This handles cases where we have entries like "new york city" vs just "new york"
+      normalizedLocation = normalizedLocation;
+    }
+  }
+  
   const timezoneData = timezoneMap[normalizedLocation];
 
   if (!timezoneData) {
