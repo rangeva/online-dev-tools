@@ -40,6 +40,15 @@ const PaintingDrawingTool = () => {
     uploadImage
   } = usePaintingTool(canvasRef);
 
+  const handleColorPicked = (color: string) => {
+    setCurrentColor(color);
+    setCurrentTool('brush'); // Switch back to brush after picking color
+    toast({
+      title: "Color Picked",
+      description: `Selected color: ${color}`,
+    });
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
       <Card>
@@ -89,6 +98,8 @@ const PaintingDrawingTool = () => {
                     currentColor={currentColor}
                     onColorChange={setCurrentColor}
                     canvasRef={canvasRef}
+                    currentTool={currentTool}
+                    onToolChange={setCurrentTool}
                   />
                 </TabsContent>
                 
@@ -122,6 +133,7 @@ const PaintingDrawingTool = () => {
                 lastPosition={lastPosition}
                 setLastPosition={setLastPosition}
                 saveCanvasState={saveCanvasState}
+                onColorPicked={handleColorPicked}
               />
             </div>
           </div>

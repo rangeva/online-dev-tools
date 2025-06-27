@@ -13,10 +13,11 @@ interface PaintingCanvasProps {
   lastPosition: Position | null;
   setLastPosition: (position: Position | null) => void;
   saveCanvasState: () => void;
+  onColorPicked: (color: string) => void;
 }
 
 export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>(
-  ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState }, ref) => {
+  ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState, onColorPicked }, ref) => {
     
     const getCanvasCoordinates = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return { x: 0, y: 0 };
@@ -87,12 +88,16 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       ctx.globalAlpha = 1;
     }, [brushSettings, currentColor]);
 
-    const pickColor = useCallback((position: Position, ctx: CanvasRenderingContext2D, onColorPicked: (color: string) => void) => {
-      const imageData = ctx.getImageData(position.x, position.y, 1, 1);
-      const [r, g, b] = imageData.data;
-      const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-      onColorPicked(hex);
-    }, []);
+    const pickColor = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
+      const imageData = ctx.getImageData(Math.floor(position.x), Math.floor(position.y), 1, 1);
+      const [r, g, b, a] = imageData.data;
+      
+      // Only pick color if the pixel has some opacity
+      if (a > 0) {
+        const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        onColorPicked(hex);
+      }
+    }, [onColorPicked]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!ref || typeof ref === 'function') return;
@@ -105,10 +110,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       const position = getCanvasCoordinates(e);
       
       if (currentTool === 'eyedropper') {
-        pickColor(position, ctx, (color) => {
-          // This would need to be passed as a prop or handled differently
-          console.log('Picked color:', color);
-        });
+        pickColor(position, ctx);
         return;
       }
       
@@ -128,8 +130,7 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
     }, [ref, getCanvasCoordinates, currentTool, pickColor, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor]);
 
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-      if (!isDrawing || !lastPosition || !ref || typeof ref === 'function') return;
-      
+      if (!ref || typeof ref === 'function') return;
       const canvas = ref.current;
       if (!canvas) return;
       
@@ -137,6 +138,14 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       if (!ctx) return;
       
       const currentPosition = getCanvasCoordinates(e);
+      
+      // Handle eyedropper hover preview
+      if (currentTool === 'eyedropper') {
+        // You could add hover preview functionality here
+        return;
+      }
+      
+      if (!isDrawing || !lastPosition) return;
       
       if (currentTool === 'brush' || currentTool === 'eraser') {
         drawLine(lastPosition, currentPosition, ctx);
@@ -168,16 +177,29 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }, [ref, canvasSize]);
 
+    const getCursorStyle = () => {
+      switch (currentTool) {
+        case 'eyedropper':
+          return 'crosshair';
+        case 'eraser':
+          return 'grab';
+        case 'brush':
+          return 'crosshair';
+        default:
+          return 'crosshair';
+      }
+    };
+
     return (
       <Card className="p-4">
         <div className="flex justify-center">
           <canvas
             ref={ref}
-            className="border border-gray-300 rounded-lg cursor-crosshair"
+            className="border border-gray-300 rounded-lg"
             style={{ 
               maxWidth: '100%', 
               maxHeight: '70vh',
-              cursor: currentTool === 'eyedropper' ? 'crosshair' : 'crosshair'
+              cursor: getCursorStyle()
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -185,6 +207,11 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
             onMouseLeave={handleMouseUp}
           />
         </div>
+        {currentTool === 'eyedropper' && (
+          <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            Click anywhere on the canvas to pick a color
+          </div>
+        )}
       </Card>
     );
   }
