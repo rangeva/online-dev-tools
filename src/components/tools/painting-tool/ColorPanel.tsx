@@ -6,7 +6,6 @@ import { Palette } from "lucide-react";
 import { RefObject } from "react";
 import { ColorPalette } from "./ColorPalette";
 import { CurrentColorDisplay } from "./CurrentColorDisplay";
-import { EyedropperButton } from "./EyedropperButton";
 import { InteractiveColorPicker } from "./InteractiveColorPicker";
 import { ManualColorInputs } from "./ManualColorInputs";
 import { Tool } from "./usePaintingTool";
@@ -45,19 +44,28 @@ export const ColorPanel = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        <CurrentColorDisplay currentColor={currentColor} />
-        <ColorPalette onColorChange={handleColorChange} />
+        {/* Color Preview */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Selected Color</Label>
+          <div 
+            className="w-full h-8 border rounded-md shadow-inner"
+            style={{ backgroundColor: currentColor }}
+          />
+          <div className="text-xs text-center font-mono text-gray-600 dark:text-gray-400">
+            {currentColor.toUpperCase()}
+          </div>
+        </div>
+        
+        {/* Interactive Color Picker */}
         <InteractiveColorPicker 
           currentColor={currentColor} 
           onColorChange={handleColorChange} 
         />
+        
+        <ColorPalette onColorChange={handleColorChange} />
         <ManualColorInputs 
           currentColor={currentColor} 
           onColorChange={handleColorChange} 
-        />
-        <EyedropperButton 
-          currentTool={currentTool}
-          onToolChange={onToolChange}
         />
       </CardContent>
     </Card>
