@@ -1,5 +1,5 @@
 
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { BrushSettings, CanvasSize, Position, Tool, SelectionArea } from "./usePaintingTool";
 import { ShapePreview } from "./ShapePreview";
@@ -10,6 +10,7 @@ import { usePastedImageRenderer } from "./usePastedImageRenderer";
 import { useShapeHandling } from "./useShapeHandling";
 import { SelectionOverlay } from "./SelectionOverlay";
 import { PastedImageOverlay } from "./PastedImageOverlay";
+import { TextPreview } from "./TextPreview";
 
 interface CanvasContainerProps {
   canvasSize: CanvasSize;
@@ -32,6 +33,8 @@ interface CanvasContainerProps {
   setPastedImagePosition?: (position: Position | null) => void;
   isDraggingPastedImage?: boolean;
   setIsDraggingPastedImage?: (dragging: boolean) => void;
+  textSettings?: any;
+  onAddText?: (position: Position, text: string) => void;
 }
 
 export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProps>(
@@ -55,18 +58,39 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
     pastedImagePosition,
     setPastedImagePosition,
     isDraggingPastedImage,
-    setIsDraggingPastedImage
+    setIsDraggingPastedImage,
+    textSettings,
+    onAddText
   }, ref) => {
     
     const canvasContainerRef = useRef<HTMLDivElement>(null);
     const canvasDisplaySize = useCanvasDisplaySize(ref);
     const { shapeStartPosition, setShapeStartPosition } = useShapeHandling();
+    const [textPreviewPosition, setTextPreviewPosition] = useState<Position | null>(null);
 
     const { previewCanvasRef, drawShapePreview, clearShapePreview } = ShapePreview({
       canvasSize,
       currentColor,
       brushSize: brushSettings.size
     });
+
+    const handleTextClick = (position: Position) => {
+      setTextPreviewPosition(position);
+      if (onTextClick) {
+        onTextClick(position);
+      }
+    };
+
+    const handleTextConfirm = (text: string) => {
+      if (textPreviewPosition && onAddText) {
+        onAddText(textPreviewPosition, text);
+      }
+      setTextPreviewPosition(null);
+    };
+
+    const handleTextCancel = () => {
+      setTextPreviewPosition(null);
+    };
 
     const { handleMouseDown, handleMouseMove, handleMouseUp, handleMouseLeave } = useCanvasEventHandlers({
       canvasRef: ref,
@@ -86,7 +110,7 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
       clearShapePreview,
       selectionArea,
       setSelectionArea,
-      onTextClick,
+      onTextClick: handleTextClick,
       onPasteAt,
       copiedImageData,
       pastedImagePosition,
@@ -133,6 +157,18 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
             canvasSize={canvasSize}
             canvasDisplaySize={canvasDisplaySize}
             isDraggingPastedImage={isDraggingPastedImage || false}
+          />
+        )}
+
+        {/* Text preview overlay */}
+        {textPreviewPosition && textSettings && canvasDisplaySize && (
+          <TextPreview
+            position={textPreviewPosition}
+            textSettings={textSettings}
+            canvasSize={canvasSize}
+            canvasDisplaySize={canvasDisplaySize}
+            onConfirm={handleTextConfirm}
+            onCancel={handleTextCancel}
           />
         )}
       </div>

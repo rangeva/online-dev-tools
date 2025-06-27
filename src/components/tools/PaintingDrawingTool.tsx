@@ -13,15 +13,12 @@ import { ResizeCropPanel } from "./painting-tool/ResizeCropPanel";
 import { PaintingCanvas } from "./painting-tool/PaintingCanvas";
 import { ToolbarPanel } from "./painting-tool/ToolbarPanel";
 import { ImageUploadPanel } from "./painting-tool/ImageUploadPanel";
-import { TextInputDialog } from "./painting-tool/TextInputDialog";
 import { usePaintingTool } from "./painting-tool/usePaintingTool";
 
 const PaintingDrawingTool = () => {
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewColor, setPreviewColor] = useState<string | null>(null);
-  const [textDialogOpen, setTextDialogOpen] = useState(false);
-  const [textPosition, setTextPosition] = useState<{ x: number; y: number } | null>(null);
   
   const {
     currentTool,
@@ -74,16 +71,8 @@ const PaintingDrawingTool = () => {
     exportCanvas(format);
   };
 
-  const handleTextClick = (position: { x: number; y: number }) => {
-    setTextPosition(position);
-    setTextDialogOpen(true);
-  };
-
-  const handleAddText = (text: string) => {
-    if (textPosition) {
-      addText(textPosition, text);
-      setTextPosition(null);
-    }
+  const handleAddText = (position: { x: number; y: number }, text: string) => {
+    addText(position, text);
   };
 
   // Handle keyboard shortcuts
@@ -116,9 +105,9 @@ const PaintingDrawingTool = () => {
             }
             break;
           case 'v':
-            if (copiedImageData && textPosition) {
+            if (copiedImageData) {
               e.preventDefault();
-              pasteSelection(textPosition);
+              // Paste will be handled by clicking on canvas
             }
             break;
         }
@@ -127,7 +116,7 @@ const PaintingDrawingTool = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, selectionArea, copySelection, cutSelection, copiedImageData, textPosition, pasteSelection]);
+  }, [undo, redo, selectionArea, copySelection, cutSelection, copiedImageData, pasteSelection]);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
@@ -231,20 +220,15 @@ const PaintingDrawingTool = () => {
                 onColorPreview={handleColorPreview}
                 selectionArea={selectionArea}
                 setSelectionArea={setSelectionArea}
-                onTextClick={handleTextClick}
                 onPasteAt={pasteSelection}
                 copiedImageData={copiedImageData}
+                textSettings={textSettings}
+                onAddText={handleAddText}
               />
             </div>
           </div>
         </CardContent>
       </Card>
-
-      <TextInputDialog
-        isOpen={textDialogOpen}
-        onClose={() => setTextDialogOpen(false)}
-        onAddText={handleAddText}
-      />
     </div>
   );
 };

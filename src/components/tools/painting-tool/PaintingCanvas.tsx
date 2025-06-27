@@ -22,6 +22,8 @@ interface PaintingCanvasProps {
   onTextClick?: (position: Position) => void;
   onPasteAt?: (position: Position) => void;
   copiedImageData?: ImageData | null;
+  textSettings?: any;
+  onAddText?: (position: Position, text: string) => void;
 }
 
 export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>(
@@ -41,7 +43,9 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
     setSelectionArea,
     onTextClick,
     onPasteAt,
-    copiedImageData
+    copiedImageData,
+    textSettings,
+    onAddText
   }, ref) => {
     
     const [pastedImagePosition, setPastedImagePosition] = useState<Position | null>(null);
@@ -80,6 +84,8 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
           setPastedImagePosition={setPastedImagePosition}
           isDraggingPastedImage={isDraggingPastedImage}
           setIsDraggingPastedImage={setIsDraggingPastedImage}
+          textSettings={textSettings}
+          onAddText={onAddText}
         />
 
         <div className="mt-2">
