@@ -1,7 +1,8 @@
 
 import { 
   Clock,
-  Settings
+  Settings,
+  Globe
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -24,5 +25,14 @@ export const dateTools: Tool[] = [
     icon: Settings,
     component: toolComponents.CronEditor,
     tags: ["cron", "schedule", "expression", "job"]
+  },
+  {
+    id: "timezone-lookup",
+    name: "Timezone Lookup",
+    description: "Find timezone information for any city or location worldwide with multiple time formats",
+    category: "date",
+    icon: Globe,
+    component: toolComponents.TimezoneLookup,
+    tags: ["timezone", "time", "location", "city", "utc", "offset"]
   }
 ];

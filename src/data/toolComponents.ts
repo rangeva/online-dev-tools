@@ -63,6 +63,7 @@ import TemperatureConverter from "@/components/tools/TemperatureConverter";
 import CredentialFormatDetector from "@/components/tools/CredentialFormatDetector";
 import Tokenizer from "@/components/tools/Tokenizer";
 import WebsiteRankTracker from "@/components/tools/WebsiteRankTracker";
+import TimezoneLookup from "@/components/tools/TimezoneLookup";
 
 export const toolComponents = {
   WordCounter,
@@ -127,5 +128,6 @@ export const toolComponents = {
   TemperatureConverter,
   CredentialFormatDetector,
   Tokenizer,
-  WebsiteRankTracker
+  WebsiteRankTracker,
+  TimezoneLookup
 };
