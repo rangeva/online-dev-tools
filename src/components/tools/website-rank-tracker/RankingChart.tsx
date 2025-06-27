@@ -11,6 +11,9 @@ interface RankingChartProps {
 }
 
 const RankingChart = ({ domainData, chartData }: RankingChartProps) => {
+  console.log("RankingChart received domainData:", domainData);
+  console.log("RankingChart received chartData:", chartData);
+  
   const chartConfig = domainData.reduce((config, domain) => {
     config[domain.domain] = {
       label: domain.domain,
@@ -18,6 +21,8 @@ const RankingChart = ({ domainData, chartData }: RankingChartProps) => {
     };
     return config;
   }, {} as any);
+
+  console.log("Chart config:", chartConfig);
 
   return (
     <Card>
@@ -53,18 +58,22 @@ const RankingChart = ({ domainData, chartData }: RankingChartProps) => {
                   />
                 }
               />
-              {domainData.map((domain) => (
-                <Line
-                  key={domain.domain}
-                  type="monotone"
-                  dataKey={domain.domain}
-                  stroke={domain.color}
-                  strokeWidth={2}
-                  dot={{ fill: domain.color, strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: domain.color, strokeWidth: 2 }}
-                  connectNulls={false}
-                />
-              ))}
+              {domainData.map((domain, index) => {
+                console.log(`Creating line for domain: ${domain.domain} with color: ${domain.color}`);
+                return (
+                  <Line
+                    key={domain.domain}
+                    type="monotone"
+                    dataKey={domain.domain}
+                    stroke={domain.color}
+                    strokeWidth={2}
+                    dot={{ fill: domain.color, strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: domain.color, strokeWidth: 2 }}
+                    connectNulls={false}
+                    name={domain.domain}
+                  />
+                );
+              })}
             </LineChart>
           </ResponsiveContainer>
         </ChartContainer>

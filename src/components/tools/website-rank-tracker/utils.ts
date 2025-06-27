@@ -61,6 +61,8 @@ export const fetchDomainRankingData = async (domains: string[]): Promise<DomainD
 export const createChartData = (domainData: DomainData[]) => {
   if (domainData.length === 0) return [];
   
+  console.log("Creating chart data for domains:", domainData.map(d => d.domain));
+  
   // Get all unique dates from all domains
   const allDates = new Set<string>();
   domainData.forEach(domain => {
@@ -71,6 +73,8 @@ export const createChartData = (domainData: DomainData[]) => {
     new Date(a).getTime() - new Date(b).getTime()
   );
   
+  console.log("All unique dates:", sortedDates);
+  
   // Create data points for each date
   const chartData = sortedDates.map(date => {
     const dataPoint: any = { date };
@@ -78,13 +82,17 @@ export const createChartData = (domainData: DomainData[]) => {
     // Add rank data for each domain on this date
     domainData.forEach(domain => {
       const rankData = domain.data.find(item => item.date === date);
+      // Use the domain name as the key, and set to null if no data for this date
       dataPoint[domain.domain] = rankData ? rankData.rank : null;
     });
     
     return dataPoint;
   });
   
-  console.log("Chart data created:", chartData);
+  console.log("Final chart data:", chartData);
+  console.log("Sample data point:", chartData[0]);
+  console.log("Domain keys in data:", Object.keys(chartData[0] || {}).filter(key => key !== 'date'));
+  
   return chartData;
 };
 
