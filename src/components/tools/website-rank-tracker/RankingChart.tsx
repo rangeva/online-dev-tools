@@ -52,7 +52,7 @@ const RankingChart = ({ domainData, chartData }: RankingChartProps) => {
                   <ChartTooltipContent 
                     formatter={(value, name) => [
                       value ? `#${value.toLocaleString()}` : "No data", 
-                      name as string
+                      `${name as string}`
                     ]}
                     labelFormatter={(label) => `Date: ${new Date(label).toLocaleDateString()}`}
                   />
