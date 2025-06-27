@@ -134,10 +134,17 @@ export const useCanvasEventHandlers = ({
         return;
         
       case 'select':
+        console.log('Select tool mouse down at:', position);
         setIsDrawing(true);
         setShapeStartPosition(position);
         if (setSelectionArea) {
-          setSelectionArea(null);
+          // Initialize selection area with zero dimensions
+          setSelectionArea({
+            startX: position.x,
+            startY: position.y,
+            width: 0,
+            height: 0
+          });
         }
         // Clear any pasted image when making new selection
         if (setPastedImagePosition) {
@@ -181,10 +188,10 @@ export const useCanvasEventHandlers = ({
       return;
     }
     
-    if (!isDrawing || !lastPosition) return;
+    if (!isDrawing) return;
     
     // Handle dragging pasted image
-    if (isDraggingPastedImage && pastedImagePosition && setPastedImagePosition) {
+    if (isDraggingPastedImage && pastedImagePosition && setPastedImagePosition && lastPosition) {
       const deltaX = currentPosition.x - lastPosition.x;
       const deltaY = currentPosition.y - lastPosition.y;
       
@@ -199,22 +206,25 @@ export const useCanvasEventHandlers = ({
     
     // Handle selection tool
     if (currentTool === 'select' && shapeStartPosition) {
+      console.log('Select tool mouse move, start:', shapeStartPosition, 'current:', currentPosition);
       const width = currentPosition.x - shapeStartPosition.x;
       const height = currentPosition.y - shapeStartPosition.y;
       
       if (setSelectionArea) {
-        setSelectionArea({
+        const newSelection = {
           startX: Math.min(shapeStartPosition.x, currentPosition.x),
           startY: Math.min(shapeStartPosition.y, currentPosition.y),
           width: Math.abs(width),
           height: Math.abs(height)
-        });
+        };
+        console.log('Setting selection area:', newSelection);
+        setSelectionArea(newSelection);
       }
       return;
     }
     
     // Handle brush and eraser tools
-    if (currentTool === 'brush' || currentTool === 'eraser') {
+    if ((currentTool === 'brush' || currentTool === 'eraser') && lastPosition) {
       drawLine(lastPosition, currentPosition, ctx);
       setLastPosition(currentPosition);
     }
@@ -246,7 +256,8 @@ export const useCanvasEventHandlers = ({
     
     // Handle selection tool
     if (currentTool === 'select' && shapeStartPosition) {
-      // Selection is already set in mousemove
+      console.log('Select tool mouse up');
+      // Selection area is already set in mousemove, just clean up
       setShapeStartPosition(null);
       setIsDrawing(false);
       return;

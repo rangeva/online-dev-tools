@@ -114,23 +114,13 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
           previewCanvasRef={previewCanvasRef}
         />
         
-        {/* Selection preview overlay - shown while dragging */}
-        {currentTool === 'select' && isDrawing && selectionArea && canvasDisplaySize && (
+        {/* Selection overlay - show when select tool is active and has selection area */}
+        {currentTool === 'select' && selectionArea && canvasDisplaySize && selectionArea.width > 0 && selectionArea.height > 0 && (
           <SelectionOverlay
             selectionArea={selectionArea}
             canvasSize={canvasSize}
             canvasDisplaySize={canvasDisplaySize}
-            isDrawing={true}
-          />
-        )}
-        
-        {/* Final selection overlay - shown after selection is made */}
-        {currentTool === 'select' && !isDrawing && selectionArea && canvasDisplaySize && (
-          <SelectionOverlay
-            selectionArea={selectionArea}
-            canvasSize={canvasSize}
-            canvasDisplaySize={canvasDisplaySize}
-            isDrawing={false}
+            isDrawing={isDrawing}
           />
         )}
 
