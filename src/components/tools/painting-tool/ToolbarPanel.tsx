@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool } from "./usePaintingTool";
-import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown } from "lucide-react";
+import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown, RectangleSelect, Type, Crop, Resize, Copy, Scissors } from "lucide-react";
 
 interface ToolbarPanelProps {
   currentTool: Tool;
@@ -14,6 +14,9 @@ interface ToolbarPanelProps {
   onRedo: () => void;
   onClear: () => void;
   onExport: (format?: 'png' | 'jpg' | 'gif' | 'bmp') => void;
+  onCopy?: () => void;
+  onCut?: () => void;
+  canCopy?: boolean;
 }
 
 export const ToolbarPanel = ({
@@ -24,12 +27,19 @@ export const ToolbarPanel = ({
   onUndo,
   onRedo,
   onClear,
-  onExport
+  onExport,
+  onCopy,
+  onCut,
+  canCopy = false
 }: ToolbarPanelProps) => {
   const tools = [
     { tool: 'brush' as Tool, name: 'Brush', icon: Brush },
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
     { tool: 'eyedropper' as Tool, name: 'Eyedropper', icon: Pipette },
+    { tool: 'select' as Tool, name: 'Select', icon: RectangleSelect },
+    { tool: 'text' as Tool, name: 'Text', icon: Type },
+    { tool: 'crop' as Tool, name: 'Crop', icon: Crop },
+    { tool: 'resize' as Tool, name: 'Resize', icon: Resize },
   ];
 
   const exportFormats = [
@@ -94,6 +104,34 @@ export const ToolbarPanel = ({
 
       <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
 
+      {/* Edit Controls */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCopy}
+          disabled={!canCopy}
+          title="Copy Selection"
+          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+        >
+          <Copy className="w-4 h-4 mr-1.5" />
+          Copy
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCut}
+          disabled={!canCopy}
+          title="Cut Selection"
+          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+        >
+          <Scissors className="w-4 h-4 mr-1.5" />
+          Cut
+        </Button>
+      </div>
+
+      <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
+
       {/* Canvas Controls */}
       <div className="flex items-center gap-2">
         <Button
@@ -120,7 +158,7 @@ export const ToolbarPanel = ({
               <ChevronDown className="w-3 h-3 ml-1" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+          <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
             {exportFormats.map((format) => (
               <DropdownMenuItem
                 key={format.format}

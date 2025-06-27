@@ -1,6 +1,6 @@
 
 import { useCallback, RefObject, ForwardedRef } from "react";
-import { Position, Tool, BrushSettings } from "./usePaintingTool";
+import { Position, Tool, BrushSettings, SelectionArea } from "./usePaintingTool";
 import { useCanvasDrawingLogic } from "./CanvasDrawingLogic";
 
 interface CanvasEventHandlersProps {
@@ -19,6 +19,11 @@ interface CanvasEventHandlersProps {
   setShapeStartPosition: (position: Position | null) => void;
   drawShapePreview: (start: Position, end: Position, shape: Tool) => void;
   clearShapePreview: () => void;
+  selectionArea?: SelectionArea | null;
+  setSelectionArea?: (area: SelectionArea | null) => void;
+  onTextClick?: (position: Position) => void;
+  onPasteAt?: (position: Position) => void;
+  copiedImageData?: ImageData | null;
 }
 
 export const useCanvasEventHandlers = ({
@@ -36,7 +41,12 @@ export const useCanvasEventHandlers = ({
   shapeStartPosition,
   setShapeStartPosition,
   drawShapePreview,
-  clearShapePreview
+  clearShapePreview,
+  selectionArea,
+  setSelectionArea,
+  onTextClick,
+  onPasteAt,
+  copiedImageData
 }: CanvasEventHandlersProps) => {
   
   const { drawLine, drawShape, pickColor, isShapeTool } = useCanvasDrawingLogic({
@@ -81,30 +91,49 @@ export const useCanvasEventHandlers = ({
     
     const position = getCanvasCoordinates(e);
     
-    if (currentTool === 'eyedropper') {
-      const color = pickColor(position, ctx);
-      if (color) {
-        onColorPicked(color);
-      }
-      return;
+    // Handle different tools
+    switch (currentTool) {
+      case 'eyedropper':
+        const color = pickColor(position, ctx);
+        if (color) {
+          onColorPicked(color);
+        }
+        return;
+        
+      case 'text':
+        if (onTextClick) {
+          onTextClick(position);
+        }
+        return;
+        
+      case 'select':
+        setIsDrawing(true);
+        setShapeStartPosition(position);
+        if (setSelectionArea) {
+          setSelectionArea(null);
+        }
+        return;
+        
+      default:
+        // Handle brush, eraser, and shape tools
+        saveCanvasState();
+        setIsDrawing(true);
+        setLastPosition(position);
+        
+        if (isShapeTool(currentTool)) {
+          setShapeStartPosition(position);
+        } else if (currentTool === 'brush' || currentTool === 'eraser') {
+          ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
+          ctx.globalAlpha = brushSettings.opacity;
+          ctx.fillStyle = currentColor;
+          ctx.beginPath();
+          ctx.arc(position.x, position.y, brushSettings.size / 2, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        break;
     }
-    
-    saveCanvasState();
-    setIsDrawing(true);
-    setLastPosition(position);
-    
-    if (isShapeTool(currentTool)) {
-      setShapeStartPosition(position);
-    } else if (currentTool === 'brush' || currentTool === 'eraser') {
-      ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
-      ctx.globalAlpha = brushSettings.opacity;
-      ctx.fillStyle = currentColor;
-      ctx.beginPath();
-      ctx.arc(position.x, position.y, brushSettings.size / 2, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-  }, [getCanvas, getCanvasCoordinates, currentTool, pickColor, onColorPicked, saveCanvasState, setIsDrawing, setLastPosition, brushSettings, currentColor, isShapeTool, setShapeStartPosition]);
+  }, [getCanvas, getCanvasCoordinates, currentTool, pickColor, onColorPicked, onTextClick, setIsDrawing, setShapeStartPosition, setSelectionArea, saveCanvasState, setLastPosition, brushSettings, currentColor, isShapeTool]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = getCanvas();
@@ -123,6 +152,22 @@ export const useCanvasEventHandlers = ({
     
     if (!isDrawing || !lastPosition) return;
     
+    // Handle selection tool
+    if (currentTool === 'select' && shapeStartPosition) {
+      const width = currentPosition.x - shapeStartPosition.x;
+      const height = currentPosition.y - shapeStartPosition.y;
+      
+      if (setSelectionArea) {
+        setSelectionArea({
+          startX: Math.min(shapeStartPosition.x, currentPosition.x),
+          startY: Math.min(shapeStartPosition.y, currentPosition.y),
+          width: Math.abs(width),
+          height: Math.abs(height)
+        });
+      }
+      return;
+    }
+    
     // Handle brush and eraser tools
     if (currentTool === 'brush' || currentTool === 'eraser') {
       drawLine(lastPosition, currentPosition, ctx);
@@ -133,7 +178,7 @@ export const useCanvasEventHandlers = ({
     if (isShapeTool(currentTool) && shapeStartPosition) {
       drawShapePreview(shapeStartPosition, currentPosition, currentTool);
     }
-  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, previewColor, drawLine, setLastPosition, isShapeTool, shapeStartPosition, drawShapePreview]);
+  }, [isDrawing, lastPosition, getCanvas, getCanvasCoordinates, currentTool, previewColor, shapeStartPosition, setSelectionArea, drawLine, setLastPosition, isShapeTool, drawShapePreview]);
 
   const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
@@ -146,6 +191,14 @@ export const useCanvasEventHandlers = ({
     
     const currentPosition = getCanvasCoordinates(e);
     
+    // Handle selection tool
+    if (currentTool === 'select' && shapeStartPosition) {
+      // Selection is already set in mousemove
+      setShapeStartPosition(null);
+      setIsDrawing(false);
+      return;
+    }
+    
     // Draw shape if using a shape tool
     if (isShapeTool(currentTool) && shapeStartPosition) {
       clearShapePreview(); // Clear the preview
@@ -155,7 +208,7 @@ export const useCanvasEventHandlers = ({
     
     setIsDrawing(false);
     setLastPosition(null);
-  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, isShapeTool, shapeStartPosition, drawShape, setIsDrawing, setLastPosition, clearShapePreview]);
+  }, [isDrawing, getCanvas, getCanvasCoordinates, currentTool, shapeStartPosition, setShapeStartPosition, setIsDrawing, isShapeTool, drawShape, setLastPosition, clearShapePreview]);
 
   const handleMouseLeave = useCallback(() => {
     setIsDrawing(false);

@@ -8,15 +8,20 @@ import { BrushPanel } from "./painting-tool/BrushPanel";
 import { ColorPanel } from "./painting-tool/ColorPanel";
 import { ShapePanel } from "./painting-tool/ShapePanel";
 import { LayerPanel } from "./painting-tool/LayerPanel";
+import { TextPanel } from "./painting-tool/TextPanel";
+import { ResizeCropPanel } from "./painting-tool/ResizeCropPanel";
 import { PaintingCanvas } from "./painting-tool/PaintingCanvas";
 import { ToolbarPanel } from "./painting-tool/ToolbarPanel";
 import { ImageUploadPanel } from "./painting-tool/ImageUploadPanel";
+import { TextInputDialog } from "./painting-tool/TextInputDialog";
 import { usePaintingTool } from "./painting-tool/usePaintingTool";
 
 const PaintingDrawingTool = () => {
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewColor, setPreviewColor] = useState<string | null>(null);
+  const [textDialogOpen, setTextDialogOpen] = useState(false);
+  const [textPosition, setTextPosition] = useState<{ x: number; y: number } | null>(null);
   
   const {
     currentTool,
@@ -33,10 +38,21 @@ const PaintingDrawingTool = () => {
     setLastPosition,
     undoStack,
     redoStack,
+    textSettings,
+    setTextSettings,
+    selectionArea,
+    setSelectionArea,
+    copiedImageData,
     saveCanvasState,
     undo,
     redo,
     clearCanvas,
+    resizeCanvas,
+    cropCanvas,
+    copySelection,
+    pasteSelection,
+    cutSelection,
+    addText,
     exportCanvas,
     uploadImage
   } = usePaintingTool(canvasRef);
@@ -57,6 +73,61 @@ const PaintingDrawingTool = () => {
   const handleExport = (format?: 'png' | 'jpg' | 'gif' | 'bmp') => {
     exportCanvas(format);
   };
+
+  const handleTextClick = (position: { x: number; y: number }) => {
+    setTextPosition(position);
+    setTextDialogOpen(true);
+  };
+
+  const handleAddText = (text: string) => {
+    if (textPosition) {
+      addText(textPosition, text);
+      setTextPosition(null);
+    }
+  };
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key.toLowerCase()) {
+          case 'z':
+            e.preventDefault();
+            if (e.shiftKey) {
+              redo();
+            } else {
+              undo();
+            }
+            break;
+          case 'y':
+            e.preventDefault();
+            redo();
+            break;
+          case 'c':
+            if (selectionArea) {
+              e.preventDefault();
+              copySelection();
+            }
+            break;
+          case 'x':
+            if (selectionArea) {
+              e.preventDefault();
+              cutSelection();
+            }
+            break;
+          case 'v':
+            if (copiedImageData && textPosition) {
+              e.preventDefault();
+              pasteSelection(textPosition);
+            }
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo, selectionArea, copySelection, cutSelection, copiedImageData, textPosition, pasteSelection]);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
@@ -82,23 +153,29 @@ const PaintingDrawingTool = () => {
             onRedo={redo}
             onClear={clearCanvas}
             onExport={handleExport}
+            onCopy={copySelection}
+            onCut={cutSelection}
+            canCopy={selectionArea !== null}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Tool Panels */}
             <div className="lg:col-span-1 space-y-4">
               <Tabs defaultValue="brush" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="brush">Brush</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="brush">Tools</TabsTrigger>
                   <TabsTrigger value="color">Color</TabsTrigger>
-                  <TabsTrigger value="shapes">Shapes</TabsTrigger>
-                  <TabsTrigger value="upload">Upload</TabsTrigger>
+                  <TabsTrigger value="advanced">Advanced</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="brush" className="space-y-4">
                   <BrushPanel 
                     brushSettings={brushSettings}
                     onBrushSettingsChange={setBrushSettings}
+                  />
+                  <ShapePanel 
+                    onShapeSelect={(shape) => setCurrentTool(shape)}
+                    currentTool={currentTool}
                   />
                 </TabsContent>
                 
@@ -113,14 +190,21 @@ const PaintingDrawingTool = () => {
                   />
                 </TabsContent>
                 
-                <TabsContent value="shapes" className="space-y-4">
-                  <ShapePanel 
-                    onShapeSelect={(shape) => setCurrentTool(shape)}
-                    currentTool={currentTool}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="upload" className="space-y-4">
+                <TabsContent value="advanced" className="space-y-4">
+                  {(currentTool === 'text') && (
+                    <TextPanel 
+                      textSettings={textSettings}
+                      onTextSettingsChange={setTextSettings}
+                    />
+                  )}
+                  {(currentTool === 'resize' || currentTool === 'crop') && (
+                    <ResizeCropPanel 
+                      canvasSize={canvasSize}
+                      selectionArea={selectionArea}
+                      onResize={resizeCanvas}
+                      onCrop={cropCanvas}
+                    />
+                  )}
                   <ImageUploadPanel 
                     onImageUpload={uploadImage}
                     canvasSize={canvasSize}
@@ -145,11 +229,22 @@ const PaintingDrawingTool = () => {
                 saveCanvasState={saveCanvasState}
                 onColorPicked={handleColorPicked}
                 onColorPreview={handleColorPreview}
+                selectionArea={selectionArea}
+                setSelectionArea={setSelectionArea}
+                onTextClick={handleTextClick}
+                onPasteAt={pasteSelection}
+                copiedImageData={copiedImageData}
               />
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <TextInputDialog
+        isOpen={textDialogOpen}
+        onClose={() => setTextDialogOpen(false)}
+        onAddText={handleAddText}
+      />
     </div>
   );
 };

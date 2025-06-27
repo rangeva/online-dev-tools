@@ -1,4 +1,3 @@
-
 import { useState, useCallback, RefObject } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -20,7 +19,22 @@ export interface Position {
   y: number;
 }
 
-export type Tool = 'brush' | 'eraser' | 'rectangle' | 'circle' | 'line' | 'polygon' | 'eyedropper';
+export interface TextSettings {
+  fontSize: number;
+  fontFamily: string;
+  color: string;
+  bold: boolean;
+  italic: boolean;
+}
+
+export interface SelectionArea {
+  startX: number;
+  startY: number;
+  width: number;
+  height: number;
+}
+
+export type Tool = 'brush' | 'eraser' | 'rectangle' | 'circle' | 'line' | 'polygon' | 'eyedropper' | 'select' | 'text' | 'crop' | 'resize';
 
 export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
   const { toast } = useToast();
@@ -39,6 +53,15 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
   const [lastPosition, setLastPosition] = useState<Position | null>(null);
   const [undoStack, setUndoStack] = useState<ImageData[]>([]);
   const [redoStack, setRedoStack] = useState<ImageData[]>([]);
+  const [textSettings, setTextSettings] = useState<TextSettings>({
+    fontSize: 16,
+    fontFamily: 'Arial',
+    color: '#000000',
+    bold: false,
+    italic: false
+  });
+  const [selectionArea, setSelectionArea] = useState<SelectionArea | null>(null);
+  const [copiedImageData, setCopiedImageData] = useState<ImageData | null>(null);
 
   const saveCanvasState = useCallback(() => {
     if (!canvasRef.current) return;
@@ -101,6 +124,156 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
       description: "The canvas has been cleared successfully.",
     });
   }, [canvasRef, saveCanvasState, toast]);
+
+  const resizeCanvas = useCallback((newSize: CanvasSize) => {
+    if (!canvasRef.current) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Save current content
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+    // Update canvas size
+    canvas.width = newSize.width;
+    canvas.height = newSize.height;
+    
+    // Fill with white background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Restore content
+    ctx.putImageData(imageData, 0, 0);
+    
+    setCanvasSize(newSize);
+    
+    toast({
+      title: "Canvas Resized",
+      description: `Canvas resized to ${newSize.width}x${newSize.height}`,
+    });
+  }, [canvasRef, toast]);
+
+  const cropCanvas = useCallback((selection: SelectionArea) => {
+    if (!canvasRef.current) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    saveCanvasState();
+    
+    // Get the selected area
+    const imageData = ctx.getImageData(selection.startX, selection.startY, selection.width, selection.height);
+    
+    // Resize canvas to selection size
+    canvas.width = selection.width;
+    canvas.height = selection.height;
+    
+    // Fill with white background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Put the cropped image
+    ctx.putImageData(imageData, 0, 0);
+    
+    setCanvasSize({ width: selection.width, height: selection.height });
+    setSelectionArea(null);
+    
+    toast({
+      title: "Image Cropped",
+      description: "The canvas has been cropped to the selected area.",
+    });
+  }, [canvasRef, saveCanvasState, toast]);
+
+  const copySelection = useCallback(() => {
+    if (!canvasRef.current || !selectionArea) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const imageData = ctx.getImageData(
+      selectionArea.startX, 
+      selectionArea.startY, 
+      selectionArea.width, 
+      selectionArea.height
+    );
+    
+    setCopiedImageData(imageData);
+    
+    toast({
+      title: "Selection Copied",
+      description: "The selected area has been copied to clipboard.",
+    });
+  }, [canvasRef, selectionArea, toast]);
+
+  const pasteSelection = useCallback((position: Position) => {
+    if (!canvasRef.current || !copiedImageData) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    saveCanvasState();
+    ctx.putImageData(copiedImageData, position.x, position.y);
+    
+    toast({
+      title: "Selection Pasted",
+      description: "The copied content has been pasted.",
+    });
+  }, [canvasRef, copiedImageData, saveCanvasState, toast]);
+
+  const cutSelection = useCallback(() => {
+    if (!canvasRef.current || !selectionArea) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    saveCanvasState();
+    
+    // Copy first
+    const imageData = ctx.getImageData(
+      selectionArea.startX, 
+      selectionArea.startY, 
+      selectionArea.width, 
+      selectionArea.height
+    );
+    setCopiedImageData(imageData);
+    
+    // Then clear the area
+    ctx.fillStyle = 'white';
+    ctx.fillRect(selectionArea.startX, selectionArea.startY, selectionArea.width, selectionArea.height);
+    
+    setSelectionArea(null);
+    
+    toast({
+      title: "Selection Cut",
+      description: "The selected area has been cut and copied.",
+    });
+  }, [canvasRef, selectionArea, saveCanvasState, toast]);
+
+  const addText = useCallback((position: Position, text: string) => {
+    if (!canvasRef.current) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    saveCanvasState();
+    
+    ctx.fillStyle = textSettings.color;
+    ctx.font = `${textSettings.italic ? 'italic ' : ''}${textSettings.bold ? 'bold ' : ''}${textSettings.fontSize}px ${textSettings.fontFamily}`;
+    ctx.textBaseline = 'top';
+    
+    ctx.fillText(text, position.x, position.y);
+    
+    toast({
+      title: "Text Added",
+      description: "Text has been added to the canvas.",
+    });
+  }, [canvasRef, textSettings, saveCanvasState, toast]);
 
   const exportCanvas = useCallback((format: 'png' | 'jpg' | 'gif' | 'bmp' = 'png') => {
     if (!canvasRef.current) return;
@@ -202,10 +375,21 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
     setLastPosition,
     undoStack,
     redoStack,
+    textSettings,
+    setTextSettings,
+    selectionArea,
+    setSelectionArea,
+    copiedImageData,
     saveCanvasState,
     undo,
     redo,
     clearCanvas,
+    resizeCanvas,
+    cropCanvas,
+    copySelection,
+    pasteSelection,
+    cutSelection,
+    addText,
     exportCanvas,
     uploadImage
   };

@@ -1,7 +1,7 @@
 
 import { forwardRef, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { BrushSettings, CanvasSize, Position, Tool } from "./usePaintingTool";
+import { BrushSettings, CanvasSize, Position, Tool, SelectionArea } from "./usePaintingTool";
 import { ShapePreview } from "./ShapePreview";
 import { CanvasRenderer } from "./CanvasRenderer";
 import { useCanvasEventHandlers } from "./CanvasEventHandlers";
@@ -18,10 +18,32 @@ interface PaintingCanvasProps {
   saveCanvasState: () => void;
   onColorPicked: (color: string) => void;
   onColorPreview?: (color: string | null) => void;
+  selectionArea?: SelectionArea | null;
+  setSelectionArea?: (area: SelectionArea | null) => void;
+  onTextClick?: (position: Position) => void;
+  onPasteAt?: (position: Position) => void;
+  copiedImageData?: ImageData | null;
 }
 
 export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>(
-  ({ canvasSize, currentTool, brushSettings, currentColor, isDrawing, setIsDrawing, lastPosition, setLastPosition, saveCanvasState, onColorPicked, onColorPreview }, ref) => {
+  ({ 
+    canvasSize, 
+    currentTool, 
+    brushSettings, 
+    currentColor, 
+    isDrawing, 
+    setIsDrawing, 
+    lastPosition, 
+    setLastPosition, 
+    saveCanvasState, 
+    onColorPicked, 
+    onColorPreview,
+    selectionArea,
+    setSelectionArea,
+    onTextClick,
+    onPasteAt,
+    copiedImageData
+  }, ref) => {
     
     const [shapeStartPosition, setShapeStartPosition] = useState<Position | null>(null);
 
@@ -46,11 +68,36 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
       shapeStartPosition,
       setShapeStartPosition,
       drawShapePreview,
-      clearShapePreview
+      clearShapePreview,
+      selectionArea,
+      setSelectionArea,
+      onTextClick,
+      onPasteAt,
+      copiedImageData
     });
 
     const isShapeTool = (tool: Tool) => {
       return ['rectangle', 'circle', 'line', 'polygon'].includes(tool);
+    };
+
+    const getToolInstructions = () => {
+      switch (currentTool) {
+        case 'eyedropper':
+          return 'Hover over the canvas to preview colors, click to select';
+        case 'select':
+          return 'Click and drag to make a selection';
+        case 'text':
+          return 'Click where you want to add text';
+        case 'crop':
+          return 'Make a selection first, then use the crop tool in the Advanced panel';
+        case 'resize':
+          return 'Use the resize controls in the Advanced panel';
+        default:
+          if (isShapeTool(currentTool)) {
+            return `Click and drag to draw a ${currentTool}`;
+          }
+          return '';
+      }
     };
 
     return (
@@ -65,14 +112,29 @@ export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>
           onMouseLeave={handleMouseLeave}
           previewCanvasRef={previewCanvasRef}
         />
-        {currentTool === 'eyedropper' && (
+        
+        {/* Selection overlay */}
+        {selectionArea && (
+          <div
+            className="absolute border-2 border-dashed border-blue-500 bg-blue-200 bg-opacity-20 pointer-events-none"
+            style={{
+              left: selectionArea.startX,
+              top: selectionArea.startY,
+              width: selectionArea.width,
+              height: selectionArea.height,
+            }}
+          />
+        )}
+
+        {getToolInstructions() && (
           <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Hover over the canvas to preview colors, click to select
+            {getToolInstructions()}
           </div>
         )}
-        {isShapeTool(currentTool) && (
-          <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Click and drag to draw a {currentTool}
+
+        {currentTool === 'select' && selectionArea && (
+          <div className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+            Selection: {selectionArea.width} × {selectionArea.height} px
           </div>
         )}
       </Card>
