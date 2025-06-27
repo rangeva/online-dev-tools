@@ -31,7 +31,9 @@ const CHART_COLORS = [
   "#2563eb", // blue
   "#dc2626", // red
   "#16a34a", // green
-  "#ca8a04"  // yellow
+  "#ca8a04", // yellow
+  "#9333ea", // purple
+  "#ea580c"  // orange
 ];
 
 const WebsiteRankTracker = () => {
@@ -75,6 +77,7 @@ const WebsiteRankTracker = () => {
         const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
         
         try {
+          console.log(`Fetching data for domain: ${cleanDomain}`);
           const response = await fetch(`https://tranco-list.eu/api/ranks/domain/${cleanDomain}`);
           
           if (!response.ok) {
@@ -83,6 +86,7 @@ const WebsiteRankTracker = () => {
           }
           
           const result: TrancoResponse = await response.json();
+          console.log(`Received data for ${cleanDomain}:`, result);
           
           if (!result.ranks || result.ranks.length === 0) {
             console.warn(`No ranking data found for ${cleanDomain}`);
@@ -97,23 +101,28 @@ const WebsiteRankTracker = () => {
             currentRank - sortedData[sortedData.length - 2].rank : null;
           
           results.push({
-            domain: result.domain,
+            domain: result.domain || cleanDomain,
             data: sortedData,
-            color: CHART_COLORS[i],
+            color: CHART_COLORS[i % CHART_COLORS.length],
             currentRank,
             trend
           });
+          
+          console.log(`Successfully added data for ${result.domain || cleanDomain}`);
         } catch (domainError) {
           console.warn(`Error fetching data for ${cleanDomain}:`, domainError);
         }
       }
       
+      console.log(`Total domains with data: ${results.length}`);
+      
       if (results.length === 0) {
-        throw new Error("No valid ranking data found for any of the provided domains");
+        throw new Error("No valid ranking data found for any of the provided domains. Please check the domain names and try again.");
       }
       
       setDomainData(results);
     } catch (err) {
+      console.error("Error in fetchRankingData:", err);
       setError(err instanceof Error ? err.message : "An error occurred while fetching data");
       setDomainData([]);
     } finally {
@@ -127,25 +136,35 @@ const WebsiteRankTracker = () => {
     }
   };
 
-  // Create combined chart data
+  // Create combined chart data with all domains
   const createChartData = () => {
     if (domainData.length === 0) return [];
     
+    // Get all unique dates from all domains
     const allDates = new Set<string>();
     domainData.forEach(domain => {
       domain.data.forEach(item => allDates.add(item.date));
     });
     
-    const sortedDates = Array.from(allDates).sort();
+    const sortedDates = Array.from(allDates).sort((a, b) => 
+      new Date(a).getTime() - new Date(b).getTime()
+    );
     
-    return sortedDates.map(date => {
+    // Create data points for each date
+    const chartData = sortedDates.map(date => {
       const dataPoint: any = { date };
+      
+      // Add rank data for each domain on this date
       domainData.forEach(domain => {
         const rankData = domain.data.find(item => item.date === date);
-        dataPoint[domain.domain] = rankData?.rank || null;
+        dataPoint[domain.domain] = rankData ? rankData.rank : null;
       });
+      
       return dataPoint;
     });
+    
+    console.log("Chart data created:", chartData);
+    return chartData;
   };
 
   const chartConfig = domainData.reduce((config, domain) => {
@@ -276,7 +295,7 @@ const WebsiteRankTracker = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Ranking Comparison</CardTitle>
+              <CardTitle>Ranking Comparison ({domainData.length} domain{domainData.length > 1 ? 's' : ''})</CardTitle>
               <CardDescription>
                 Website rankings over time (lower numbers are better)
               </CardDescription>
@@ -284,7 +303,7 @@ const WebsiteRankTracker = () => {
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
+                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="date" 
