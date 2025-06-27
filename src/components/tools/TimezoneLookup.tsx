@@ -49,36 +49,203 @@ const TimezoneLookup = () => {
   const getTimezoneInfo = async (location: string) => {
     setIsLoading(true);
     try {
-      // For this demo, we'll use a simplified approach with known timezone mappings
-      // In a real application, you'd use a proper geocoding and timezone API
+      // Comprehensive timezone mapping including all US states and major international cities
       const timezoneMap: Record<string, { timezone: string; country: string }> = {
-        'new york': { timezone: 'America/New_York', country: 'United States' },
-        'los angeles': { timezone: 'America/Los_Angeles', country: 'United States' },
-        'chicago': { timezone: 'America/Chicago', country: 'United States' },
-        'miami': { timezone: 'America/New_York', country: 'United States' },
-        'denver': { timezone: 'America/Denver', country: 'United States' },
+        // US States and Major Cities
+        'alabama': { timezone: 'America/Chicago', country: 'United States' },
+        'birmingham': { timezone: 'America/Chicago', country: 'United States' },
+        'montgomery': { timezone: 'America/Chicago', country: 'United States' },
+        'alaska': { timezone: 'America/Anchorage', country: 'United States' },
+        'anchorage': { timezone: 'America/Anchorage', country: 'United States' },
+        'fairbanks': { timezone: 'America/Anchorage', country: 'United States' },
+        'arizona': { timezone: 'America/Phoenix', country: 'United States' },
         'phoenix': { timezone: 'America/Phoenix', country: 'United States' },
+        'tucson': { timezone: 'America/Phoenix', country: 'United States' },
+        'arkansas': { timezone: 'America/Chicago', country: 'United States' },
+        'little rock': { timezone: 'America/Chicago', country: 'United States' },
+        'california': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'los angeles': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'san francisco': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'san diego': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'sacramento': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'colorado': { timezone: 'America/Denver', country: 'United States' },
+        'denver': { timezone: 'America/Denver', country: 'United States' },
+        'colorado springs': { timezone: 'America/Denver', country: 'United States' },
+        'connecticut': { timezone: 'America/New_York', country: 'United States' },
+        'hartford': { timezone: 'America/New_York', country: 'United States' },
+        'delaware': { timezone: 'America/New_York', country: 'United States' },
+        'wilmington': { timezone: 'America/New_York', country: 'United States' },
+        'florida': { timezone: 'America/New_York', country: 'United States' },
+        'miami': { timezone: 'America/New_York', country: 'United States' },
+        'tampa': { timezone: 'America/New_York', country: 'United States' },
+        'orlando': { timezone: 'America/New_York', country: 'United States' },
+        'jacksonville': { timezone: 'America/New_York', country: 'United States' },
+        'georgia': { timezone: 'America/New_York', country: 'United States' },
+        'atlanta': { timezone: 'America/New_York', country: 'United States' },
+        'savannah': { timezone: 'America/New_York', country: 'United States' },
+        'hawaii': { timezone: 'Pacific/Honolulu', country: 'United States' },
+        'honolulu': { timezone: 'Pacific/Honolulu', country: 'United States' },
+        'idaho': { timezone: 'America/Boise', country: 'United States' },
+        'boise': { timezone: 'America/Boise', country: 'United States' },
+        'illinois': { timezone: 'America/Chicago', country: 'United States' },
+        'chicago': { timezone: 'America/Chicago', country: 'United States' },
+        'springfield': { timezone: 'America/Chicago', country: 'United States' },
+        'indiana': { timezone: 'America/Indiana/Indianapolis', country: 'United States' },
+        'indianapolis': { timezone: 'America/Indiana/Indianapolis', country: 'United States' },
+        'iowa': { timezone: 'America/Chicago', country: 'United States' },
+        'des moines': { timezone: 'America/Chicago', country: 'United States' },
+        'kansas': { timezone: 'America/Chicago', country: 'United States' },
+        'wichita': { timezone: 'America/Chicago', country: 'United States' },
+        'kentucky': { timezone: 'America/New_York', country: 'United States' },
+        'louisville': { timezone: 'America/New_York', country: 'United States' },
+        'louisiana': { timezone: 'America/Chicago', country: 'United States' },
+        'new orleans': { timezone: 'America/Chicago', country: 'United States' },
+        'baton rouge': { timezone: 'America/Chicago', country: 'United States' },
+        'maine': { timezone: 'America/New_York', country: 'United States' },
+        'portland': { timezone: 'America/New_York', country: 'United States' },
+        'maryland': { timezone: 'America/New_York', country: 'United States' },
+        'baltimore': { timezone: 'America/New_York', country: 'United States' },
+        'massachusetts': { timezone: 'America/New_York', country: 'United States' },
+        'boston': { timezone: 'America/New_York', country: 'United States' },
+        'michigan': { timezone: 'America/Detroit', country: 'United States' },
+        'detroit': { timezone: 'America/Detroit', country: 'United States' },
+        'grand rapids': { timezone: 'America/Detroit', country: 'United States' },
+        'minnesota': { timezone: 'America/Chicago', country: 'United States' },
+        'minneapolis': { timezone: 'America/Chicago', country: 'United States' },
+        'saint paul': { timezone: 'America/Chicago', country: 'United States' },
+        'mississippi': { timezone: 'America/Chicago', country: 'United States' },
+        'jackson': { timezone: 'America/Chicago', country: 'United States' },
+        'missouri': { timezone: 'America/Chicago', country: 'United States' },
+        'kansas city': { timezone: 'America/Chicago', country: 'United States' },
+        'st louis': { timezone: 'America/Chicago', country: 'United States' },
+        'montana': { timezone: 'America/Denver', country: 'United States' },
+        'billings': { timezone: 'America/Denver', country: 'United States' },
+        'nebraska': { timezone: 'America/Chicago', country: 'United States' },
+        'omaha': { timezone: 'America/Chicago', country: 'United States' },
+        'nevada': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'las vegas': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'reno': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'new hampshire': { timezone: 'America/New_York', country: 'United States' },
+        'manchester': { timezone: 'America/New_York', country: 'United States' },
+        'new jersey': { timezone: 'America/New_York', country: 'United States' },
+        'newark': { timezone: 'America/New_York', country: 'United States' },
+        'new mexico': { timezone: 'America/Denver', country: 'United States' },
+        'albuquerque': { timezone: 'America/Denver', country: 'United States' },
+        'new york': { timezone: 'America/New_York', country: 'United States' },
+        'buffalo': { timezone: 'America/New_York', country: 'United States' },
+        'rochester': { timezone: 'America/New_York', country: 'United States' },
+        'north carolina': { timezone: 'America/New_York', country: 'United States' },
+        'charlotte': { timezone: 'America/New_York', country: 'United States' },
+        'raleigh': { timezone: 'America/New_York', country: 'United States' },
+        'north dakota': { timezone: 'America/Chicago', country: 'United States' },
+        'fargo': { timezone: 'America/Chicago', country: 'United States' },
+        'ohio': { timezone: 'America/New_York', country: 'United States' },
+        'columbus': { timezone: 'America/New_York', country: 'United States' },
+        'cleveland': { timezone: 'America/New_York', country: 'United States' },
+        'cincinnati': { timezone: 'America/New_York', country: 'United States' },
+        'oklahoma': { timezone: 'America/Chicago', country: 'United States' },
+        'oklahoma city': { timezone: 'America/Chicago', country: 'United States' },
+        'tulsa': { timezone: 'America/Chicago', country: 'United States' },
+        'oregon': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'portland oregon': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'eugene': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'pennsylvania': { timezone: 'America/New_York', country: 'United States' },
+        'philadelphia': { timezone: 'America/New_York', country: 'United States' },
+        'pittsburgh': { timezone: 'America/New_York', country: 'United States' },
+        'rhode island': { timezone: 'America/New_York', country: 'United States' },
+        'providence': { timezone: 'America/New_York', country: 'United States' },
+        'south carolina': { timezone: 'America/New_York', country: 'United States' },
+        'charleston': { timezone: 'America/New_York', country: 'United States' },
+        'columbia': { timezone: 'America/New_York', country: 'United States' },
+        'south dakota': { timezone: 'America/Chicago', country: 'United States' },
+        'sioux falls': { timezone: 'America/Chicago', country: 'United States' },
+        'tennessee': { timezone: 'America/Chicago', country: 'United States' },
+        'nashville': { timezone: 'America/Chicago', country: 'United States' },
+        'memphis': { timezone: 'America/Chicago', country: 'United States' },
+        'texas': { timezone: 'America/Chicago', country: 'United States' },
+        'houston': { timezone: 'America/Chicago', country: 'United States' },
+        'dallas': { timezone: 'America/Chicago', country: 'United States' },
+        'san antonio': { timezone: 'America/Chicago', country: 'United States' },
+        'austin': { timezone: 'America/Chicago', country: 'United States' },
+        'utah': { timezone: 'America/Denver', country: 'United States' },
+        'salt lake city': { timezone: 'America/Denver', country: 'United States' },
+        'vermont': { timezone: 'America/New_York', country: 'United States' },
+        'burlington': { timezone: 'America/New_York', country: 'United States' },
+        'virginia': { timezone: 'America/New_York', country: 'United States' },
+        'virginia beach': { timezone: 'America/New_York', country: 'United States' },
+        'richmond': { timezone: 'America/New_York', country: 'United States' },
+        'washington': { timezone: 'America/Los_Angeles', country: 'United States' },
         'seattle': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'spokane': { timezone: 'America/Los_Angeles', country: 'United States' },
+        'west virginia': { timezone: 'America/New_York', country: 'United States' },
+        'charleston wv': { timezone: 'America/New_York', country: 'United States' },
+        'wisconsin': { timezone: 'America/Chicago', country: 'United States' },
+        'milwaukee': { timezone: 'America/Chicago', country: 'United States' },
+        'madison': { timezone: 'America/Chicago', country: 'United States' },
+        'wyoming': { timezone: 'America/Denver', country: 'United States' },
+        'cheyenne': { timezone: 'America/Denver', country: 'United States' },
+        
+        // Washington DC
+        'washington dc': { timezone: 'America/New_York', country: 'United States' },
+        'dc': { timezone: 'America/New_York', country: 'United States' },
+        
+        // Major International Cities
         'london': { timezone: 'Europe/London', country: 'United Kingdom' },
         'paris': { timezone: 'Europe/Paris', country: 'France' },
         'berlin': { timezone: 'Europe/Berlin', country: 'Germany' },
-        'tokyo': { timezone: 'Asia/Tokyo', country: 'Japan' },
-        'sydney': { timezone: 'Australia/Sydney', country: 'Australia' },
-        'dubai': { timezone: 'Asia/Dubai', country: 'United Arab Emirates' },
-        'singapore': { timezone: 'Asia/Singapore', country: 'Singapore' },
-        'mumbai': { timezone: 'Asia/Kolkata', country: 'India' },
-        'beijing': { timezone: 'Asia/Shanghai', country: 'China' },
+        'rome': { timezone: 'Europe/Rome', country: 'Italy' },
+        'madrid': { timezone: 'Europe/Madrid', country: 'Spain' },
+        'amsterdam': { timezone: 'Europe/Amsterdam', country: 'Netherlands' },
+        'zurich': { timezone: 'Europe/Zurich', country: 'Switzerland' },
+        'vienna': { timezone: 'Europe/Vienna', country: 'Austria' },
+        'stockholm': { timezone: 'Europe/Stockholm', country: 'Sweden' },
+        'oslo': { timezone: 'Europe/Oslo', country: 'Norway' },
+        'copenhagen': { timezone: 'Europe/Copenhagen', country: 'Denmark' },
+        'helsinki': { timezone: 'Europe/Helsinki', country: 'Finland' },
+        'warsaw': { timezone: 'Europe/Warsaw', country: 'Poland' },
+        'prague': { timezone: 'Europe/Prague', country: 'Czech Republic' },
+        'budapest': { timezone: 'Europe/Budapest', country: 'Hungary' },
         'moscow': { timezone: 'Europe/Moscow', country: 'Russia' },
+        'istanbul': { timezone: 'Europe/Istanbul', country: 'Turkey' },
+        'tokyo': { timezone: 'Asia/Tokyo', country: 'Japan' },
+        'seoul': { timezone: 'Asia/Seoul', country: 'South Korea' },
+        'beijing': { timezone: 'Asia/Shanghai', country: 'China' },
+        'shanghai': { timezone: 'Asia/Shanghai', country: 'China' },
+        'hong kong': { timezone: 'Asia/Hong_Kong', country: 'Hong Kong' },
+        'singapore': { timezone: 'Asia/Singapore', country: 'Singapore' },
+        'bangkok': { timezone: 'Asia/Bangkok', country: 'Thailand' },
+        'mumbai': { timezone: 'Asia/Kolkata', country: 'India' },
+        'delhi': { timezone: 'Asia/Kolkata', country: 'India' },
+        'dubai': { timezone: 'Asia/Dubai', country: 'United Arab Emirates' },
+        'sydney': { timezone: 'Australia/Sydney', country: 'Australia' },
+        'melbourne': { timezone: 'Australia/Melbourne', country: 'Australia' },
+        'brisbane': { timezone: 'Australia/Brisbane', country: 'Australia' },
+        'perth': { timezone: 'Australia/Perth', country: 'Australia' },
         'toronto': { timezone: 'America/Toronto', country: 'Canada' },
         'vancouver': { timezone: 'America/Vancouver', country: 'Canada' },
-        'mexico city': { timezone: 'America/Mexico_City', country: 'Mexico' }
+        'montreal': { timezone: 'America/Montreal', country: 'Canada' },
+        'calgary': { timezone: 'America/Edmonton', country: 'Canada' },
+        'ottawa': { timezone: 'America/Toronto', country: 'Canada' },
+        'mexico city': { timezone: 'America/Mexico_City', country: 'Mexico' },
+        'guadalajara': { timezone: 'America/Mexico_City', country: 'Mexico' },
+        'sao paulo': { timezone: 'America/Sao_Paulo', country: 'Brazil' },
+        'rio de janeiro': { timezone: 'America/Sao_Paulo', country: 'Brazil' },
+        'buenos aires': { timezone: 'America/Argentina/Buenos_Aires', country: 'Argentina' },
+        'lima': { timezone: 'America/Lima', country: 'Peru' },
+        'bogota': { timezone: 'America/Bogota', country: 'Colombia' },
+        'santiago': { timezone: 'America/Santiago', country: 'Chile' },
+        'cape town': { timezone: 'Africa/Johannesburg', country: 'South Africa' },
+        'johannesburg': { timezone: 'Africa/Johannesburg', country: 'South Africa' },
+        'cairo': { timezone: 'Africa/Cairo', country: 'Egypt' },
+        'lagos': { timezone: 'Africa/Lagos', country: 'Nigeria' },
+        'nairobi': { timezone: 'Africa/Nairobi', country: 'Kenya' }
       };
 
       const normalizedLocation = location.toLowerCase().trim();
       const timezoneData = timezoneMap[normalizedLocation];
 
       if (!timezoneData) {
-        throw new Error(`Timezone information not found for "${location}". Try searching for major cities like New York, London, Tokyo, etc.`);
+        throw new Error(`Timezone information not found for "${location}". Try searching for US states, major cities, or international locations.`);
       }
 
       const now = new Date();
@@ -198,10 +365,10 @@ const TimezoneLookup = () => {
           <div className="space-y-4">
             <div className="flex gap-2">
               <div className="flex-1">
-                <Label htmlFor="location">Enter City or Location</Label>
+                <Label htmlFor="location">Enter City, State, or Location</Label>
                 <Input
                   id="location"
-                  placeholder="e.g., New York, London, Tokyo, Los Angeles..."
+                  placeholder="e.g., California, Texas, New York, London, Tokyo..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -323,8 +490,8 @@ const TimezoneLookup = () => {
               <CardContent className="pt-6">
                 <div className="text-center text-muted-foreground">
                   <Globe className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>Enter a city name or select from popular locations to get timezone information.</p>
-                  <p className="text-sm mt-1">Supports major cities worldwide and US states/cities.</p>
+                  <p>Enter a city name, US state, or select from popular locations to get timezone information.</p>
+                  <p className="text-sm mt-1">Now supports all 50 US states, major cities worldwide, and international locations.</p>
                 </div>
               </CardContent>
             </Card>
