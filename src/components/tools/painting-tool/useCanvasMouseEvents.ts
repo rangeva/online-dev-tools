@@ -36,7 +36,9 @@ export const useCanvasMouseEvents = (props: CanvasMouseEventsProps) => {
     canvasRef,
     currentTool,
     currentColor,
-    saveCanvasState
+    saveCanvasState,
+    isDrawing,
+    lastPosition
   } = props;
 
   const { handleToolEvents } = useCanvasToolEvents(props);
@@ -124,10 +126,13 @@ export const useCanvasMouseEvents = (props: CanvasMouseEventsProps) => {
 
       // Handle brush and eraser tools
       if (currentTool === 'brush' || currentTool === 'eraser') {
-        handleToolEvents.handleBrushMouseMove(position, ctx);
+        const handled = handleToolEvents.handleBrushMouseMove(position, lastPosition, ctx);
+        if (handled && isDrawing) {
+          // Mouse move handled by brush
+        }
         return;
       }
-    }, [currentTool, handleToolEvents]),
+    }, [currentTool, handleToolEvents, lastPosition, isDrawing]),
 
     onMouseUp: useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
       // Handle pasted image interactions
