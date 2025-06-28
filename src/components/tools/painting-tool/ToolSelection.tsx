@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tool, BrushSettings } from "./usePaintingTool";
 import { Eraser, Square, Type, Crop, ChevronDown } from "lucide-react";
 import { BrushSettingsDropdown } from "./BrushSettingsDropdown";
+import { ShapeSelectionDropdown } from "./ShapeSelectionDropdown";
 
 interface ToolSelectionProps {
   currentTool: Tool;
@@ -130,6 +131,12 @@ export const ToolSelection = ({
           previewColor={previewColor}
         />
       )}
+
+      {/* Shape Selection Dropdown */}
+      <ShapeSelectionDropdown 
+        currentTool={currentTool}
+        onToolChange={onToolChange}
+      />
       
       {tools.map((tool) => renderToolButton(tool))}
     </div>

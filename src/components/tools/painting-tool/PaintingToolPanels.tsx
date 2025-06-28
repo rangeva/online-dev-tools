@@ -1,5 +1,5 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShapePanel } from "./ShapePanel";
 import { TextPanel } from "./TextPanel";
 import { ResizeCropPanel } from "./ResizeCropPanel";
 import { Tool, BrushSettings, TextSettings, CanvasSize, SelectionArea } from "./usePaintingTool";
@@ -42,6 +42,19 @@ export const PaintingToolPanels = ({
   cropCanvas,
   uploadImage
 }: PaintingToolPanelsProps) => {
+  // Only show panels if there are relevant settings to display
+  const showTextPanel = currentTool === 'text';
+  const showResizeCropPanel = currentTool === 'resize' || currentTool === 'crop';
+  
+  // If no panels need to be shown, return a minimal placeholder
+  if (!showTextPanel && !showResizeCropPanel) {
+    return (
+      <div className="text-center text-gray-500 dark:text-gray-400 p-4">
+        <p className="text-sm">Select a tool to see its settings</p>
+      </div>
+    );
+  }
+
   return (
     <Tabs defaultValue="tools" className="w-full">
       <TabsList className="grid w-full grid-cols-1">
@@ -49,17 +62,13 @@ export const PaintingToolPanels = ({
       </TabsList>
       
       <TabsContent value="tools" className="space-y-4">
-        <ShapePanel 
-          onShapeSelect={(shape) => setCurrentTool(shape)}
-          currentTool={currentTool}
-        />
-        {(currentTool === 'text') && (
+        {showTextPanel && (
           <TextPanel 
             textSettings={textSettings}
             onTextSettingsChange={setTextSettings}
           />
         )}
-        {(currentTool === 'resize' || currentTool === 'crop') && (
+        {showResizeCropPanel && (
           <ResizeCropPanel 
             canvasSize={canvasSize}
             selectionArea={selectionArea}
