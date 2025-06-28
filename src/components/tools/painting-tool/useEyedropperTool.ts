@@ -16,7 +16,7 @@ export const useEyedropperTool = ({
 }: UseEyedropperToolProps) => {
   const { pickColor } = useCanvasDrawingLogic({
     currentTool: currentTool as any,
-    brushSettings: { size: 1, opacity: 1, flow: 1, hardness: 1, style: 'soft' },
+    brushSettings: { size: 1, opacity: 1, hardness: 1, style: 'soft', flow: 1 },
     currentColor: '#000000'
   });
 
