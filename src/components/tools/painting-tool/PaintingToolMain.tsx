@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -6,7 +5,6 @@ import { PaintingCanvas } from "./PaintingCanvas";
 import { ToolbarPanel } from "./ToolbarPanel";
 import { PaintingToolHeader } from "./PaintingToolHeader";
 import { PaintingToolPanels } from "./PaintingToolPanels";
-import { ColorPanel } from "./ColorPanel";
 import { ResizeDialog } from "./ResizeDialog";
 import { usePaintingTool } from "./usePaintingTool";
 import { usePaintingKeyboardShortcuts } from "./usePaintingKeyboardShortcuts";
@@ -154,19 +152,11 @@ export const PaintingToolMain = () => {
             onImageUpload={uploadImage}
             onImageResize={handleImageResize}
             onCanvasResize={handleCanvasResize}
+            currentColor={currentColor}
+            onColorChange={setCurrentColor}
+            canvasRef={canvasRef}
+            previewColor={previewColor}
           />
-
-          {/* Color Panel at the top */}
-          <div className="w-full">
-            <ColorPanel 
-              currentColor={currentColor}
-              onColorChange={setCurrentColor}
-              canvasRef={canvasRef}
-              currentTool={currentTool}
-              onToolChange={setCurrentTool}
-              previewColor={previewColor}
-            />
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Tool Panels */}
