@@ -19,8 +19,6 @@ export interface BrushSettings {
   size: number;
   opacity: number;
   hardness: number;
-  style: 'soft' | 'hard' | 'textured';
-  flow: number;
 }
 
 export interface Position {
@@ -33,9 +31,7 @@ export const useDrawingState = () => {
   const [brushSettings, setBrushSettings] = useState<BrushSettings>({
     size: 5,
     opacity: 100,
-    hardness: 100,
-    style: 'soft',
-    flow: 1
+    hardness: 100
   });
   const [currentColor, setCurrentColor] = useState('#000000');
   const [isDrawing, setIsDrawing] = useState(false);
