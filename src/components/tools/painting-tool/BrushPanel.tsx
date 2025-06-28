@@ -5,14 +5,17 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BrushSettings } from "./usePaintingTool";
-import { Brush, Palette } from "lucide-react";
+import { BrushSettings, Tool } from "./usePaintingTool";
+import { Brush, Palette, Pipette } from "lucide-react";
 
 interface BrushPanelProps {
   brushSettings: BrushSettings;
   onBrushSettingsChange: (settings: BrushSettings) => void;
   currentColor: string;
   onColorChange: (color: string) => void;
+  currentTool?: Tool;
+  onToolChange?: (tool: Tool) => void;
+  previewColor?: string;
 }
 
 const colorPalette = [
@@ -26,13 +29,22 @@ export const BrushPanel = ({
   brushSettings, 
   onBrushSettingsChange, 
   currentColor, 
-  onColorChange 
+  onColorChange,
+  currentTool,
+  onToolChange,
+  previewColor
 }: BrushPanelProps) => {
   const updateBrushSetting = (key: keyof BrushSettings, value: number | string) => {
     onBrushSettingsChange({
       ...brushSettings,
       [key]: value
     });
+  };
+
+  const handleEyedropper = () => {
+    if (onToolChange) {
+      onToolChange('eyedropper');
+    }
   };
 
   return (
@@ -48,6 +60,33 @@ export const BrushPanel = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Eyedropper Tool */}
+          {onToolChange && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Eyedropper Tool</Label>
+              <Button 
+                onClick={handleEyedropper} 
+                variant={currentTool === 'eyedropper' ? "default" : "outline"} 
+                className="w-full"
+              >
+                <Pipette className="w-4 h-4 mr-2" />
+                {currentTool === 'eyedropper' ? 'Eyedropper Active' : 'Activate Eyedropper'}
+              </Button>
+              {currentTool === 'eyedropper' && previewColor && (
+                <div className="space-y-1">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Preview:</div>
+                  <div 
+                    className="w-full h-6 border rounded-md shadow-inner"
+                    style={{ backgroundColor: previewColor }}
+                  />
+                  <div className="text-xs text-center font-mono text-gray-600 dark:text-gray-400">
+                    {previewColor.toUpperCase()}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Current Color Display */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Selected Color</Label>

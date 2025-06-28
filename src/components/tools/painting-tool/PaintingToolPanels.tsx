@@ -56,6 +56,9 @@ export const PaintingToolPanels = ({
           onBrushSettingsChange={setBrushSettings}
           currentColor={currentColor}
           onColorChange={setCurrentColor}
+          currentTool={currentTool}
+          onToolChange={setCurrentTool}
+          previewColor={previewColor}
         />
         <ShapePanel 
           onShapeSelect={(shape) => setCurrentTool(shape)}

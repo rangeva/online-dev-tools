@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool, BrushSettings } from "./usePaintingTool";
-import { Brush, Eraser, Pipette, Square, Type, Crop, ChevronDown } from "lucide-react";
+import { Brush, Eraser, Square, Type, Crop, ChevronDown } from "lucide-react";
 
 interface ToolSelectionProps {
   currentTool: Tool;
@@ -15,7 +15,6 @@ export const ToolSelection = ({ currentTool, onToolChange, brushSettings, onBrus
   const tools = [
     { tool: 'brush' as Tool, name: 'Brush', icon: Brush },
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
-    { tool: 'eyedropper' as Tool, name: 'Eyedropper', icon: Pipette },
     { tool: 'select' as Tool, name: 'Select', icon: Square },
     { tool: 'text' as Tool, name: 'Text', icon: Type },
     { tool: 'crop' as Tool, name: 'Crop', icon: Crop },
