@@ -1,10 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Tool, BrushSettings } from "./usePaintingTool";
 import { Brush, Eraser, Pipette, Square, Type, Crop, ChevronDown } from "lucide-react";
 import { BrushSettingsMenu } from "./BrushSettingsMenu";
@@ -33,11 +33,12 @@ export const ToolSelection = ({
   const BrushButton = () => {
     if (brushSettings && onBrushSettingsChange) {
       return (
-        <Popover>
-          <PopoverTrigger asChild>
+        <HoverCard openDelay={300} closeDelay={100}>
+          <HoverCardTrigger asChild>
             <Button
               variant={currentTool === 'brush' ? "default" : "ghost"}
               size="sm"
+              onClick={() => onToolChange('brush')}
               className={`
                 relative transition-all duration-200 
                 ${currentTool === 'brush' 
@@ -50,24 +51,12 @@ export const ToolSelection = ({
               <span className="font-medium">Brush</span>
               <ChevronDown className="w-3 h-3 ml-1" />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent 
+          </HoverCardTrigger>
+          <HoverCardContent 
             className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-50"
             align="start"
-            onInteractOutside={(e) => {
-              // Prevent closing when clicking on sliders or their components
-              const target = e.target as Element;
-              if (
-                target.closest('[role="slider"]') || 
-                target.closest('.slider-container') ||
-                target.closest('[data-radix-slider-track]') ||
-                target.closest('[data-radix-slider-thumb]') ||
-                target.closest('[data-radix-slider-range]') ||
-                target.closest('[data-radix-popover-content]')
-              ) {
-                e.preventDefault();
-              }
-            }}
+            side="bottom"
+            sideOffset={5}
           >
             <div className="slider-container">
               <BrushSettingsMenu
@@ -76,8 +65,8 @@ export const ToolSelection = ({
                 onToolChange={onToolChange}
               />
             </div>
-          </PopoverContent>
-        </Popover>
+          </HoverCardContent>
+        </HoverCard>
       );
     }
 
