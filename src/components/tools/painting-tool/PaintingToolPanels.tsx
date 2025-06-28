@@ -1,5 +1,7 @@
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrushPanel } from "./BrushPanel";
+import { ColorPanel } from "./ColorPanel";
 import { ShapePanel } from "./ShapePanel";
 import { TextPanel } from "./TextPanel";
 import { ResizeCropPanel } from "./ResizeCropPanel";
@@ -31,48 +33,66 @@ export const PaintingToolPanels = ({
   setCurrentTool,
   brushSettings,
   setBrushSettings,
+  currentColor,
+  setCurrentColor,
   textSettings,
   setTextSettings,
   canvasSize,
   setCanvasSize,
   selectionArea,
+  canvasRef,
+  previewColor,
   resizeCanvas,
   cropCanvas,
   uploadImage
 }: PaintingToolPanelsProps) => {
   return (
-    <div className="space-y-4">
-      <BrushPanel 
-        brushSettings={brushSettings}
-        onBrushSettingsChange={setBrushSettings}
-      />
+    <Tabs defaultValue="brush" className="w-full">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="brush">Tools</TabsTrigger>
+        <TabsTrigger value="color">Color</TabsTrigger>
+      </TabsList>
       
-      <ShapePanel 
-        onShapeSelect={(shape) => setCurrentTool(shape)}
-        currentTool={currentTool}
-      />
-      
-      {(currentTool === 'text') && (
-        <TextPanel 
-          textSettings={textSettings}
-          onTextSettingsChange={setTextSettings}
+      <TabsContent value="brush" className="space-y-4">
+        <BrushPanel 
+          brushSettings={brushSettings}
+          onBrushSettingsChange={setBrushSettings}
         />
-      )}
-      
-      {(currentTool === 'resize' || currentTool === 'crop') && (
-        <ResizeCropPanel 
+        <ShapePanel 
+          onShapeSelect={(shape) => setCurrentTool(shape)}
+          currentTool={currentTool}
+        />
+        {(currentTool === 'text') && (
+          <TextPanel 
+            textSettings={textSettings}
+            onTextSettingsChange={setTextSettings}
+          />
+        )}
+        {(currentTool === 'resize' || currentTool === 'crop') && (
+          <ResizeCropPanel 
+            canvasSize={canvasSize}
+            selectionArea={selectionArea}
+            onResize={resizeCanvas}
+            onCrop={cropCanvas}
+          />
+        )}
+        <ImageUploadPanel 
+          onImageUpload={uploadImage}
           canvasSize={canvasSize}
-          selectionArea={selectionArea}
-          onResize={resizeCanvas}
-          onCrop={cropCanvas}
+          onCanvasSizeChange={setCanvasSize}
         />
-      )}
+      </TabsContent>
       
-      <ImageUploadPanel 
-        onImageUpload={uploadImage}
-        canvasSize={canvasSize}
-        onCanvasSizeChange={setCanvasSize}
-      />
-    </div>
+      <TabsContent value="color" className="space-y-4">
+        <ColorPanel 
+          currentColor={currentColor}
+          onColorChange={setCurrentColor}
+          canvasRef={canvasRef}
+          currentTool={currentTool}
+          onToolChange={setCurrentTool}
+          previewColor={previewColor}
+        />
+      </TabsContent>
+    </Tabs>
   );
 };
