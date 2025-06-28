@@ -1,10 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Tool, BrushSettings } from "./usePaintingTool";
 import { Brush, Eraser, Pipette, Square, Type, Crop, ChevronDown } from "lucide-react";
 import { BrushSettingsMenu } from "./BrushSettingsMenu";
@@ -33,8 +33,8 @@ export const ToolSelection = ({
   const BrushButton = () => {
     if (brushSettings && onBrushSettingsChange) {
       return (
-        <HoverCard openDelay={300} closeDelay={100}>
-          <HoverCardTrigger asChild>
+        <Dialog>
+          <DialogTrigger asChild>
             <Button
               variant={currentTool === 'brush' ? "default" : "ghost"}
               size="sm"
@@ -51,22 +51,15 @@ export const ToolSelection = ({
               <span className="font-medium">Brush</span>
               <ChevronDown className="w-3 h-3 ml-1" />
             </Button>
-          </HoverCardTrigger>
-          <HoverCardContent 
-            className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-50"
-            align="start"
-            side="bottom"
-            sideOffset={5}
-          >
-            <div className="slider-container">
-              <BrushSettingsMenu
-                brushSettings={brushSettings}
-                onBrushSettingsChange={onBrushSettingsChange}
-                onToolChange={onToolChange}
-              />
-            </div>
-          </HoverCardContent>
-        </HoverCard>
+          </DialogTrigger>
+          <DialogContent className="w-96 max-w-md">
+            <BrushSettingsMenu
+              brushSettings={brushSettings}
+              onBrushSettingsChange={onBrushSettingsChange}
+              onToolChange={onToolChange}
+            />
+          </DialogContent>
+        </Dialog>
       );
     }
 

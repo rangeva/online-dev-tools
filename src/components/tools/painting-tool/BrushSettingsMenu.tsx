@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BrushSettings, Tool } from "./usePaintingTool";
-import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface BrushSettingsMenuProps {
   brushSettings: BrushSettings;
@@ -23,23 +23,13 @@ export const BrushSettingsMenu = ({
     });
   };
 
-  const handleBrushSelect = () => {
-    onToolChange('brush');
-  };
-
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Brush Settings</h3>
-        <Button 
-          onClick={handleBrushSelect}
-          size="sm"
-          variant="outline"
-          className="text-xs"
-        >
-          Select Brush
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <DialogHeader>
+        <DialogTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+          🖌️ Brush Settings
+        </DialogTitle>
+      </DialogHeader>
 
       {/* Brush Style */}
       <div className="space-y-2">
