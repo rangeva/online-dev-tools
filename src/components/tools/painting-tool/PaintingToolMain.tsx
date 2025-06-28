@@ -156,6 +156,8 @@ export const PaintingToolMain = () => {
             onColorChange={setCurrentColor}
             canvasRef={canvasRef}
             previewColor={previewColor}
+            brushSettings={brushSettings}
+            onBrushSettingsChange={setBrushSettings}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
