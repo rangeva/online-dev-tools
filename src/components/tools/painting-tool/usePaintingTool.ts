@@ -1,4 +1,3 @@
-
 import { RefObject } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useCanvasState } from "./useCanvasState";
@@ -63,8 +62,8 @@ export const usePaintingTool = (canvasRef: RefObject<HTMLCanvasElement>) => {
   const undo = () => baseUndo(canvasRef);
   const redo = () => baseRedo(canvasRef);
   
-  const addText = (position: { x: number; y: number }, text: string) => 
-    baseAddText(position, text, canvasRef, saveCanvasState);
+  const addText = (position: { x: number; y: number }, text: string, currentTextSettings?: typeof textSettings) => 
+    baseAddText(position, text, canvasRef, saveCanvasState, currentTextSettings);
   
   const copySelection = () => baseCopySelection(canvasRef);
   const pasteSelection = (position: { x: number; y: number }) => 

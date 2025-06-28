@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -72,7 +71,7 @@ const PaintingDrawingTool = () => {
   };
 
   const handleAddText = (position: { x: number; y: number }, text: string) => {
-    addText(position, text);
+    addText(position, text, textSettings);
   };
 
   // Handle keyboard shortcuts

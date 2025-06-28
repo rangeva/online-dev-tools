@@ -29,7 +29,8 @@ export const useTextTool = () => {
     position: Position, 
     text: string, 
     canvasRef: RefObject<HTMLCanvasElement>,
-    saveCanvasState: () => void
+    saveCanvasState: () => void,
+    currentTextSettings?: TextSettings
   ) => {
     if (!canvasRef.current) return;
     
@@ -39,8 +40,11 @@ export const useTextTool = () => {
 
     saveCanvasState();
     
-    ctx.fillStyle = textSettings.color;
-    ctx.font = `${textSettings.italic ? 'italic ' : ''}${textSettings.bold ? 'bold ' : ''}${textSettings.fontSize}px ${textSettings.fontFamily}`;
+    // Use the passed settings or fall back to the hook's settings
+    const settings = currentTextSettings || textSettings;
+    
+    ctx.fillStyle = settings.color;
+    ctx.font = `${settings.italic ? 'italic ' : ''}${settings.bold ? 'bold ' : ''}${settings.fontSize}px ${settings.fontFamily}`;
     ctx.textBaseline = 'top';
     
     ctx.fillText(text, position.x, position.y);
