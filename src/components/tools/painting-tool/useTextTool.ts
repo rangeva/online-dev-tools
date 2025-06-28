@@ -43,15 +43,41 @@ export const useTextTool = () => {
     // Use the passed settings or fall back to the hook's settings
     const settings = currentTextSettings || textSettings;
     
+    // Build the font string properly
+    let fontString = '';
+    
+    // Add font style (italic)
+    if (settings.italic) {
+      fontString += 'italic ';
+    }
+    
+    // Add font weight (bold)
+    if (settings.bold) {
+      fontString += 'bold ';
+    }
+    
+    // Add font size and family
+    fontString += `${settings.fontSize}px ${settings.fontFamily}`;
+    
+    // Apply all text formatting
     ctx.fillStyle = settings.color;
-    ctx.font = `${settings.italic ? 'italic ' : ''}${settings.bold ? 'bold ' : ''}${settings.fontSize}px ${settings.fontFamily}`;
+    ctx.font = fontString;
     ctx.textBaseline = 'top';
     
+    // Render the text
     ctx.fillText(text, position.x, position.y);
+    
+    console.log('Text added with settings:', {
+      text,
+      position,
+      settings,
+      fontString,
+      color: settings.color
+    });
     
     toast({
       title: "Text Added",
-      description: "Text has been added to the canvas.",
+      description: "Formatted text has been added to the canvas.",
     });
   }, [textSettings, toast]);
 
