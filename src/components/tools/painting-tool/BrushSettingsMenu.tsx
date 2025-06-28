@@ -9,12 +9,14 @@ interface BrushSettingsMenuProps {
   brushSettings: BrushSettings;
   onBrushSettingsChange: (settings: BrushSettings) => void;
   onToolChange: (tool: Tool) => void;
+  onClose?: () => void;
 }
 
 export const BrushSettingsMenu = ({ 
   brushSettings, 
   onBrushSettingsChange, 
-  onToolChange 
+  onToolChange,
+  onClose
 }: BrushSettingsMenuProps) => {
   const updateBrushSetting = (key: keyof BrushSettings, value: number | string) => {
     onBrushSettingsChange({
@@ -25,10 +27,15 @@ export const BrushSettingsMenu = ({
 
   const handleBrushSelect = () => {
     onToolChange('brush');
+    onClose?.();
+  };
+
+  const handleSliderChange = (key: keyof BrushSettings) => (values: number[]) => {
+    updateBrushSetting(key, values[0]);
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" onPointerDown={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Brush Settings</h3>
         <Button 
@@ -67,14 +74,16 @@ export const BrushSettingsMenu = ({
             {brushSettings.size}px
           </span>
         </div>
-        <Slider
-          value={[brushSettings.size]}
-          onValueChange={([value]) => updateBrushSetting('size', value)}
-          max={100}
-          min={1}
-          step={1}
-          className="w-full"
-        />
+        <div onPointerDown={(e) => e.stopPropagation()}>
+          <Slider
+            value={[brushSettings.size]}
+            onValueChange={handleSliderChange('size')}
+            max={100}
+            min={1}
+            step={1}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Opacity Control */}
@@ -85,14 +94,16 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.opacity * 100)}%
           </span>
         </div>
-        <Slider
-          value={[brushSettings.opacity]}
-          onValueChange={([value]) => updateBrushSetting('opacity', value)}
-          max={1}
-          min={0.1}
-          step={0.1}
-          className="w-full"
-        />
+        <div onPointerDown={(e) => e.stopPropagation()}>
+          <Slider
+            value={[brushSettings.opacity]}
+            onValueChange={handleSliderChange('opacity')}
+            max={1}
+            min={0.1}
+            step={0.1}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Flow Control */}
@@ -103,14 +114,16 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.flow * 100)}%
           </span>
         </div>
-        <Slider
-          value={[brushSettings.flow]}
-          onValueChange={([value]) => updateBrushSetting('flow', value)}
-          max={1}
-          min={0.1}
-          step={0.1}
-          className="w-full"
-        />
+        <div onPointerDown={(e) => e.stopPropagation()}>
+          <Slider
+            value={[brushSettings.flow]}
+            onValueChange={handleSliderChange('flow')}
+            max={1}
+            min={0.1}
+            step={0.1}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Hardness Control */}
@@ -121,14 +134,16 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.hardness * 100)}%
           </span>
         </div>
-        <Slider
-          value={[brushSettings.hardness]}
-          onValueChange={([value]) => updateBrushSetting('hardness', value)}
-          max={1}
-          min={0.1}
-          step={0.1}
-          className="w-full"
-        />
+        <div onPointerDown={(e) => e.stopPropagation()}>
+          <Slider
+            value={[brushSettings.hardness]}
+            onValueChange={handleSliderChange('hardness')}
+            max={1}
+            min={0.1}
+            step={0.1}
+            className="w-full"
+          />
+        </div>
       </div>
     </div>
   );

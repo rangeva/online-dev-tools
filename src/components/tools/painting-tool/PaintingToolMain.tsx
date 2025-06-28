@@ -1,4 +1,3 @@
-
 import { useRef } from "react";
 import { PaintingCanvas } from "./PaintingCanvas";
 import { ToolbarPanel } from "./ToolbarPanel";

@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -22,6 +23,8 @@ export const ToolSelection = ({
   brushSettings, 
   onBrushSettingsChange 
 }: ToolSelectionProps) => {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const tools = [
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
     { tool: 'eyedropper' as Tool, name: 'Eyedropper', icon: Pipette },
@@ -33,7 +36,7 @@ export const ToolSelection = ({
   const BrushButton = () => {
     if (brushSettings && onBrushSettingsChange) {
       return (
-        <Popover>
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger asChild>
             <Button
               variant={currentTool === 'brush' ? "default" : "ghost"}
@@ -52,30 +55,30 @@ export const ToolSelection = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent 
-            className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-50"
+            className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-[100]"
             align="start"
-            onInteractOutside={(e) => {
-              // Prevent closing when clicking on sliders or their components
+            side="bottom"
+            sideOffset={5}
+            onPointerDownOutside={(e) => {
+              // Don't close on slider interaction
               const target = e.target as Element;
-              if (
-                target.closest('[role="slider"]') || 
-                target.closest('.slider-container') ||
-                target.closest('[data-radix-slider-track]') ||
-                target.closest('[data-radix-slider-thumb]') ||
-                target.closest('[data-radix-slider-range]') ||
-                target.closest('[data-radix-popover-content]')
-              ) {
+              if (target.closest('[data-radix-slider-root]') || 
+                  target.closest('[data-radix-slider-track]') || 
+                  target.closest('[data-radix-slider-range]') || 
+                  target.closest('[data-radix-slider-thumb]') ||
+                  target.closest('[data-radix-select-content]') ||
+                  target.closest('[data-radix-select-item]')) {
                 e.preventDefault();
               }
             }}
+            onEscapeKeyDown={() => setIsPopoverOpen(false)}
           >
-            <div className="slider-container">
-              <BrushSettingsMenu
-                brushSettings={brushSettings}
-                onBrushSettingsChange={onBrushSettingsChange}
-                onToolChange={onToolChange}
-              />
-            </div>
+            <BrushSettingsMenu
+              brushSettings={brushSettings}
+              onBrushSettingsChange={onBrushSettingsChange}
+              onToolChange={onToolChange}
+              onClose={() => setIsPopoverOpen(false)}
+            />
           </PopoverContent>
         </Popover>
       );
