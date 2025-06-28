@@ -54,12 +54,33 @@ export const ToolSelection = ({
           <DropdownMenuContent 
             className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-50"
             align="start"
+            onPointerDownOutside={(e) => {
+              // Check if the click is on a slider or its children
+              const target = e.target as Element;
+              if (target.closest('[role="slider"]') || target.closest('.slider-container')) {
+                e.preventDefault();
+              }
+            }}
+            onInteractOutside={(e) => {
+              // Prevent closing when interacting with sliders
+              const target = e.target as Element;
+              if (target.closest('[role="slider"]') || target.closest('.slider-container')) {
+                e.preventDefault();
+              }
+            }}
           >
-            <BrushSettingsMenu
-              brushSettings={brushSettings}
-              onBrushSettingsChange={onBrushSettingsChange}
-              onToolChange={onToolChange}
-            />
+            <div 
+              className="slider-container"
+              onPointerDown={(e) => e.stopPropagation()}
+              onPointerUp={(e) => e.stopPropagation()}
+              onPointerMove={(e) => e.stopPropagation()}
+            >
+              <BrushSettingsMenu
+                brushSettings={brushSettings}
+                onBrushSettingsChange={onBrushSettingsChange}
+                onToolChange={onToolChange}
+              />
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       );
