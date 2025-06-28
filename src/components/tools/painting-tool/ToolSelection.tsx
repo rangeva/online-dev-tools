@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Tool } from "./usePaintingTool";
-import { Brush, Eraser, Pipette, Square, Type, Crop, Move } from "lucide-react";
+import { Brush, Eraser, Pipette, Square, Type, Crop } from "lucide-react";
 
 interface ToolSelectionProps {
   currentTool: Tool;
@@ -16,7 +16,6 @@ export const ToolSelection = ({ currentTool, onToolChange }: ToolSelectionProps)
     { tool: 'select' as Tool, name: 'Select', icon: Square },
     { tool: 'text' as Tool, name: 'Text', icon: Type },
     { tool: 'crop' as Tool, name: 'Crop', icon: Crop },
-    { tool: 'resize' as Tool, name: 'Resize', icon: Move },
   ];
 
   return (

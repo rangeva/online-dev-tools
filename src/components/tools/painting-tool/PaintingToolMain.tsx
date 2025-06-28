@@ -6,6 +6,7 @@ import { PaintingCanvas } from "./PaintingCanvas";
 import { ToolbarPanel } from "./ToolbarPanel";
 import { PaintingToolHeader } from "./PaintingToolHeader";
 import { PaintingToolPanels } from "./PaintingToolPanels";
+import { ResizeDialog } from "./ResizeDialog";
 import { usePaintingTool } from "./usePaintingTool";
 import { usePaintingKeyboardShortcuts } from "./usePaintingKeyboardShortcuts";
 
@@ -13,6 +14,8 @@ export const PaintingToolMain = () => {
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewColor, setPreviewColor] = useState<string | null>(null);
+  const [resizeDialogOpen, setResizeDialogOpen] = useState(false);
+  const [resizeType, setResizeType] = useState<'image' | 'canvas'>('canvas');
   
   const {
     currentTool,
@@ -79,6 +82,56 @@ export const PaintingToolMain = () => {
     addText(position, text, settings);
   };
 
+  const handleImageResize = () => {
+    setResizeType('image');
+    setResizeDialogOpen(true);
+  };
+
+  const handleCanvasResize = () => {
+    setResizeType('canvas');
+    setResizeDialogOpen(true);
+  };
+
+  const handleResize = (newSize: { width: number; height: number }) => {
+    if (resizeType === 'image') {
+      // For image resize, we scale the existing content
+      if (!canvasRef.current) return;
+      
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Create a temporary canvas with current content
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      if (!tempCtx) return;
+
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      tempCtx.drawImage(canvas, 0, 0);
+
+      // Resize main canvas
+      canvas.width = newSize.width;
+      canvas.height = newSize.height;
+      setCanvasSize(newSize);
+
+      // Fill with white background
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Scale and draw the previous content
+      ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, newSize.width, newSize.height);
+      
+      toast({
+        title: "Image Resized",
+        description: `Image scaled to ${newSize.width}×${newSize.height}`,
+      });
+    } else {
+      // For canvas resize, use the existing resizeCanvas function
+      resizeCanvas(newSize);
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
       <Card>
@@ -98,6 +151,8 @@ export const PaintingToolMain = () => {
             onCut={cutSelection}
             canCopy={selectionArea !== null}
             onImageUpload={uploadImage}
+            onImageResize={handleImageResize}
+            onCanvasResize={handleCanvasResize}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -150,6 +205,15 @@ export const PaintingToolMain = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Resize Dialog */}
+      <ResizeDialog
+        isOpen={resizeDialogOpen}
+        onClose={() => setResizeDialogOpen(false)}
+        type={resizeType}
+        currentSize={canvasSize}
+        onResize={handleResize}
+      />
     </div>
   );
 };

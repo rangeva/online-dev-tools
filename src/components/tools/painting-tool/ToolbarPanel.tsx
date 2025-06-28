@@ -6,6 +6,7 @@ import { HistoryControls } from "./HistoryControls";
 import { EditControls } from "./EditControls";
 import { ImageUploadControl } from "./ImageUploadControl";
 import { CanvasControls } from "./CanvasControls";
+import { ResizeDropdown } from "./ResizeDropdown";
 
 interface ToolbarPanelProps {
   currentTool: Tool;
@@ -20,6 +21,8 @@ interface ToolbarPanelProps {
   onCut?: () => void;
   canCopy?: boolean;
   onImageUpload?: (file: File) => void;
+  onImageResize?: () => void;
+  onCanvasResize?: () => void;
 }
 
 export const ToolbarPanel = ({
@@ -34,7 +37,9 @@ export const ToolbarPanel = ({
   onCopy,
   onCut,
   canCopy = false,
-  onImageUpload
+  onImageUpload,
+  onImageResize,
+  onCanvasResize
 }: ToolbarPanelProps) => {
   return (
     <div className="flex flex-wrap items-center gap-3 p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
@@ -57,6 +62,17 @@ export const ToolbarPanel = ({
       <EditControls onCopy={onCopy} onCut={onCut} canCopy={canCopy} />
 
       <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
+
+      {/* Resize Dropdown */}
+      {onImageResize && onCanvasResize && (
+        <>
+          <ResizeDropdown 
+            onImageResize={onImageResize} 
+            onCanvasResize={onCanvasResize} 
+          />
+          <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
+        </>
+      )}
 
       {/* Image Upload */}
       <ImageUploadControl onImageUpload={onImageUpload} />
