@@ -1,5 +1,4 @@
 
-
 export const timezoneMap: Record<string, { timezone: string; country: string }> = {
   // US States and Major Cities
   'alabama': { timezone: 'America/Chicago', country: 'United States' },
@@ -154,6 +153,7 @@ export const timezoneMap: Record<string, { timezone: string; country: string }> 
   'biloxi': { timezone: 'America/Chicago', country: 'United States' },
   'missouri': { timezone: 'America/Chicago', country: 'United States' },
   'st louis': { timezone: 'America/Chicago', country: 'United States' },
+  'springfield': { timezone: 'America/Chicago', country: 'United States' },
   'columbia mo': { timezone: 'America/Chicago', country: 'United States' },
   'independence': { timezone: 'America/Chicago', country: 'United States' },
   'montana': { timezone: 'America/Denver', country: 'United States' },
@@ -378,4 +378,3 @@ export const popularLocations = [
   { name: "Dubai, UAE", query: "Dubai" },
   { name: "Paris, France", query: "Paris" }
 ];
-
