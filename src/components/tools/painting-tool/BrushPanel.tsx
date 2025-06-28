@@ -47,8 +47,38 @@ export const BrushPanel = ({
     }
   };
 
+  const handleBrushSelect = () => {
+    if (onToolChange) {
+      onToolChange('brush');
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {/* Brush Tool Selection */}
+      {onToolChange && (
+        <Card className="border-gray-200 dark:border-gray-700 shadow-lg">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2 text-gray-800 dark:text-gray-200">
+              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
+                <Brush className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              Brush Tool
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              onClick={handleBrushSelect} 
+              variant={currentTool === 'brush' ? "default" : "outline"} 
+              className="w-full"
+            >
+              <Brush className="w-4 h-4 mr-2" />
+              {currentTool === 'brush' ? 'Brush Active' : 'Activate Brush'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Color Selection */}
       <Card className="border-gray-200 dark:border-gray-700 shadow-lg">
         <CardHeader className="pb-3">

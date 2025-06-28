@@ -47,7 +47,7 @@ export const PaintingToolPanels = ({
   return (
     <Tabs defaultValue="brush" className="w-full">
       <TabsList className="grid w-full grid-cols-1">
-        <TabsTrigger value="brush">Tools & Settings</TabsTrigger>
+        <TabsTrigger value="brush">Brush Settings</TabsTrigger>
       </TabsList>
       
       <TabsContent value="brush" className="space-y-4">
