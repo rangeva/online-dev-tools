@@ -1,7 +1,6 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrushPanel } from "./BrushPanel";
-import { ColorPanel } from "./ColorPanel";
 import { ShapePanel } from "./ShapePanel";
 import { TextPanel } from "./TextPanel";
 import { ResizeCropPanel } from "./ResizeCropPanel";
@@ -47,15 +46,16 @@ export const PaintingToolPanels = ({
 }: PaintingToolPanelsProps) => {
   return (
     <Tabs defaultValue="brush" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="brush">Tools</TabsTrigger>
-        <TabsTrigger value="color">Color</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-1">
+        <TabsTrigger value="brush">Tools & Settings</TabsTrigger>
       </TabsList>
       
       <TabsContent value="brush" className="space-y-4">
         <BrushPanel 
           brushSettings={brushSettings}
           onBrushSettingsChange={setBrushSettings}
+          currentColor={currentColor}
+          onColorChange={setCurrentColor}
         />
         <ShapePanel 
           onShapeSelect={(shape) => setCurrentTool(shape)}
@@ -75,17 +75,6 @@ export const PaintingToolPanels = ({
             onCrop={cropCanvas}
           />
         )}
-      </TabsContent>
-      
-      <TabsContent value="color" className="space-y-4">
-        <ColorPanel 
-          currentColor={currentColor}
-          onColorChange={setCurrentColor}
-          canvasRef={canvasRef}
-          currentTool={currentTool}
-          onToolChange={setCurrentTool}
-          previewColor={previewColor}
-        />
       </TabsContent>
     </Tabs>
   );
