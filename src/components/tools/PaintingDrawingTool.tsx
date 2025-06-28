@@ -70,8 +70,8 @@ const PaintingDrawingTool = () => {
     exportCanvas(format);
   };
 
-  const handleAddText = (position: { x: number; y: number }, text: string) => {
-    addText(position, text, textSettings);
+  const handleAddText = (position: { x: number; y: number }, text: string, settings?: typeof textSettings) => {
+    addText(position, text, settings);
   };
 
   // Handle keyboard shortcuts

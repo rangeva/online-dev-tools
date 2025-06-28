@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { TextSettings, Position } from "./usePaintingTool";
 import { TextPreviewHeader } from "./TextPreviewHeader";
@@ -10,7 +9,7 @@ interface TextPreviewProps {
   textSettings: TextSettings;
   canvasSize: { width: number; height: number };
   canvasDisplaySize: { width: number; height: number };
-  onConfirm: (text: string) => void;
+  onConfirm: (text: string, settings: TextSettings) => void;
   onCancel: () => void;
   onTextSettingsChange?: (settings: TextSettings) => void;
 }
@@ -51,7 +50,7 @@ export const TextPreview = ({
 
   const handleConfirm = () => {
     if (text.trim()) {
-      onConfirm(text.trim());
+      onConfirm(text.trim(), localTextSettings);
     }
   };
 

@@ -1,4 +1,3 @@
-
 import { forwardRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { BrushSettings, CanvasSize, Position, Tool, SelectionArea } from "./usePaintingTool";
@@ -23,7 +22,7 @@ interface PaintingCanvasProps {
   onPasteAt?: (position: Position) => void;
   copiedImageData?: ImageData | null;
   textSettings?: any;
-  onAddText?: (position: Position, text: string) => void;
+  onAddText?: (position: Position, text: string, settings?: any) => void;
 }
 
 export const PaintingCanvas = forwardRef<HTMLCanvasElement, PaintingCanvasProps>(

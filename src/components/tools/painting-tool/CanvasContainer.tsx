@@ -1,7 +1,6 @@
-
 import { forwardRef, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { BrushSettings, CanvasSize, Position, Tool, SelectionArea } from "./usePaintingTool";
+import { BrushSettings, CanvasSize, Position, Tool, SelectionArea, TextSettings } from "./usePaintingTool";
 import { ShapePreview } from "./ShapePreview";
 import { CanvasRenderer } from "./CanvasRenderer";
 import { useCanvasEventHandlers } from "./CanvasEventHandlers";
@@ -33,8 +32,8 @@ interface CanvasContainerProps {
   setPastedImagePosition?: (position: Position | null) => void;
   isDraggingPastedImage?: boolean;
   setIsDraggingPastedImage?: (dragging: boolean) => void;
-  textSettings?: any;
-  onAddText?: (position: Position, text: string) => void;
+  textSettings?: TextSettings;
+  onAddText?: (position: Position, text: string, settings?: TextSettings) => void;
 }
 
 export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProps>(
@@ -81,9 +80,9 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
       }
     };
 
-    const handleTextConfirm = (text: string) => {
+    const handleTextConfirm = (text: string, settings: TextSettings) => {
       if (textPreviewPosition && onAddText) {
-        onAddText(textPreviewPosition, text);
+        onAddText(textPreviewPosition, text, settings);
       }
       setTextPreviewPosition(null);
     };
