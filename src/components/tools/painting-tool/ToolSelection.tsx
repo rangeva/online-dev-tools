@@ -33,7 +33,7 @@ export const ToolSelection = ({
   const BrushButton = () => {
     if (brushSettings && onBrushSettingsChange) {
       return (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant={currentTool === 'brush' ? "default" : "ghost"}
@@ -54,26 +54,35 @@ export const ToolSelection = ({
           <DropdownMenuContent 
             className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-50"
             align="start"
-            onPointerDownOutside={(e) => {
-              // Check if the click is on a slider or its children
+            onInteractOutside={(e) => {
+              // Prevent closing when clicking on sliders or their components
               const target = e.target as Element;
-              if (target.closest('[role="slider"]') || target.closest('.slider-container')) {
+              if (
+                target.closest('[role="slider"]') || 
+                target.closest('.slider-container') ||
+                target.closest('[data-radix-slider-track]') ||
+                target.closest('[data-radix-slider-thumb]') ||
+                target.closest('[data-radix-slider-range]')
+              ) {
                 e.preventDefault();
               }
             }}
-            onInteractOutside={(e) => {
-              // Prevent closing when interacting with sliders
-              const target = e.target as Element;
-              if (target.closest('[role="slider"]') || target.closest('.slider-container')) {
+            onEscapeKeyDown={(e) => {
+              // Only allow escape when not focused on a slider
+              const activeElement = document.activeElement;
+              if (activeElement && activeElement.closest('[role="slider"]')) {
                 e.preventDefault();
               }
             }}
           >
             <div 
               className="slider-container"
-              onPointerDown={(e) => e.stopPropagation()}
-              onPointerUp={(e) => e.stopPropagation()}
-              onPointerMove={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseMove={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
             >
               <BrushSettingsMenu
                 brushSettings={brushSettings}
