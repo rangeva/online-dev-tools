@@ -1,6 +1,6 @@
 
 import { useCallback } from "react";
-import { Position, Tool } from "./usePaintingTool";
+import { Position, Tool, BrushSettings, SelectionArea } from "./usePaintingTool";
 import { useMouseCoordinates } from "./useMouseCoordinates";
 import { useCanvasMouseEvents } from "./useCanvasMouseEvents";
 import { useCanvasToolEvents } from "./useCanvasToolEvents";
@@ -8,8 +8,21 @@ import { useCanvasToolEvents } from "./useCanvasToolEvents";
 interface CanvasEventCoordinatorProps {
   canvasRef: React.ForwardedRef<HTMLCanvasElement>;
   currentTool: Tool;
+  brushSettings: BrushSettings;
+  currentColor: string;
+  isDrawing: boolean;
+  setIsDrawing: (drawing: boolean) => void;
+  lastPosition: Position | null;
+  setLastPosition: (position: Position | null) => void;
+  saveCanvasState: () => void;
   onColorPicked: (color: string) => void;
   onColorPreview?: (color: string | null) => void;
+  shapeStartPosition: Position | null;
+  setShapeStartPosition: (position: Position | null) => void;
+  drawShapePreview: (start: Position, end: Position, shape: Tool) => void;
+  clearShapePreview: () => void;
+  selectionArea?: SelectionArea | null;
+  setSelectionArea?: (area: SelectionArea | null) => void;
   onTextClick?: (position: Position) => void;
   onPasteAt?: (position: Position) => void;
   copiedImageData?: ImageData | null;
