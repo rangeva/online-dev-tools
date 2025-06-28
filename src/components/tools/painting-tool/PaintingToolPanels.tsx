@@ -48,10 +48,9 @@ export const PaintingToolPanels = ({
 }: PaintingToolPanelsProps) => {
   return (
     <Tabs defaultValue="brush" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
+      <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="brush">Tools</TabsTrigger>
         <TabsTrigger value="color">Color</TabsTrigger>
-        <TabsTrigger value="advanced">Advanced</TabsTrigger>
       </TabsList>
       
       <TabsContent value="brush" className="space-y-4">
@@ -63,20 +62,6 @@ export const PaintingToolPanels = ({
           onShapeSelect={(shape) => setCurrentTool(shape)}
           currentTool={currentTool}
         />
-      </TabsContent>
-      
-      <TabsContent value="color" className="space-y-4">
-        <ColorPanel 
-          currentColor={currentColor}
-          onColorChange={setCurrentColor}
-          canvasRef={canvasRef}
-          currentTool={currentTool}
-          onToolChange={setCurrentTool}
-          previewColor={previewColor}
-        />
-      </TabsContent>
-      
-      <TabsContent value="advanced" className="space-y-4">
         {(currentTool === 'text') && (
           <TextPanel 
             textSettings={textSettings}
@@ -95,6 +80,17 @@ export const PaintingToolPanels = ({
           onImageUpload={uploadImage}
           canvasSize={canvasSize}
           onCanvasSizeChange={setCanvasSize}
+        />
+      </TabsContent>
+      
+      <TabsContent value="color" className="space-y-4">
+        <ColorPanel 
+          currentColor={currentColor}
+          onColorChange={setCurrentColor}
+          canvasRef={canvasRef}
+          currentTool={currentTool}
+          onToolChange={setCurrentTool}
+          previewColor={previewColor}
         />
       </TabsContent>
     </Tabs>
