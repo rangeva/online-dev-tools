@@ -93,7 +93,8 @@ export const useCanvasEventHandlers = (props: CanvasEventHandlersProps) => {
     setIsDrawing,
     setShapeStartPosition,
     setSelectionArea,
-    setPastedImagePosition
+    setPastedImagePosition,
+    currentTool
   });
 
   const { handleBrushMouseDown, handleBrushMouseMove } = useBrushHandling({
@@ -144,6 +145,7 @@ export const useCanvasEventHandlers = (props: CanvasEventHandlersProps) => {
         return;
         
       case 'select':
+      case 'crop':
         handleSelectionMouseDown(position);
         return;
         
@@ -184,8 +186,8 @@ export const useCanvasEventHandlers = (props: CanvasEventHandlersProps) => {
       return;
     }
     
-    // Handle selection tool
-    if (currentTool === 'select' && handleSelectionMouseMove(currentPosition, shapeStartPosition)) {
+    // Handle selection tool and crop tool
+    if ((currentTool === 'select' || currentTool === 'crop') && handleSelectionMouseMove(currentPosition, shapeStartPosition)) {
       return;
     }
     
@@ -216,8 +218,8 @@ export const useCanvasEventHandlers = (props: CanvasEventHandlersProps) => {
       return;
     }
     
-    // Handle selection tool
-    if (currentTool === 'select' && handleSelectionMouseUp(shapeStartPosition)) {
+    // Handle selection tool and crop tool
+    if ((currentTool === 'select' || currentTool === 'crop') && handleSelectionMouseUp(shapeStartPosition)) {
       return;
     }
     

@@ -1,3 +1,4 @@
+
 import { useCallback } from "react";
 import { Position, SelectionArea } from "./usePaintingTool";
 
@@ -6,17 +7,19 @@ interface UseSelectionHandlingProps {
   setShapeStartPosition: (position: Position | null) => void;
   setSelectionArea?: (area: SelectionArea | null) => void;
   setPastedImagePosition?: (position: Position | null) => void;
+  currentTool?: string;
 }
 
 export const useSelectionHandling = ({ 
   setIsDrawing,
   setShapeStartPosition,
   setSelectionArea,
-  setPastedImagePosition
+  setPastedImagePosition,
+  currentTool
 }: UseSelectionHandlingProps) => {
 
   const handleSelectionMouseDown = useCallback((position: Position) => {
-    console.log('Select tool mouse down at:', position);
+    console.log(`${currentTool || 'Selection'} tool mouse down at:`, position);
     setIsDrawing(true);
     setShapeStartPosition(position);
     if (setSelectionArea) {
@@ -32,14 +35,14 @@ export const useSelectionHandling = ({
     if (setPastedImagePosition) {
       setPastedImagePosition(null);
     }
-  }, [setIsDrawing, setShapeStartPosition, setSelectionArea, setPastedImagePosition]);
+  }, [setIsDrawing, setShapeStartPosition, setSelectionArea, setPastedImagePosition, currentTool]);
 
   const handleSelectionMouseMove = useCallback((
     currentPosition: Position, 
     shapeStartPosition: Position | null
   ) => {
     if (shapeStartPosition) {
-      console.log('Select tool mouse move, start:', shapeStartPosition, 'current:', currentPosition);
+      console.log(`${currentTool || 'Selection'} tool mouse move, start:`, shapeStartPosition, 'current:', currentPosition);
       const width = currentPosition.x - shapeStartPosition.x;
       const height = currentPosition.y - shapeStartPosition.y;
       
@@ -58,18 +61,18 @@ export const useSelectionHandling = ({
       return true;
     }
     return false;
-  }, [setSelectionArea]);
+  }, [setSelectionArea, currentTool]);
 
   const handleSelectionMouseUp = useCallback((shapeStartPosition: Position | null) => {
     if (shapeStartPosition) {
-      console.log('Select tool mouse up');
+      console.log(`${currentTool || 'Selection'} tool mouse up`);
       // Selection area is already set in mousemove, just clean up
       setShapeStartPosition(null);
       setIsDrawing(false);
       return true;
     }
     return false;
-  }, [setShapeStartPosition, setIsDrawing]);
+  }, [setShapeStartPosition, setIsDrawing, currentTool]);
 
   return {
     handleSelectionMouseDown,

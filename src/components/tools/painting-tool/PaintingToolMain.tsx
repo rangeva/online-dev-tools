@@ -144,6 +144,7 @@ export const PaintingToolMain = () => {
                 copiedImageData={copiedImageData}
                 textSettings={textSettings}
                 onAddText={handleAddText}
+                cropCanvas={cropCanvas}
               />
             </div>
           </div>
