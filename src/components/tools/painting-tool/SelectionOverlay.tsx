@@ -1,3 +1,4 @@
+
 import { SelectionArea, CanvasSize } from "./usePaintingTool";
 
 interface SelectionOverlayProps {
@@ -17,18 +18,18 @@ export const SelectionOverlay = ({
     const scaleX = canvasDisplaySize.width / canvasSize.width;
     const scaleY = canvasDisplaySize.height / canvasSize.height;
     
-    // Always keep the rectangle's top-left corner at the original click position
-    // Calculate the actual rectangle bounds based on current mouse position
-    const left = Math.min(area.startX, area.startX + area.width);
-    const top = Math.min(area.startY, area.startY + area.height);
-    const right = Math.max(area.startX, area.startX + area.width);
-    const bottom = Math.max(area.startY, area.startY + area.height);
+    // Position the rectangle at the exact click position
+    // Handle negative dimensions by adjusting position and making dimensions positive
+    const displayLeft = area.width < 0 ? area.startX + area.width : area.startX;
+    const displayTop = area.height < 0 ? area.startY + area.height : area.startY;
+    const displayWidth = Math.abs(area.width);
+    const displayHeight = Math.abs(area.height);
     
     return {
-      left: `${left * scaleX}px`,
-      top: `${top * scaleY}px`,
-      width: `${(right - left) * scaleX}px`,
-      height: `${(bottom - top) * scaleY}px`,
+      left: `${displayLeft * scaleX}px`,
+      top: `${displayTop * scaleY}px`,
+      width: `${displayWidth * scaleX}px`,
+      height: `${displayHeight * scaleY}px`,
     };
   };
 
