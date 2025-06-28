@@ -1,4 +1,5 @@
 
+import { BrushPanel } from "./BrushPanel";
 import { ShapePanel } from "./ShapePanel";
 import { TextPanel } from "./TextPanel";
 import { ResizeCropPanel } from "./ResizeCropPanel";
@@ -28,6 +29,8 @@ interface PaintingToolPanelsProps {
 export const PaintingToolPanels = ({
   currentTool,
   setCurrentTool,
+  brushSettings,
+  setBrushSettings,
   textSettings,
   setTextSettings,
   canvasSize,
@@ -39,6 +42,11 @@ export const PaintingToolPanels = ({
 }: PaintingToolPanelsProps) => {
   return (
     <div className="space-y-4">
+      <BrushPanel 
+        brushSettings={brushSettings}
+        onBrushSettingsChange={setBrushSettings}
+      />
+      
       <ShapePanel 
         onShapeSelect={(shape) => setCurrentTool(shape)}
         currentTool={currentTool}

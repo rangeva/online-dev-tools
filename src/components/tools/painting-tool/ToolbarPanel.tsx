@@ -1,14 +1,12 @@
 
 import { Separator } from "@/components/ui/separator";
-import { Tool, BrushSettings } from "./usePaintingTool";
+import { Tool } from "./usePaintingTool";
 import { ToolSelection } from "./ToolSelection";
 import { HistoryControls } from "./HistoryControls";
 import { EditControls } from "./EditControls";
 import { ImageUploadControl } from "./ImageUploadControl";
 import { CanvasControls } from "./CanvasControls";
 import { ResizeDropdown } from "./ResizeDropdown";
-import { ColorSelectionButton } from "./ColorSelectionButton";
-import { RefObject } from "react";
 
 interface ToolbarPanelProps {
   currentTool: Tool;
@@ -25,12 +23,6 @@ interface ToolbarPanelProps {
   onImageUpload?: (file: File) => void;
   onImageResize?: () => void;
   onCanvasResize?: () => void;
-  currentColor?: string;
-  onColorChange?: (color: string) => void;
-  canvasRef?: RefObject<HTMLCanvasElement>;
-  previewColor?: string;
-  brushSettings?: BrushSettings;
-  onBrushSettingsChange?: (settings: BrushSettings) => void;
 }
 
 export const ToolbarPanel = ({
@@ -47,40 +39,14 @@ export const ToolbarPanel = ({
   canCopy = false,
   onImageUpload,
   onImageResize,
-  onCanvasResize,
-  currentColor,
-  onColorChange,
-  canvasRef,
-  previewColor,
-  brushSettings,
-  onBrushSettingsChange
+  onCanvasResize
 }: ToolbarPanelProps) => {
   return (
     <div className="flex flex-wrap items-center gap-3 p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
       {/* Tool Selection */}
-      <ToolSelection 
-        currentTool={currentTool} 
-        onToolChange={onToolChange}
-        brushSettings={brushSettings}
-        onBrushSettingsChange={onBrushSettingsChange}
-      />
+      <ToolSelection currentTool={currentTool} onToolChange={onToolChange} />
 
       <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
-
-      {/* Color Selection Button */}
-      {currentColor && onColorChange && canvasRef && (
-        <>
-          <ColorSelectionButton
-            currentColor={currentColor}
-            onColorChange={onColorChange}
-            canvasRef={canvasRef}
-            currentTool={currentTool}
-            onToolChange={onToolChange}
-            previewColor={previewColor}
-          />
-          <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
-        </>
-      )}
 
       {/* History Controls */}
       <HistoryControls 
