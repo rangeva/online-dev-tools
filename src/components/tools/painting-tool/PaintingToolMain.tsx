@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -153,6 +152,8 @@ export const PaintingToolMain = () => {
             onImageUpload={uploadImage}
             onImageResize={handleImageResize}
             onCanvasResize={handleCanvasResize}
+            brushSettings={brushSettings}
+            onBrushSettingsChange={setBrushSettings}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
