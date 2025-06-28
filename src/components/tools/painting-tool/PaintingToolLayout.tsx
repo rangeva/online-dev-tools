@@ -84,10 +84,13 @@ export const PaintingToolLayout = ({ state, handlers }: PaintingToolLayoutProps)
             onCanvasResize={handleCanvasResize}
             brushSettings={brushSettings}
             onBrushSettingsChange={setBrushSettings}
+            currentColor={currentColor}
+            onColorChange={setCurrentColor}
+            previewColor={previewColor}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Tool Panels */}
+            {/* Tool Panels - Only show non-brush panels */}
             <div className="lg:col-span-1 space-y-4">
               <PaintingToolPanels
                 currentTool={currentTool}

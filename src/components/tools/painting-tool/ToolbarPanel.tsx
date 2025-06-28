@@ -1,4 +1,3 @@
-
 import { Separator } from "@/components/ui/separator";
 import { Tool, BrushSettings } from "./usePaintingTool";
 import { ToolSelection } from "./ToolSelection";
@@ -25,6 +24,9 @@ interface ToolbarPanelProps {
   onCanvasResize?: () => void;
   brushSettings?: BrushSettings;
   onBrushSettingsChange?: (settings: BrushSettings) => void;
+  currentColor?: string;
+  onColorChange?: (color: string) => void;
+  previewColor?: string;
 }
 
 export const ToolbarPanel = ({
@@ -43,7 +45,10 @@ export const ToolbarPanel = ({
   onImageResize,
   onCanvasResize,
   brushSettings,
-  onBrushSettingsChange
+  onBrushSettingsChange,
+  currentColor,
+  onColorChange,
+  previewColor
 }: ToolbarPanelProps) => {
   return (
     <div className="flex flex-wrap items-center gap-3 p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
@@ -53,6 +58,9 @@ export const ToolbarPanel = ({
         onToolChange={onToolChange}
         brushSettings={brushSettings}
         onBrushSettingsChange={onBrushSettingsChange}
+        currentColor={currentColor}
+        onColorChange={onColorChange}
+        previewColor={previewColor}
       />
 
       <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
