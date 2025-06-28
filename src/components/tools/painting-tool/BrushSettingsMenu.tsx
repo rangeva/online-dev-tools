@@ -4,6 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BrushSettings, Tool } from "./usePaintingTool";
 import { Button } from "@/components/ui/button";
+import { useBrushSettings } from "./useBrushSettings";
 
 interface BrushSettingsMenuProps {
   brushSettings: BrushSettings;
@@ -18,34 +19,38 @@ export const BrushSettingsMenu = ({
   onToolChange,
   onClose
 }: BrushSettingsMenuProps) => {
-  const updateBrushSetting = (key: keyof BrushSettings, value: number | string) => {
-    onBrushSettingsChange({
-      ...brushSettings,
-      [key]: value
-    });
-  };
+  const { updateBrushSetting, handleSliderChange, resetBrushSettings } = useBrushSettings({
+    brushSettings,
+    onBrushSettingsChange
+  });
 
   const handleBrushSelect = () => {
     onToolChange('brush');
     onClose?.();
   };
 
-  const handleSliderChange = (key: keyof BrushSettings) => (values: number[]) => {
-    updateBrushSetting(key, values[0]);
-  };
-
   return (
     <div className="space-y-4" onPointerDown={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Brush Settings</h3>
-        <Button 
-          onClick={handleBrushSelect}
-          size="sm"
-          variant="outline"
-          className="text-xs"
-        >
-          Select Brush
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={resetBrushSettings}
+            size="sm"
+            variant="outline"
+            className="text-xs"
+          >
+            Reset
+          </Button>
+          <Button 
+            onClick={handleBrushSelect}
+            size="sm"
+            variant="outline"
+            className="text-xs"
+          >
+            Select Brush
+          </Button>
+        </div>
       </div>
 
       {/* Brush Style */}
