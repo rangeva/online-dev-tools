@@ -1,3 +1,4 @@
+
 import { forwardRef, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { BrushSettings, CanvasSize, Position, Tool, SelectionArea, TextSettings } from "./usePaintingTool";
@@ -138,8 +139,8 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
           isDrawing={isDrawing}
         />
         
-        {/* Selection overlay - show when select tool is active and has selection area */}
-        {currentTool === 'select' && selectionArea && canvasDisplaySize && selectionArea.width > 0 && selectionArea.height > 0 && (
+        {/* Selection overlay - show when select or crop tool is active and has selection area */}
+        {(currentTool === 'select' || currentTool === 'crop') && selectionArea && canvasDisplaySize && Math.abs(selectionArea.width) > 0 && Math.abs(selectionArea.height) > 0 && (
           <SelectionOverlay
             selectionArea={selectionArea}
             canvasSize={canvasSize}
