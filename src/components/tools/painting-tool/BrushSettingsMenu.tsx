@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BrushSettings, Tool } from "./usePaintingTool";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface BrushSettingsMenuProps {
   brushSettings: BrushSettings;
@@ -23,23 +23,15 @@ export const BrushSettingsMenu = ({
     });
   };
 
-  // Prevent modal from closing when clicking inside
-  const handleContentClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
-  // Prevent modal from closing during slider interactions
-  const handleSliderInteraction = (e: React.MouseEvent | React.PointerEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   return (
-    <div className="space-y-6" onClick={handleContentClick}>
+    <div className="space-y-6">
       <DialogHeader>
         <DialogTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
           🖌️ Brush Settings
         </DialogTitle>
+        <DialogDescription className="text-sm text-gray-600 dark:text-gray-400">
+          Customize your brush properties for painting
+        </DialogDescription>
       </DialogHeader>
 
       {/* Brush Style */}
@@ -68,20 +60,14 @@ export const BrushSettingsMenu = ({
             {brushSettings.size}px
           </span>
         </div>
-        <div 
-          onMouseDown={handleSliderInteraction}
-          onPointerDown={handleSliderInteraction}
-          onClick={handleSliderInteraction}
-        >
-          <Slider
-            value={[brushSettings.size]}
-            onValueChange={([value]) => updateBrushSetting('size', value)}
-            max={100}
-            min={1}
-            step={1}
-            className="w-full"
-          />
-        </div>
+        <Slider
+          value={[brushSettings.size]}
+          onValueChange={([value]) => updateBrushSetting('size', value)}
+          max={100}
+          min={1}
+          step={1}
+          className="w-full"
+        />
       </div>
 
       {/* Opacity Control */}
@@ -92,20 +78,14 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.opacity * 100)}%
           </span>
         </div>
-        <div 
-          onMouseDown={handleSliderInteraction}
-          onPointerDown={handleSliderInteraction}
-          onClick={handleSliderInteraction}
-        >
-          <Slider
-            value={[brushSettings.opacity]}
-            onValueChange={([value]) => updateBrushSetting('opacity', value)}
-            max={1}
-            min={0.1}
-            step={0.1}
-            className="w-full"
-          />
-        </div>
+        <Slider
+          value={[brushSettings.opacity]}
+          onValueChange={([value]) => updateBrushSetting('opacity', value)}
+          max={1}
+          min={0.1}
+          step={0.1}
+          className="w-full"
+        />
       </div>
 
       {/* Flow Control */}
@@ -116,20 +96,14 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.flow * 100)}%
           </span>
         </div>
-        <div 
-          onMouseDown={handleSliderInteraction}
-          onPointerDown={handleSliderInteraction}
-          onClick={handleSliderInteraction}
-        >
-          <Slider
-            value={[brushSettings.flow]}
-            onValueChange={([value]) => updateBrushSetting('flow', value)}
-            max={1}
-            min={0.1}
-            step={0.1}
-            className="w-full"
-          />
-        </div>
+        <Slider
+          value={[brushSettings.flow]}
+          onValueChange={([value]) => updateBrushSetting('flow', value)}
+          max={1}
+          min={0.1}
+          step={0.1}
+          className="w-full"
+        />
       </div>
 
       {/* Hardness Control */}
@@ -140,20 +114,14 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.hardness * 100)}%
           </span>
         </div>
-        <div 
-          onMouseDown={handleSliderInteraction}
-          onPointerDown={handleSliderInteraction}
-          onClick={handleSliderInteraction}
-        >
-          <Slider
-            value={[brushSettings.hardness]}
-            onValueChange={([value]) => updateBrushSetting('hardness', value)}
-            max={1}
-            min={0.1}
-            step={0.1}
-            className="w-full"
-          />
-        </div>
+        <Slider
+          value={[brushSettings.hardness]}
+          onValueChange={([value]) => updateBrushSetting('hardness', value)}
+          max={1}
+          min={0.1}
+          step={0.1}
+          className="w-full"
+        />
       </div>
     </div>
   );

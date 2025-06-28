@@ -52,7 +52,10 @@ export const ToolSelection = ({
               <ChevronDown className="w-3 h-3 ml-1" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-96 max-w-md">
+          <DialogContent 
+            className="w-96 max-w-md"
+            onInteractOutside={(e) => e.preventDefault()}
+          >
             <BrushSettingsMenu
               brushSettings={brushSettings}
               onBrushSettingsChange={onBrushSettingsChange}
