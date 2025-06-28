@@ -1,24 +1,12 @@
 
 import { useState } from "react";
 
-export type Tool = 
-  | 'brush' 
-  | 'eraser' 
-  | 'eyedropper' 
-  | 'select' 
-  | 'text' 
-  | 'rectangle' 
-  | 'circle' 
-  | 'line' 
-  | 'polygon'
-  | 'resize'
-  | 'crop'
-  | 'flood-fill';
-
 export interface BrushSettings {
   size: number;
   opacity: number;
+  flow: number;
   hardness: number;
+  style: 'soft' | 'hard' | 'textured';
 }
 
 export interface Position {
@@ -26,12 +14,16 @@ export interface Position {
   y: number;
 }
 
+export type Tool = 'brush' | 'eraser' | 'rectangle' | 'circle' | 'line' | 'polygon' | 'eyedropper' | 'select' | 'text' | 'crop' | 'resize';
+
 export const useDrawingState = () => {
   const [currentTool, setCurrentTool] = useState<Tool>('brush');
   const [brushSettings, setBrushSettings] = useState<BrushSettings>({
-    size: 5,
-    opacity: 100,
-    hardness: 100
+    size: 2,
+    opacity: 1,
+    flow: 1,
+    hardness: 1,
+    style: 'soft'
   });
   const [currentColor, setCurrentColor] = useState('#000000');
   const [isDrawing, setIsDrawing] = useState(false);

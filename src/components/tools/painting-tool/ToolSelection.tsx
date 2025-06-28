@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool, BrushSettings } from "./usePaintingTool";
-import { Eraser, Square, Type, Crop, ChevronDown, PaintBucket } from "lucide-react";
+import { Eraser, Square, Type, Crop, ChevronDown } from "lucide-react";
 import { BrushSettingsDropdown } from "./BrushSettingsDropdown";
 import { ShapeSelectionDropdown } from "./ShapeSelectionDropdown";
 
@@ -26,7 +26,6 @@ export const ToolSelection = ({
   previewColor
 }: ToolSelectionProps) => {
   const tools = [
-    { tool: 'flood-fill' as Tool, name: 'Flood Fill', icon: PaintBucket },
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
     { tool: 'select' as Tool, name: 'Select', icon: Square },
     { tool: 'text' as Tool, name: 'Text', icon: Type },
