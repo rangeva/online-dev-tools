@@ -5,7 +5,6 @@ import { ColorPanel } from "./ColorPanel";
 import { ShapePanel } from "./ShapePanel";
 import { TextPanel } from "./TextPanel";
 import { ResizeCropPanel } from "./ResizeCropPanel";
-import { ImageUploadPanel } from "./ImageUploadPanel";
 import { Tool, BrushSettings, TextSettings, CanvasSize, SelectionArea } from "./usePaintingTool";
 import { RefObject } from "react";
 
@@ -76,11 +75,6 @@ export const PaintingToolPanels = ({
             onCrop={cropCanvas}
           />
         )}
-        <ImageUploadPanel 
-          onImageUpload={uploadImage}
-          canvasSize={canvasSize}
-          onCanvasSizeChange={setCanvasSize}
-        />
       </TabsContent>
       
       <TabsContent value="color" className="space-y-4">
