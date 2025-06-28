@@ -1,7 +1,12 @@
 
 import { useState, useEffect, useRef } from "react";
-import { X, Check, Move } from "lucide-react";
+import { X, Check, Move, Type, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
+import { Slider } from "@/components/ui/slider";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TextSettings, Position } from "./usePaintingTool";
 
 interface TextPreviewProps {
@@ -11,6 +16,7 @@ interface TextPreviewProps {
   canvasDisplaySize: { width: number; height: number };
   onConfirm: (text: string) => void;
   onCancel: () => void;
+  onTextSettingsChange?: (settings: TextSettings) => void;
 }
 
 export const TextPreview = ({
@@ -19,14 +25,27 @@ export const TextPreview = ({
   canvasSize,
   canvasDisplaySize,
   onConfirm,
-  onCancel
+  onCancel,
+  onTextSettingsChange
 }: TextPreviewProps) => {
   const [text, setText] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [currentPosition, setCurrentPosition] = useState(position);
+  const [localTextSettings, setLocalTextSettings] = useState(textSettings);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const fontFamilies = [
+    'Arial',
+    'Helvetica',
+    'Times New Roman',
+    'Courier New',
+    'Verdana',
+    'Georgia',
+    'Comic Sans MS',
+    'Impact'
+  ];
 
   useEffect(() => {
     // Auto-focus on the input when component mounts
@@ -36,6 +55,14 @@ export const TextPreview = ({
       }
     }, 100);
   }, []);
+
+  const updateTextSettings = (updates: Partial<TextSettings>) => {
+    const newSettings = { ...localTextSettings, ...updates };
+    setLocalTextSettings(newSettings);
+    if (onTextSettingsChange) {
+      onTextSettingsChange(newSettings);
+    }
+  };
 
   const handleConfirm = () => {
     if (text.trim()) {
@@ -116,17 +143,17 @@ export const TextPreview = ({
   };
 
   // Calculate scaled font size for display
-  const displayFontSize = textSettings.fontSize * Math.min(scaleX, scaleY);
+  const displayFontSize = localTextSettings.fontSize * Math.min(scaleX, scaleY);
 
   const textStyle = {
     position: 'absolute' as const,
     left: `${displayPosition.x}px`,
     top: `${displayPosition.y}px`,
     fontSize: `${displayFontSize}px`,
-    fontFamily: textSettings.fontFamily,
-    color: textSettings.color,
-    fontWeight: textSettings.bold ? 'bold' : 'normal',
-    fontStyle: textSettings.italic ? 'italic' : 'normal',
+    fontFamily: localTextSettings.fontFamily,
+    color: localTextSettings.color,
+    fontWeight: localTextSettings.bold ? 'bold' : 'normal',
+    fontStyle: localTextSettings.italic ? 'italic' : 'normal',
     whiteSpace: 'pre-wrap' as const,
     pointerEvents: 'none' as const,
     zIndex: 10,
@@ -136,24 +163,25 @@ export const TextPreview = ({
   const controlsStyle = {
     position: 'absolute' as const,
     left: `${displayPosition.x}px`,
-    top: `${displayPosition.y - 50}px`,
+    top: `${displayPosition.y - 120}px`,
     zIndex: 20,
     display: 'flex',
-    gap: '4px',
-    alignItems: 'center',
-    padding: '4px',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: '6px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+    flexDirection: 'column' as const,
+    gap: '8px',
+    padding: '12px',
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderRadius: '8px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
     border: '1px solid rgba(0, 0, 0, 0.1)',
+    minWidth: '320px',
   };
 
   const inputStyle = {
     fontSize: `${Math.max(14, displayFontSize * 0.8)}px`,
-    fontFamily: textSettings.fontFamily,
-    color: textSettings.color,
-    fontWeight: textSettings.bold ? 'bold' : 'normal',
-    fontStyle: textSettings.italic ? 'italic' : 'normal',
+    fontFamily: localTextSettings.fontFamily,
+    color: localTextSettings.color,
+    fontWeight: localTextSettings.bold ? 'bold' : 'normal',
+    fontStyle: localTextSettings.italic ? 'italic' : 'normal',
   };
 
   return (
@@ -170,13 +198,39 @@ export const TextPreview = ({
         ref={containerRef}
         style={{ ...controlsStyle, pointerEvents: 'all' }}
       >
-        <div 
-          className="drag-handle flex items-center justify-center w-4 h-6 rounded hover:bg-gray-100"
-          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-          onMouseDown={handleDragHandleMouseDown}
-        >
-          <Move className="w-3 h-3 text-gray-500" />
+        {/* Header with drag handle and action buttons */}
+        <div className="flex items-center justify-between">
+          <div 
+            className="drag-handle flex items-center justify-center w-6 h-6 rounded hover:bg-gray-100"
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            onMouseDown={handleDragHandleMouseDown}
+          >
+            <Move className="w-4 h-4 text-gray-500" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleConfirm}
+              disabled={!text.trim()}
+              className="h-7 px-3 bg-green-500 hover:bg-green-600 text-white border-green-500"
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <Check className="w-3 h-3" />
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onCancel}
+              className="h-7 px-3 bg-red-500 hover:bg-red-600 text-white border-red-500"
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
+
+        {/* Text input */}
         <input
           ref={inputRef}
           type="text"
@@ -184,30 +238,116 @@ export const TextPreview = ({
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Enter text..."
-          className="px-2 py-1 text-sm border border-gray-300 rounded bg-white shadow-sm min-w-[150px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-3 py-2 text-sm border border-gray-300 rounded bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           style={inputStyle}
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
         />
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleConfirm}
-          disabled={!text.trim()}
-          className="h-8 w-8 p-0 bg-green-500 hover:bg-green-600 text-white border-green-500"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <Check className="w-4 h-4" />
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onCancel}
-          className="h-8 w-8 p-0 bg-red-500 hover:bg-red-600 text-white border-red-500"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <X className="w-4 h-4" />
-        </Button>
+
+        {/* Formatting controls */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Font Size */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700">Size</label>
+            <div className="flex items-center space-x-2">
+              <Slider
+                value={[localTextSettings.fontSize]}
+                onValueChange={(value) => updateTextSettings({ fontSize: value[0] })}
+                min={8}
+                max={72}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-xs text-gray-500 min-w-[2rem]">{localTextSettings.fontSize}</span>
+            </div>
+          </div>
+
+          {/* Color Picker */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700">Color</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-8 px-2 justify-start"
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <div 
+                    className="w-4 h-4 rounded border mr-2" 
+                    style={{ backgroundColor: localTextSettings.color }}
+                  />
+                  <Palette className="w-3 h-3" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-3">
+                <div className="space-y-3">
+                  <Input
+                    type="color"
+                    value={localTextSettings.color}
+                    onChange={(e) => updateTextSettings({ color: e.target.value })}
+                    className="w-full h-8"
+                  />
+                  <Input
+                    type="text"
+                    value={localTextSettings.color}
+                    onChange={(e) => updateTextSettings({ color: e.target.value })}
+                    className="text-sm"
+                    placeholder="#000000"
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+
+        {/* Font Family and Style */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Font Family */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700">Font</label>
+            <Select 
+              value={localTextSettings.fontFamily} 
+              onValueChange={(value) => updateTextSettings({ fontFamily: value })}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-gray-200 z-50">
+                {fontFamilies.map((font) => (
+                  <SelectItem key={font} value={font} className="text-xs hover:bg-gray-50">
+                    {font}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Style toggles */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700">Style</label>
+            <div className="flex items-center gap-1">
+              <Toggle
+                pressed={localTextSettings.bold}
+                onPressedChange={(pressed) => updateTextSettings({ bold: pressed })}
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0"
+              >
+                <span className="font-bold text-xs">B</span>
+              </Toggle>
+              <Toggle
+                pressed={localTextSettings.italic}
+                onPressedChange={(pressed) => updateTextSettings({ italic: pressed })}
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0"
+              >
+                <span className="italic text-xs">I</span>
+              </Toggle>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
