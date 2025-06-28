@@ -1,10 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Tool, BrushSettings } from "./usePaintingTool";
 import { Brush, Eraser, Pipette, Square, Type, Crop, ChevronDown } from "lucide-react";
 import { BrushSettingsMenu } from "./BrushSettingsMenu";
@@ -33,8 +33,8 @@ export const ToolSelection = ({
   const BrushButton = () => {
     if (brushSettings && onBrushSettingsChange) {
       return (
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
+        <Popover>
+          <PopoverTrigger asChild>
             <Button
               variant={currentTool === 'brush' ? "default" : "ghost"}
               size="sm"
@@ -50,8 +50,8 @@ export const ToolSelection = ({
               <span className="font-medium">Brush</span>
               <ChevronDown className="w-3 h-3 ml-1" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent 
+          </PopoverTrigger>
+          <PopoverContent 
             className="w-80 p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 z-50"
             align="start"
             onInteractOutside={(e) => {
@@ -62,36 +62,22 @@ export const ToolSelection = ({
                 target.closest('.slider-container') ||
                 target.closest('[data-radix-slider-track]') ||
                 target.closest('[data-radix-slider-thumb]') ||
-                target.closest('[data-radix-slider-range]')
+                target.closest('[data-radix-slider-range]') ||
+                target.closest('[data-radix-popover-content]')
               ) {
                 e.preventDefault();
               }
             }}
-            onEscapeKeyDown={(e) => {
-              // Only allow escape when not focused on a slider
-              const activeElement = document.activeElement;
-              if (activeElement && activeElement.closest('[role="slider"]')) {
-                e.preventDefault();
-              }
-            }}
           >
-            <div 
-              className="slider-container"
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseMove={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              onTouchMove={(e) => e.stopPropagation()}
-              onTouchEnd={(e) => e.stopPropagation()}
-            >
+            <div className="slider-container">
               <BrushSettingsMenu
                 brushSettings={brushSettings}
                 onBrushSettingsChange={onBrushSettingsChange}
                 onToolChange={onToolChange}
               />
             </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </PopoverContent>
+        </Popover>
       );
     }
 
