@@ -23,8 +23,19 @@ export const BrushSettingsMenu = ({
     });
   };
 
+  // Prevent modal from closing when clicking inside
+  const handleContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  // Prevent modal from closing during slider interactions
+  const handleSliderInteraction = (e: React.MouseEvent | React.PointerEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" onClick={handleContentClick}>
       <DialogHeader>
         <DialogTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
           🖌️ Brush Settings
@@ -57,14 +68,20 @@ export const BrushSettingsMenu = ({
             {brushSettings.size}px
           </span>
         </div>
-        <Slider
-          value={[brushSettings.size]}
-          onValueChange={([value]) => updateBrushSetting('size', value)}
-          max={100}
-          min={1}
-          step={1}
-          className="w-full"
-        />
+        <div 
+          onMouseDown={handleSliderInteraction}
+          onPointerDown={handleSliderInteraction}
+          onClick={handleSliderInteraction}
+        >
+          <Slider
+            value={[brushSettings.size]}
+            onValueChange={([value]) => updateBrushSetting('size', value)}
+            max={100}
+            min={1}
+            step={1}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Opacity Control */}
@@ -75,14 +92,20 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.opacity * 100)}%
           </span>
         </div>
-        <Slider
-          value={[brushSettings.opacity]}
-          onValueChange={([value]) => updateBrushSetting('opacity', value)}
-          max={1}
-          min={0.1}
-          step={0.1}
-          className="w-full"
-        />
+        <div 
+          onMouseDown={handleSliderInteraction}
+          onPointerDown={handleSliderInteraction}
+          onClick={handleSliderInteraction}
+        >
+          <Slider
+            value={[brushSettings.opacity]}
+            onValueChange={([value]) => updateBrushSetting('opacity', value)}
+            max={1}
+            min={0.1}
+            step={0.1}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Flow Control */}
@@ -93,14 +116,20 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.flow * 100)}%
           </span>
         </div>
-        <Slider
-          value={[brushSettings.flow]}
-          onValueChange={([value]) => updateBrushSetting('flow', value)}
-          max={1}
-          min={0.1}
-          step={0.1}
-          className="w-full"
-        />
+        <div 
+          onMouseDown={handleSliderInteraction}
+          onPointerDown={handleSliderInteraction}
+          onClick={handleSliderInteraction}
+        >
+          <Slider
+            value={[brushSettings.flow]}
+            onValueChange={([value]) => updateBrushSetting('flow', value)}
+            max={1}
+            min={0.1}
+            step={0.1}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Hardness Control */}
@@ -111,14 +140,20 @@ export const BrushSettingsMenu = ({
             {Math.round(brushSettings.hardness * 100)}%
           </span>
         </div>
-        <Slider
-          value={[brushSettings.hardness]}
-          onValueChange={([value]) => updateBrushSetting('hardness', value)}
-          max={1}
-          min={0.1}
-          step={0.1}
-          className="w-full"
-        />
+        <div 
+          onMouseDown={handleSliderInteraction}
+          onPointerDown={handleSliderInteraction}
+          onClick={handleSliderInteraction}
+        >
+          <Slider
+            value={[brushSettings.hardness]}
+            onValueChange={([value]) => updateBrushSetting('hardness', value)}
+            max={1}
+            min={0.1}
+            step={0.1}
+            className="w-full"
+          />
+        </div>
       </div>
     </div>
   );
