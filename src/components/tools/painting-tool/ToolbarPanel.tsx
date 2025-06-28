@@ -1,8 +1,10 @@
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool } from "./usePaintingTool";
-import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown, Square, Type, Crop, Move, Copy, Scissors } from "lucide-react";
+import { Brush, Eraser, Pipette, Undo, Redo, Trash2, Download, ChevronDown, Square, Type, Crop, Move, Copy, Scissors, Upload } from "lucide-react";
+import { useRef } from "react";
 
 interface ToolbarPanelProps {
   currentTool: Tool;
@@ -16,6 +18,7 @@ interface ToolbarPanelProps {
   onCopy?: () => void;
   onCut?: () => void;
   canCopy?: boolean;
+  onImageUpload?: (file: File) => void;
 }
 
 export const ToolbarPanel = ({
@@ -29,8 +32,11 @@ export const ToolbarPanel = ({
   onExport,
   onCopy,
   onCut,
-  canCopy = false
+  canCopy = false,
+  onImageUpload
 }: ToolbarPanelProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const tools = [
     { tool: 'brush' as Tool, name: 'Brush', icon: Brush },
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
@@ -47,6 +53,13 @@ export const ToolbarPanel = ({
     { format: 'gif' as const, name: 'GIF', description: 'Graphics Interchange Format' },
     { format: 'bmp' as const, name: 'BMP', description: 'Bitmap Image' },
   ];
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/') && onImageUpload) {
+      onImageUpload(file);
+    }
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-3 p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
@@ -126,6 +139,29 @@ export const ToolbarPanel = ({
         >
           <Scissors className="w-4 h-4 mr-1.5" />
           Cut
+        </Button>
+      </div>
+
+      <Separator orientation="vertical" className="h-8 bg-gray-300 dark:bg-gray-600" />
+
+      {/* Image Upload */}
+      <div className="flex items-center gap-2">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileUpload}
+          className="hidden"
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => fileInputRef.current?.click()}
+          title="Upload Image"
+          className="bg-white dark:bg-gray-800 border-purple-300 dark:border-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+        >
+          <Upload className="w-4 h-4 mr-1.5" />
+          Upload
         </Button>
       </div>
 
