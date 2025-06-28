@@ -75,6 +75,8 @@ export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>
       switch (currentTool) {
         case 'eyedropper':
           return 'crosshair';
+        case 'flood-fill':
+          return 'crosshair';
         case 'eraser':
           // Create a custom cursor showing eraser size
           if (brushSettings) {

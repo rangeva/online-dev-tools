@@ -1,7 +1,8 @@
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Position, Tool, BrushSettings, SelectionArea } from "./usePaintingTool";
 import { useCanvasToolEvents } from "./useCanvasToolEvents";
+import { floodFill } from "./floodFillUtils";
 
 interface CanvasMouseEventsProps {
   canvasRef: React.ForwardedRef<HTMLCanvasElement>;
@@ -13,14 +14,14 @@ interface CanvasMouseEventsProps {
   lastPosition: Position | null;
   setLastPosition: (position: Position | null) => void;
   saveCanvasState: () => void;
+  onColorPicked: (color: string) => void;
+  onColorPreview?: (color: string | null) => void;
   shapeStartPosition: Position | null;
   setShapeStartPosition: (position: Position | null) => void;
   drawShapePreview: (start: Position, end: Position, shape: Tool) => void;
   clearShapePreview: () => void;
   selectionArea?: SelectionArea | null;
   setSelectionArea?: (area: SelectionArea | null) => void;
-  onColorPicked: (color: string) => void;
-  onColorPreview?: (color: string | null) => void;
   onTextClick?: (position: Position) => void;
   onPasteAt?: (position: Position) => void;
   copiedImageData?: ImageData | null;
@@ -32,128 +33,131 @@ interface CanvasMouseEventsProps {
 
 export const useCanvasMouseEvents = (props: CanvasMouseEventsProps) => {
   const {
+    canvasRef,
     currentTool,
-    isDrawing,
-    setIsDrawing,
-    setLastPosition,
-    saveCanvasState,
-    shapeStartPosition,
-    setShapeStartPosition,
-    clearShapePreview,
-    lastPosition,
-    isDraggingPastedImage
+    currentColor,
+    saveCanvasState
   } = props;
 
   const { handleToolEvents } = useCanvasToolEvents(props);
 
-  const onMouseDown = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
-    // Check if clicking on pasted image first
-    if (handleToolEvents.handlePastedImageMouseDown(position)) {
-      return;
-    }
-    
-    // Handle different tools
-    switch (currentTool) {
-      case 'eyedropper':
+  const getCanvas = useCallback(() => {
+    if (!canvasRef || typeof canvasRef === 'function') return null;
+    return canvasRef.current;
+  }, [canvasRef]);
+
+  const handleFloodFill = useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
+    const canvas = getCanvas();
+    if (!canvas) return;
+
+    saveCanvasState();
+    floodFill(canvas, Math.floor(position.x), Math.floor(position.y), currentColor);
+  }, [getCanvas, saveCanvasState, currentColor]);
+
+  const handleMouseEvents = {
+    onMouseDown: useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
+      // Handle flood fill tool
+      if (currentTool === 'flood-fill') {
+        handleFloodFill(position, ctx);
+        return;
+      }
+
+      // Handle eyedropper tool
+      if (currentTool === 'eyedropper') {
         handleToolEvents.handleEyedropperClick(position, ctx);
         return;
-        
-      case 'text':
+      }
+
+      // Handle pasted image interactions
+      if (handleToolEvents.handlePastedImageMouseDown(position, ctx)) {
+        return;
+      }
+
+      // Handle selection tools
+      if (currentTool === 'select' || currentTool === 'crop') {
+        handleToolEvents.handleSelectionMouseDown(position, ctx);
+        return;
+      }
+
+      // Handle text tool
+      if (currentTool === 'text') {
         handleToolEvents.handleTextClick(position);
         return;
-        
-      case 'select':
-      case 'crop':
-        handleToolEvents.handleSelectionMouseDown(position);
+      }
+
+      // Handle shape tools
+      if (handleToolEvents.isShapeTool(currentTool)) {
+        handleToolEvents.handleShapeMouseDown(position, ctx);
         return;
-        
-      default:
-        // Handle brush, eraser, and shape tools
-        saveCanvasState();
-        setIsDrawing(true);
-        setLastPosition(position);
-        
-        if (handleToolEvents.isShapeTool(currentTool)) {
-          handleToolEvents.handleShapeMouseDown(position);
-        } else if (currentTool === 'brush' || currentTool === 'eraser') {
-          handleToolEvents.handleBrushMouseDown(position, ctx);
-        }
-        break;
-    }
-  }, [currentTool, handleToolEvents, saveCanvasState, setIsDrawing, setLastPosition]);
+      }
 
-  const onMouseMove = useCallback((currentPosition: Position, ctx: CanvasRenderingContext2D) => {
-    // Handle eyedropper hover preview
-    if (currentTool === 'eyedropper') {
-      handleToolEvents.handleEyedropperPreview(currentPosition, ctx);
-      return;
-    }
-    
-    if (!isDrawing) return;
-    
-    // Handle dragging pasted image
-    if (handleToolEvents.handlePastedImageMouseMove(currentPosition, lastPosition, isDraggingPastedImage)) {
-      return;
-    }
-    
-    // Handle selection tool and crop tool
-    if ((currentTool === 'select' || currentTool === 'crop') && handleToolEvents.handleSelectionMouseMove(currentPosition, shapeStartPosition)) {
-      return;
-    }
-    
-    // Handle brush and eraser tools
-    if ((currentTool === 'brush' || currentTool === 'eraser') && handleToolEvents.handleBrushMouseMove(currentPosition, lastPosition, ctx)) {
-      return;
-    }
-    
-    // Handle shape preview
-    if (handleToolEvents.handleShapeMouseMove(currentPosition, shapeStartPosition)) {
-      return;
-    }
-  }, [isDrawing, lastPosition, currentTool, handleToolEvents, shapeStartPosition, isDraggingPastedImage]);
+      // Handle brush and eraser tools
+      if (currentTool === 'brush' || currentTool === 'eraser') {
+        handleToolEvents.handleBrushMouseDown(position, ctx);
+        return;
+      }
+    }, [currentTool, handleFloodFill, handleToolEvents]),
 
-  const onMouseUp = useCallback((currentPosition: Position, ctx: CanvasRenderingContext2D) => {
-    if (!isDrawing) return;
-    
-    // Handle dragging pasted image
-    if (handleToolEvents.handlePastedImageMouseUp(isDraggingPastedImage)) {
-      return;
-    }
-    
-    // Handle selection tool and crop tool
-    if ((currentTool === 'select' || currentTool === 'crop') && handleToolEvents.handleSelectionMouseUp(shapeStartPosition)) {
-      return;
-    }
-    
-    // Draw shape if using a shape tool
-    if (handleToolEvents.handleShapeMouseUp(currentPosition, shapeStartPosition, ctx)) {
-      // Shape handling is complete
-    }
-    
-    setIsDrawing(false);
-    setLastPosition(null);
-  }, [isDrawing, currentTool, shapeStartPosition, setIsDrawing, setLastPosition, handleToolEvents, isDraggingPastedImage]);
+    onMouseMove: useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
+      // Handle eyedropper preview
+      if (currentTool === 'eyedropper') {
+        handleToolEvents.handleEyedropperPreview(position, ctx);
+        return;
+      }
 
-  const onMouseLeave = useCallback(() => {
-    setIsDrawing(false);
-    setLastPosition(null);
-    setShapeStartPosition(null);
-    clearShapePreview();
-    
-    handleToolEvents.handlePastedImageMouseLeave();
-    
-    // Clear color preview when mouse leaves
-    if (currentTool === 'eyedropper') {
-      handleToolEvents.clearEyedropperPreview();
-    }
-  }, [setIsDrawing, setLastPosition, setShapeStartPosition, clearShapePreview, currentTool, handleToolEvents]);
+      // Handle pasted image dragging
+      if (handleToolEvents.handlePastedImageMouseMove(position, ctx)) {
+        return;
+      }
 
-  return {
-    handleMouseEvents: {
-      onMouseDown,
-      onMouseMove,
-      onMouseUp,
-      onMouseLeave
-    }
+      // Handle selection tools
+      if (currentTool === 'select' || currentTool === 'crop') {
+        handleToolEvents.handleSelectionMouseMove(position, ctx);
+        return;
+      }
+
+      // Handle shape tools
+      if (handleToolEvents.isShapeTool(currentTool)) {
+        handleToolEvents.handleShapeMouseMove(position, ctx);
+        return;
+      }
+
+      // Handle brush and eraser tools
+      if (currentTool === 'brush' || currentTool === 'eraser') {
+        handleToolEvents.handleBrushMouseMove(position, ctx);
+        return;
+      }
+    }, [currentTool, handleToolEvents]),
+
+    onMouseUp: useCallback((position: Position, ctx: CanvasRenderingContext2D) => {
+      // Handle pasted image interactions
+      if (handleToolEvents.handlePastedImageMouseUp(position, ctx)) {
+        return;
+      }
+
+      // Handle selection tools
+      if (currentTool === 'select' || currentTool === 'crop') {
+        handleToolEvents.handleSelectionMouseUp(position, ctx);
+        return;
+      }
+
+      // Handle shape tools
+      if (handleToolEvents.isShapeTool(currentTool)) {
+        handleToolEvents.handleShapeMouseUp(position, ctx);
+        return;
+      }
+    }, [currentTool, handleToolEvents]),
+
+    onMouseLeave: useCallback(() => {
+      // Clear eyedropper preview
+      if (currentTool === 'eyedropper') {
+        handleToolEvents.clearEyedropperPreview();
+      }
+
+      // Handle pasted image interactions
+      handleToolEvents.handlePastedImageMouseLeave();
+    }, [currentTool, handleToolEvents])
   };
+
+  return { handleMouseEvents };
 };
