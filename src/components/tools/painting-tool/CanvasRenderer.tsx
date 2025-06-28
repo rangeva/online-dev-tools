@@ -1,6 +1,6 @@
 
 import { forwardRef, useEffect, ForwardedRef } from "react";
-import { CanvasSize, Tool } from "./usePaintingTool";
+import { CanvasSize, Tool, BrushSettings } from "./usePaintingTool";
 
 interface CanvasRendererProps {
   canvasSize: CanvasSize;
@@ -11,10 +11,11 @@ interface CanvasRendererProps {
   onMouseLeave: () => void;
   previewCanvasRef: React.RefObject<HTMLCanvasElement>;
   isDrawing?: boolean;
+  brushSettings?: BrushSettings;
 }
 
 export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>(
-  ({ canvasSize, currentTool, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, previewCanvasRef, isDrawing = false }, ref) => {
+  ({ canvasSize, currentTool, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, previewCanvasRef, isDrawing = false, brushSettings }, ref) => {
     
     // Initialize canvas only once
     useEffect(() => {
@@ -75,6 +76,18 @@ export const CanvasRenderer = forwardRef<HTMLCanvasElement, CanvasRendererProps>
         case 'eyedropper':
           return 'crosshair';
         case 'eraser':
+          // Create a custom cursor showing eraser size
+          if (brushSettings) {
+            const size = Math.max(8, Math.min(32, brushSettings.size)); // Clamp cursor size
+            const cursorSvg = `
+              <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 1}" fill="none" stroke="black" stroke-width="1"/>
+                <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}" fill="none" stroke="white" stroke-width="1"/>
+              </svg>
+            `;
+            const encodedSvg = encodeURIComponent(cursorSvg);
+            return `url("data:image/svg+xml,${encodedSvg}") ${size/2} ${size/2}, auto`;
+          }
           return 'grab';
         case 'brush':
           return 'crosshair';

@@ -29,12 +29,20 @@ export const ToolSelection = ({ currentTool, onToolChange, brushSettings, onBrus
   ];
 
   const handleEraserSizeChange = (size: number) => {
+    // First activate the eraser tool
+    onToolChange('eraser');
+    
+    // Then update the brush settings
     if (brushSettings && onBrushSettingsChange) {
       onBrushSettingsChange({
         ...brushSettings,
         size: size
       });
     }
+  };
+
+  const handleEraserClick = () => {
+    onToolChange('eraser');
   };
 
   const renderToolButton = (tool: typeof tools[0]) => {
@@ -55,14 +63,14 @@ export const ToolSelection = ({ currentTool, onToolChange, brushSettings, onBrus
                   : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                 }
               `}
-              onClick={() => onToolChange(tool.tool)}
+              onClick={handleEraserClick}
             >
               <tool.icon className="w-4 h-4 mr-1.5" />
               <span className="font-medium">{tool.name}</span>
               <ChevronDown className="w-3 h-3 ml-1" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-lg">
+          <DropdownMenuContent align="start" className="w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-lg z-50">
             {eraserSizes.map((eraserSize) => (
               <DropdownMenuItem
                 key={eraserSize.size}

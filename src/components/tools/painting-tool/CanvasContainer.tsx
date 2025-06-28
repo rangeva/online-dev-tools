@@ -131,6 +131,7 @@ export const CanvasContainer = forwardRef<HTMLCanvasElement, CanvasContainerProp
           ref={ref}
           canvasSize={canvasSize}
           currentTool={currentTool}
+          brushSettings={brushSettings}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
