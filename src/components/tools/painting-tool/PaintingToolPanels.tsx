@@ -46,13 +46,9 @@ export const PaintingToolPanels = ({
   const showTextPanel = currentTool === 'text';
   const showResizeCropPanel = currentTool === 'resize' || currentTool === 'crop';
   
-  // If no panels need to be shown, return a minimal placeholder
+  // If no panels need to be shown, return null to hide the entire sidebar
   if (!showTextPanel && !showResizeCropPanel) {
-    return (
-      <div className="text-center text-gray-500 dark:text-gray-400 p-4">
-        <p className="text-sm">Select a tool to see its settings</p>
-      </div>
-    );
+    return null;
   }
 
   return (

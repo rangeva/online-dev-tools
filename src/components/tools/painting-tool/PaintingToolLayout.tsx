@@ -61,6 +61,11 @@ export const PaintingToolLayout = ({ state, handlers }: PaintingToolLayoutProps)
     handleResize
   } = handlers;
 
+  // Check if we need to show the tool panels
+  const showTextPanel = currentTool === 'text';
+  const showResizeCropPanel = currentTool === 'resize' || currentTool === 'crop';
+  const showPanels = showTextPanel || showResizeCropPanel;
+
   return (
     <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
       <Card>
@@ -89,31 +94,33 @@ export const PaintingToolLayout = ({ state, handlers }: PaintingToolLayoutProps)
             previewColor={previewColor}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Tool Panels - Only show non-brush panels */}
-            <div className="lg:col-span-1 space-y-4">
-              <PaintingToolPanels
-                currentTool={currentTool}
-                setCurrentTool={setCurrentTool}
-                brushSettings={brushSettings}
-                setBrushSettings={setBrushSettings}
-                currentColor={currentColor}
-                setCurrentColor={setCurrentColor}
-                textSettings={textSettings}
-                setTextSettings={setTextSettings}
-                canvasSize={canvasSize}
-                setCanvasSize={setCanvasSize}
-                selectionArea={selectionArea}
-                canvasRef={canvasRef}
-                previewColor={previewColor}
-                resizeCanvas={resizeCanvas}
-                cropCanvas={cropCanvas}
-                uploadImage={uploadImage}
-              />
-            </div>
+          <div className={`grid gap-6 ${showPanels ? 'grid-cols-1 lg:grid-cols-4' : 'grid-cols-1'}`}>
+            {/* Tool Panels - Only show when needed */}
+            {showPanels && (
+              <div className="lg:col-span-1 space-y-4">
+                <PaintingToolPanels
+                  currentTool={currentTool}
+                  setCurrentTool={setCurrentTool}
+                  brushSettings={brushSettings}
+                  setBrushSettings={setBrushSettings}
+                  currentColor={currentColor}
+                  setCurrentColor={setCurrentColor}
+                  textSettings={textSettings}
+                  setTextSettings={setTextSettings}
+                  canvasSize={canvasSize}
+                  setCanvasSize={setCanvasSize}
+                  selectionArea={selectionArea}
+                  canvasRef={canvasRef}
+                  previewColor={previewColor}
+                  resizeCanvas={resizeCanvas}
+                  cropCanvas={cropCanvas}
+                  uploadImage={uploadImage}
+                />
+              </div>
+            )}
 
-            {/* Canvas Area */}
-            <div className="lg:col-span-3">
+            {/* Canvas Area - Expand when no panels are shown */}
+            <div className={showPanels ? 'lg:col-span-3' : 'col-span-1'}>
               <PaintingCanvas 
                 ref={canvasRef}
                 canvasSize={canvasSize}
