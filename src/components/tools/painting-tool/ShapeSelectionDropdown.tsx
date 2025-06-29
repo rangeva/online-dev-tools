@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tool } from "./usePaintingTool";
 import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 interface ShapeSelectionDropdownProps {
   currentTool: Tool;
@@ -13,6 +14,8 @@ export const ShapeSelectionDropdown = ({
   currentTool, 
   onToolChange
 }: ShapeSelectionDropdownProps) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const shapes = [
     { tool: 'rectangle' as Tool, name: 'Rectangle', icon: '⬜' },
     { tool: 'circle' as Tool, name: 'Circle', icon: '⭕' },
@@ -25,10 +28,11 @@ export const ShapeSelectionDropdown = ({
 
   const handleShapeSelect = (shape: Tool) => {
     onToolChange(shape);
+    setDropdownOpen(false);
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant={isShapeToolActive ? "default" : "ghost"}
