@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -84,6 +83,8 @@ const CitiesDropdown = ({ selectedState, onCitySelect, isLoading }: CitiesDropdo
   const [selectedCity, setSelectedCity] = useState("");
   const [customCity, setCustomCity] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const cities = selectedState ? POPULAR_CITIES_BY_STATE[selectedState] || [] : [];
 
@@ -91,12 +92,24 @@ const CitiesDropdown = ({ selectedState, onCitySelect, isLoading }: CitiesDropdo
     setSelectedCity("");
     setCustomCity("");
     setShowCustomInput(false);
+    setSearchValue("");
   }, [selectedState]);
+
+  // Keep focus on search input when popover is open
+  useEffect(() => {
+    if (open && searchInputRef.current) {
+      const timer = setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   const handleCitySelect = (city: string) => {
     setSelectedCity(city);
     setOpen(false);
     setShowCustomInput(false);
+    setSearchValue("");
     onCitySelect(`${city}, ${selectedState}`);
   };
 
@@ -112,6 +125,11 @@ const CitiesDropdown = ({ selectedState, onCitySelect, isLoading }: CitiesDropdo
     setShowCustomInput(true);
     setOpen(false);
   };
+
+  // Filter cities based on search value
+  const filteredCities = cities.filter(city =>
+    city.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   if (!selectedState) return null;
 
@@ -137,34 +155,45 @@ const CitiesDropdown = ({ selectedState, onCitySelect, isLoading }: CitiesDropdo
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-full p-0" align="start">
-            <Command>
-              <CommandInput placeholder="Search cities..." />
+            <Command shouldFilter={false}>
+              <div className="flex items-center border-b px-3">
+                <CommandInput
+                  ref={searchInputRef}
+                  placeholder="Search cities..."
+                  value={searchValue}
+                  onValueChange={setSearchValue}
+                  className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
               <CommandList>
-                <CommandEmpty>No city found.</CommandEmpty>
-                <CommandGroup>
-                  {cities.map((city) => (
+                {filteredCities.length === 0 && searchValue ? (
+                  <CommandEmpty>No city found.</CommandEmpty>
+                ) : (
+                  <CommandGroup>
+                    {filteredCities.map((city) => (
+                      <CommandItem
+                        key={city}
+                        value={city}
+                        onSelect={() => handleCitySelect(city)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedCity === city ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {city}
+                      </CommandItem>
+                    ))}
                     <CommandItem
-                      key={city}
-                      value={city}
-                      onSelect={() => handleCitySelect(city)}
+                      onSelect={handleShowCustomInput}
+                      className="border-t"
                     >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          selectedCity === city ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {city}
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Enter custom city name
                     </CommandItem>
-                  ))}
-                  <CommandItem
-                    onSelect={handleShowCustomInput}
-                    className="border-t"
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Enter custom city name
-                  </CommandItem>
-                </CommandGroup>
+                  </CommandGroup>
+                )}
               </CommandList>
             </Command>
           </PopoverContent>

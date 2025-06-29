@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
@@ -13,10 +13,10 @@ interface SidebarHeaderProps {
 export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     onSearchChange(value);
-  };
+  }, [onSearchChange]);
 
   return (
     <div className="p-4 border-b flex-shrink-0">
