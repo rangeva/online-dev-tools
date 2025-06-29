@@ -5,7 +5,6 @@ import { Tool, BrushSettings } from "./usePaintingTool";
 import { Eraser, Square, Type, Crop, ChevronDown } from "lucide-react";
 import { BrushSettingsDropdown } from "./BrushSettingsDropdown";
 import { ShapeSelectionDropdown } from "./ShapeSelectionDropdown";
-import { useState } from "react";
 
 interface ToolSelectionProps {
   currentTool: Tool;
@@ -26,8 +25,6 @@ export const ToolSelection = ({
   onColorChange,
   previewColor
 }: ToolSelectionProps) => {
-  const [eraserDropdownOpen, setEraserDropdownOpen] = useState(false);
-
   const tools = [
     { tool: 'eraser' as Tool, name: 'Eraser', icon: Eraser },
     { tool: 'select' as Tool, name: 'Select', icon: Square },
@@ -53,14 +50,10 @@ export const ToolSelection = ({
         size: size
       });
     }
-    
-    // Close the dropdown
-    setEraserDropdownOpen(false);
   };
 
   const handleEraserClick = () => {
     onToolChange('eraser');
-    // Don't close dropdown here - let user choose size if they want
   };
 
   const renderToolButton = (tool: typeof tools[0]) => {
@@ -68,7 +61,7 @@ export const ToolSelection = ({
     
     if (tool.tool === 'eraser' && brushSettings && onBrushSettingsChange) {
       return (
-        <DropdownMenu key={tool.tool} open={eraserDropdownOpen} onOpenChange={setEraserDropdownOpen}>
+        <DropdownMenu key={tool.tool}>
           <DropdownMenuTrigger asChild>
             <Button
               variant={isSelected ? "default" : "ghost"}
