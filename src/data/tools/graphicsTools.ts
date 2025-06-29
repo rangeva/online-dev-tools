@@ -4,7 +4,8 @@ import {
   Wifi,
   Palette,
   Camera,
-  Brush
+  Brush,
+  FileImage
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -63,5 +64,14 @@ export const graphicsTools: Tool[] = [
     icon: Brush,
     component: toolComponents.PaintingDrawingTool,
     tags: ["paint", "draw", "brush", "canvas", "art", "edit", "image", "digital art"]
+  },
+  {
+    id: "image-format-converter",
+    name: "Image Format Converter",
+    description: "Convert images between different formats (PNG, JPEG, WebP, BMP) with quality control and download options.",
+    category: "graphics",
+    icon: FileImage,
+    component: toolComponents.ImageFormatConverter,
+    tags: ["image", "convert", "format", "png", "jpeg", "webp", "bmp", "quality"]
   }
 ];

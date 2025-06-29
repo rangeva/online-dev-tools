@@ -21,7 +21,7 @@ const ToolPage = () => {
     "yaml-converter", "hash-generator", "htpasswd-generator", "strong-password-generator",
     "uuid-generator", "lorem-generator", "fake-data-generator", "color-palette-generator", 
     "html-color-codes", "qr-code-generator", "wifi-qr-generator", 
-    "camera-recorder", "painting-drawing-tool", "toml-to-json-converter", "toml-to-yaml-converter", "xml-to-json-converter",
+    "camera-recorder", "painting-drawing-tool", "image-format-converter", "toml-to-json-converter", "toml-to-yaml-converter", "xml-to-json-converter",
     "json-to-xml-converter", "markdown-to-html-converter", "random-phone-generator", "random-email-generator",
     "temperature-converter", "credential-format-detector", "tokenizer", "website-rank-tracker"
   ];
