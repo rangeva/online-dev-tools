@@ -8,7 +8,7 @@ import {
   FileImage
 } from "lucide-react";
 import { Tool } from "@/types/tools";
-import { toolComponents } from "../toolComponents";
+import { toolComponents } from "@/components/toolComponents";
 
 export const graphicsTools: Tool[] = [
   {
