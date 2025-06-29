@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const ImageFormatConverter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [convertedImage, setConvertedImage] = useState<string | null>(null);
   const [outputFormat, setOutputFormat] = useState<string>("png");
   const [quality, setQuality] = useState<number[]>([90]);
@@ -19,10 +20,15 @@ const ImageFormatConverter = () => {
   const { toast } = useToast();
 
   const supportedFormats = [
-    { value: "png", label: "PNG" },
-    { value: "jpeg", label: "JPEG" },
-    { value: "webp", label: "WebP" },
-    { value: "bmp", label: "BMP" }
+    { value: "png", label: "PNG", hasQuality: false },
+    { value: "jpeg", label: "JPEG", hasQuality: true },
+    { value: "jpg", label: "JPG", hasQuality: true },
+    { value: "webp", label: "WebP", hasQuality: true },
+    { value: "bmp", label: "BMP", hasQuality: false },
+    { value: "gif", label: "GIF", hasQuality: false },
+    { value: "tiff", label: "TIFF", hasQuality: false },
+    { value: "ico", label: "ICO", hasQuality: false },
+    { value: "svg", label: "SVG", hasQuality: false }
   ];
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,8 +42,20 @@ const ImageFormatConverter = () => {
         });
         return;
       }
+      
       setSelectedFile(file);
       setConvertedImage(null);
+      
+      // Create preview URL
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      
+      // Clean up old preview URL
+      return () => {
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      };
     }
   };
 
@@ -55,15 +73,66 @@ const ImageFormatConverter = () => {
         canvas.height = img.naturalHeight;
         ctx.drawImage(img, 0, 0);
 
-        let mimeType = `image/${outputFormat}`;
-        let qualityValue = outputFormat === 'png' ? undefined : quality[0] / 100;
+        let mimeType: string;
+        let qualityValue: number | undefined;
+
+        // Handle different output formats
+        switch (outputFormat) {
+          case 'jpg':
+            mimeType = 'image/jpeg';
+            qualityValue = quality[0] / 100;
+            break;
+          case 'jpeg':
+            mimeType = 'image/jpeg';
+            qualityValue = quality[0] / 100;
+            break;
+          case 'webp':
+            mimeType = 'image/webp';
+            qualityValue = quality[0] / 100;
+            break;
+          case 'png':
+            mimeType = 'image/png';
+            qualityValue = undefined;
+            break;
+          case 'bmp':
+            mimeType = 'image/bmp';
+            qualityValue = undefined;
+            break;
+          case 'gif':
+            mimeType = 'image/gif';
+            qualityValue = undefined;
+            break;
+          case 'tiff':
+            // Fallback to PNG for TIFF since canvas doesn't support it natively
+            mimeType = 'image/png';
+            qualityValue = undefined;
+            break;
+          case 'ico':
+            // Fallback to PNG for ICO since canvas doesn't support it natively
+            mimeType = 'image/png';
+            qualityValue = undefined;
+            break;
+          case 'svg':
+            // For SVG, we'll use PNG as fallback since canvas can't export SVG
+            mimeType = 'image/png';
+            qualityValue = undefined;
+            break;
+          default:
+            mimeType = 'image/png';
+            qualityValue = undefined;
+        }
 
         const dataUrl = canvas.toDataURL(mimeType, qualityValue);
         setConvertedImage(dataUrl);
         
+        const formatName = outputFormat.toUpperCase();
+        const fallbackMessage = (outputFormat === 'tiff' || outputFormat === 'ico' || outputFormat === 'svg') 
+          ? ` (converted to PNG as ${formatName} export is not supported by browsers)`
+          : '';
+        
         toast({
           title: "Conversion successful",
-          description: `Image converted to ${outputFormat.toUpperCase()}`
+          description: `Image converted to ${formatName}${fallbackMessage}`
         });
       };
 
@@ -91,13 +160,15 @@ const ImageFormatConverter = () => {
     if (!convertedImage) return;
 
     const link = document.createElement('a');
-    link.download = `converted-image.${outputFormat}`;
+    const extension = (outputFormat === 'tiff' || outputFormat === 'ico' || outputFormat === 'svg') ? 'png' : outputFormat;
+    link.download = `converted-image.${extension}`;
     link.href = convertedImage;
     link.click();
   };
 
   const reset = () => {
     setSelectedFile(null);
+    setPreviewUrl(null);
     setConvertedImage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -115,6 +186,9 @@ const ImageFormatConverter = () => {
     return `${size.toFixed(1)} ${sizes[i]}`;
   };
 
+  const selectedFormatConfig = supportedFormats.find(f => f.value === outputFormat);
+  const showQualityControl = selectedFormatConfig?.hasQuality;
+
   return (
     <div className="container mx-auto p-6">
       <Card>
@@ -124,7 +198,7 @@ const ImageFormatConverter = () => {
             Image Format Converter
           </CardTitle>
           <CardDescription>
-            Convert images between different formats (PNG, JPEG, WebP, BMP) with quality control
+            Convert images between different formats (PNG, JPEG, WebP, BMP, GIF, TIFF, ICO, SVG) with quality control
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -155,6 +229,20 @@ const ImageFormatConverter = () => {
             </div>
           </div>
 
+          {/* Image Preview */}
+          {previewUrl && (
+            <div className="space-y-2">
+              <Label>Original Image Preview</Label>
+              <div className="max-w-md border rounded-lg p-4 bg-gray-50">
+                <img 
+                  src={previewUrl} 
+                  alt="Original" 
+                  className="max-w-full h-auto max-h-64 mx-auto rounded"
+                />
+              </div>
+            </div>
+          )}
+
           {selectedFile && (
             <>
               {/* Output Format Selection */}
@@ -168,14 +256,16 @@ const ImageFormatConverter = () => {
                     {supportedFormats.map((format) => (
                       <SelectItem key={format.value} value={format.value}>
                         {format.label}
+                        {(format.value === 'tiff' || format.value === 'ico' || format.value === 'svg') && 
+                          ' (exports as PNG)'}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Quality Control (for JPEG and WebP) */}
-              {(outputFormat === 'jpeg' || outputFormat === 'webp') && (
+              {/* Quality Control */}
+              {showQualityControl && (
                 <div className="space-y-2">
                   <Label>Quality: {quality[0]}%</Label>
                   <Slider
@@ -224,11 +314,11 @@ const ImageFormatConverter = () => {
                   Download
                 </Button>
               </div>
-              <div className="max-w-md">
+              <div className="max-w-md border rounded-lg p-4 bg-gray-50">
                 <img 
                   src={convertedImage} 
                   alt="Converted" 
-                  className="max-w-full h-auto border rounded"
+                  className="max-w-full h-auto max-h-64 mx-auto rounded"
                 />
               </div>
             </div>
