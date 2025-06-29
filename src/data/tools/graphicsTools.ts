@@ -68,10 +68,10 @@ export const graphicsTools: Tool[] = [
   {
     id: "image-format-converter",
     name: "Image Format Converter",
-    description: "Convert images between different formats (PNG, JPEG, WebP, BMP) with quality control and download options.",
+    description: "Convert images between different formats (PNG, JPEG, WebP, BMP, GIF) with quality control and download options.",
     category: "graphics",
     icon: FileImage,
     component: toolComponents.ImageFormatConverter,
-    tags: ["image", "convert", "format", "png", "jpeg", "webp", "bmp", "quality"]
+    tags: ["image", "convert", "format", "png", "jpeg", "webp", "bmp", "gif", "quality"]
   }
 ];

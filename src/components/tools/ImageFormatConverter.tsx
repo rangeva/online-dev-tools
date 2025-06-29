@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,10 +24,7 @@ const ImageFormatConverter = () => {
     { value: "jpg", label: "JPG", hasQuality: true },
     { value: "webp", label: "WebP", hasQuality: true },
     { value: "bmp", label: "BMP", hasQuality: false },
-    { value: "gif", label: "GIF", hasQuality: false },
-    { value: "tiff", label: "TIFF", hasQuality: false },
-    { value: "ico", label: "ICO", hasQuality: false },
-    { value: "svg", label: "SVG", hasQuality: false }
+    { value: "gif", label: "GIF", hasQuality: false }
   ];
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,21 +98,6 @@ const ImageFormatConverter = () => {
             mimeType = 'image/gif';
             qualityValue = undefined;
             break;
-          case 'tiff':
-            // Fallback to PNG for TIFF since canvas doesn't support it natively
-            mimeType = 'image/png';
-            qualityValue = undefined;
-            break;
-          case 'ico':
-            // Fallback to PNG for ICO since canvas doesn't support it natively
-            mimeType = 'image/png';
-            qualityValue = undefined;
-            break;
-          case 'svg':
-            // For SVG, we'll use PNG as fallback since canvas can't export SVG
-            mimeType = 'image/png';
-            qualityValue = undefined;
-            break;
           default:
             mimeType = 'image/png';
             qualityValue = undefined;
@@ -126,13 +107,10 @@ const ImageFormatConverter = () => {
         setConvertedImage(dataUrl);
         
         const formatName = outputFormat.toUpperCase();
-        const fallbackMessage = (outputFormat === 'tiff' || outputFormat === 'ico' || outputFormat === 'svg') 
-          ? ` (converted to PNG as ${formatName} export is not supported by browsers)`
-          : '';
         
         toast({
           title: "Conversion successful",
-          description: `Image converted to ${formatName}${fallbackMessage}`
+          description: `Image converted to ${formatName}`
         });
       };
 
@@ -160,8 +138,7 @@ const ImageFormatConverter = () => {
     if (!convertedImage) return;
 
     const link = document.createElement('a');
-    const extension = (outputFormat === 'tiff' || outputFormat === 'ico' || outputFormat === 'svg') ? 'png' : outputFormat;
-    link.download = `converted-image.${extension}`;
+    link.download = `converted-image.${outputFormat}`;
     link.href = convertedImage;
     link.click();
   };
@@ -198,7 +175,7 @@ const ImageFormatConverter = () => {
             Image Format Converter
           </CardTitle>
           <CardDescription>
-            Convert images between different formats (PNG, JPEG, WebP, BMP, GIF, TIFF, ICO, SVG) with quality control
+            Convert images between different formats (PNG, JPEG, WebP, BMP, GIF) with quality control
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -256,8 +233,6 @@ const ImageFormatConverter = () => {
                     {supportedFormats.map((format) => (
                       <SelectItem key={format.value} value={format.value}>
                         {format.label}
-                        {(format.value === 'tiff' || format.value === 'ico' || format.value === 'svg') && 
-                          ' (exports as PNG)'}
                       </SelectItem>
                     ))}
                   </SelectContent>
