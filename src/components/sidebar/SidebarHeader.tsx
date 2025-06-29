@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
@@ -17,6 +17,22 @@ export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }:
     const value = e.target.value;
     onSearchChange(value);
   }, [onSearchChange]);
+
+  // Maintain focus on search input after each change
+  useEffect(() => {
+    if (searchInputRef.current && document.activeElement !== searchInputRef.current && searchTerm) {
+      searchInputRef.current.focus();
+      // Set cursor to end of input
+      const length = searchInputRef.current.value.length;
+      searchInputRef.current.setSelectionRange(length, length);
+    }
+  }, [searchTerm]);
+
+  const handleInputFocus = useCallback(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className="p-4 border-b flex-shrink-0">
@@ -37,7 +53,9 @@ export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }:
           placeholder="Search tools..."
           value={searchTerm}
           onChange={handleSearchChange}
+          onFocus={handleInputFocus}
           className="pl-10"
+          autoComplete="off"
         />
       </div>
     </div>

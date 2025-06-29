@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { tools, toolCategories } from "@/data/toolsData";
+import { useMemo } from "react";
 
 interface SidebarCategoryMenuProps {
   searchTerm: string;
@@ -20,24 +21,27 @@ export function SidebarCategoryMenu({
 }: SidebarCategoryMenuProps) {
   const { toolId } = useParams();
 
-  // Group tools by category
-  const toolsByCategory = toolCategories.reduce((acc, category) => {
-    acc[category.id] = tools.filter(tool => tool.category === category.id);
-    return acc;
-  }, {} as Record<string, typeof tools>);
+  // Memoize the filtered tools to prevent unnecessary re-computations
+  const filteredToolsByCategory = useMemo(() => {
+    // Group tools by category
+    const toolsByCategory = toolCategories.reduce((acc, category) => {
+      acc[category.id] = tools.filter(tool => tool.category === category.id);
+      return acc;
+    }, {} as Record<string, typeof tools>);
 
-  // Filter tools based on search term
-  const filteredToolsByCategory = Object.entries(toolsByCategory).reduce((acc, [categoryId, categoryTools]) => {
-    const filteredTools = categoryTools.filter(tool =>
-      tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tool.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-    if (filteredTools.length > 0) {
-      acc[categoryId] = filteredTools;
-    }
-    return acc;
-  }, {} as Record<string, typeof tools>);
+    // Filter tools based on search term
+    return Object.entries(toolsByCategory).reduce((acc, [categoryId, categoryTools]) => {
+      const filteredTools = categoryTools.filter(tool =>
+        tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tool.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+      if (filteredTools.length > 0) {
+        acc[categoryId] = filteredTools;
+      }
+      return acc;
+    }, {} as Record<string, typeof tools>);
+  }, [searchTerm]);
 
   const handleToolClick = () => {
     // Close mobile menu when a tool is selected
@@ -46,6 +50,15 @@ export function SidebarCategoryMenu({
     }
   };
 
+  // Determine accordion value based on search
+  const currentAccordionValue = useMemo(() => {
+    if (searchTerm && Object.keys(filteredToolsByCategory).length > 0) {
+      // If searching and there are results, open the first category with results
+      return Object.keys(filteredToolsByCategory)[0];
+    }
+    return accordionValue[0] || "";
+  }, [searchTerm, filteredToolsByCategory, accordionValue]);
+
   return (
     <div className="flex-1 overflow-hidden">
       <ScrollArea className="h-full">
@@ -53,7 +66,7 @@ export function SidebarCategoryMenu({
           <Accordion 
             type="single" 
             className="w-full" 
-            value={accordionValue[0] || ""}
+            value={currentAccordionValue}
             onValueChange={(value) => onAccordionChange(value ? [value] : [])}
             collapsible
           >
