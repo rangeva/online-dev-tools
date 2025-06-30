@@ -13,7 +13,7 @@ export const useImageConverter = () => {
   const [isConverting, setIsConverting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
-  const { t } = useI18n();
+  const { t, tString } = useI18n();
 
   const handleFileSelect = (file: File | null, url: string | null) => {
     setSelectedFile(file);
@@ -42,15 +42,15 @@ export const useImageConverter = () => {
         const formatName = outputFormat.toUpperCase();
         
         toast({
-          title: t('imageConverter.success'),
-          description: t('imageConverter.successDesc', { format: formatName })
+          title: tString('imageConverter.success'),
+          description: tString('imageConverter.successDesc', { format: formatName })
         });
       };
 
       img.onerror = () => {
         toast({
-          title: t('imageConverter.failed'),
-          description: t('imageConverter.failedLoad'),
+          title: tString('imageConverter.failed'),
+          description: tString('imageConverter.failedLoad'),
           variant: "destructive"
         });
       };
@@ -58,8 +58,8 @@ export const useImageConverter = () => {
       img.src = URL.createObjectURL(selectedFile);
     } catch (error) {
       toast({
-        title: t('imageConverter.failed'),
-        description: t('imageConverter.failedError'),
+        title: tString('imageConverter.failed'),
+        description: tString('imageConverter.failedError'),
         variant: "destructive"
       });
     } finally {

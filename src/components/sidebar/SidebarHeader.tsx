@@ -12,7 +12,7 @@ interface SidebarHeaderProps {
 }
 
 export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) {
-  const { t } = useI18n();
+  const { tString } = useI18n();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +52,7 @@ export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }:
         <Input
           ref={searchInputRef}
           type="text"
-          placeholder={t('sidebar.searchPlaceholder')}
+          placeholder={tString('sidebar.searchPlaceholder')}
           value={searchTerm}
           onChange={handleSearchChange}
           onFocus={handleInputFocus}

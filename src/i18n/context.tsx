@@ -6,6 +6,7 @@ interface I18nContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: TranslationKey, params?: Record<string, string | ReactNode>) => string | ReactNode;
+  tString: (key: TranslationKey, params?: Record<string, string>) => string;
   availableLanguages: { code: Language; name: string }[];
 }
 
@@ -60,11 +61,24 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
     return translation;
   };
 
+  const tString = (key: TranslationKey, params?: Record<string, string>): string => {
+    let translation = translations[language][key] || translations.en[key] || key;
+    
+    if (params && typeof translation === 'string') {
+      Object.entries(params).forEach(([paramKey, value]) => {
+        translation = translation.replace(`{${paramKey}}`, value);
+      });
+    }
+    
+    return translation as string;
+  };
+
   return (
     <I18nContext.Provider value={{ 
       language, 
       setLanguage, 
       t, 
+      tString,
       availableLanguages 
     }}>
       {children}

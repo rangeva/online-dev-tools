@@ -15,15 +15,15 @@ interface FileUploadProps {
 export const FileUpload = ({ selectedFile, onFileSelect }: FileUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { t } = useI18n();
+  const { t, tString } = useI18n();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith('image/')) {
         toast({
-          title: t('imageConverter.invalidFile'),
-          description: t('imageConverter.selectImageFile'),
+          title: tString('imageConverter.invalidFile'),
+          description: tString('imageConverter.selectImageFile'),
           variant: "destructive"
         });
         return;

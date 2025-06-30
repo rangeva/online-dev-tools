@@ -17,7 +17,7 @@ declare global {
 
 export const FeedbackForm = () => {
   const { toast } = useToast();
-  const { t } = useI18n();
+  const { tString } = useI18n();
   const formId = '3jX45R';
 
   const handleFeedbackClick = () => {
@@ -37,8 +37,8 @@ export const FeedbackForm = () => {
         onSubmit: (payload: any) => {
           console.log('Feedback submitted:', payload);
           toast({
-            title: t('feedback.thanks'),
-            description: t('feedback.thanksDesc'),
+            title: tString('feedback.thanks'),
+            description: tString('feedback.thanksDesc'),
           });
         },
         hiddenFields: {
@@ -49,8 +49,8 @@ export const FeedbackForm = () => {
     } else {
       console.error('Tally widget not loaded');
       toast({
-        title: t('common.error'),
-        description: t('feedback.error'),
+        title: tString('common.error'),
+        description: tString('feedback.error'),
         variant: "destructive",
       });
     }
@@ -61,7 +61,7 @@ export const FeedbackForm = () => {
       onClick={handleFeedbackClick}
       size="icon"
       className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg z-50 bg-blue-600 hover:bg-blue-700"
-      aria-label={t('feedback.title')}
+      aria-label={tString('feedback.title')}
     >
       <MessageSquare className="h-5 w-5" />
     </Button>
