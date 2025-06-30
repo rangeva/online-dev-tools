@@ -7,8 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { parseTimestamp, getCurrentTimestampInFormat } from './utils';
+import { useI18n } from '@/contexts/I18nContext';
 
 const TimestampToHuman = () => {
+  const { t } = useI18n();
   const [singleTimestamp, setSingleTimestamp] = useState(Math.floor(Date.now() / 1000).toString());
   const [batchTimestamps, setBatchTimestamps] = useState('');
   const [timestampFormat, setTimestampFormat] = useState('seconds');
@@ -62,7 +64,7 @@ const TimestampToHuman = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Convert Timestamp to Human Date</CardTitle>
+        <CardTitle>{t('tools.epochConverter.timestampToHuman')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-4">
@@ -78,20 +80,20 @@ const TimestampToHuman = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="seconds">Seconds</SelectItem>
-              <SelectItem value="milliseconds">Milliseconds</SelectItem>
-              <SelectItem value="microseconds">Microseconds</SelectItem>
-              <SelectItem value="nanoseconds">Nanoseconds</SelectItem>
+              <SelectItem value="seconds">{t('timestampFormats.seconds')}</SelectItem>
+              <SelectItem value="milliseconds">{t('timestampFormats.milliseconds')}</SelectItem>
+              <SelectItem value="microseconds">{t('timestampFormats.microseconds')}</SelectItem>
+              <SelectItem value="nanoseconds">{t('timestampFormats.nanoseconds')}</SelectItem>
             </SelectContent>
           </Select>
           <Button onClick={setCurrentTimestamp} variant="outline">
-            Now
+            {t('tools.epochConverter.now')}
           </Button>
-          <Button onClick={convertSingleTimestamp}>Convert</Button>
+          <Button onClick={convertSingleTimestamp}>{t('tools.epochConverter.convert')}</Button>
         </div>
         
         <div>
-          <label className="block text-sm font-medium mb-2">Batch Convert (one per line):</label>
+          <label className="block text-sm font-medium mb-2">{t('tools.epochConverter.batchConvert')}</label>
           <Textarea
             placeholder="1750853361&#10;1750853400&#10;1750853500"
             value={batchTimestamps}
@@ -99,20 +101,20 @@ const TimestampToHuman = () => {
             rows={4}
           />
           <Button onClick={convertBatchTimestamps} className="mt-2">
-            Batch Convert
+            {t('tools.epochConverter.batchConvertButton')}
           </Button>
         </div>
 
         {convertedResults.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">Results:</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('tools.epochConverter.results')}</h3>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Original</TableHead>
-                  <TableHead>UTC Date</TableHead>
-                  <TableHead>Local Date</TableHead>
-                  <TableHead>ISO Format</TableHead>
+                  <TableHead>{t('tools.epochConverter.original')}</TableHead>
+                  <TableHead>{t('tools.epochConverter.utcDate')}</TableHead>
+                  <TableHead>{t('tools.epochConverter.localDate')}</TableHead>
+                  <TableHead>{t('tools.epochConverter.isoFormat')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

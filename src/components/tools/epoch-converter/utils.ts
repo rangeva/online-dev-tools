@@ -50,22 +50,23 @@ export const getCurrentTimestampInFormat = (format: string) => {
   }
 };
 
-export const getDynamicDates = () => {
+export const getDynamicDates = (t: (key: string) => string) => {
   const now = new Date();
   const dates = [
-    { label: 'Now', date: now },
-    { label: '1 hour ago', date: new Date(now.getTime() - 3600000) },
-    { label: '1 day ago', date: new Date(now.getTime() - 86400000) },
-    { label: '1 week ago', date: new Date(now.getTime() - 604800000) },
-    { label: '1 month ago', date: new Date(now.getTime() - 2592000000) },
-    { label: 'Next hour', date: new Date(now.getTime() + 3600000) },
-    { label: 'Next day', date: new Date(now.getTime() + 86400000) },
-    { label: 'Next week', date: new Date(now.getTime() + 604800000) },
-    { label: 'Next month', date: new Date(now.getTime() + 2592000000) }
+    { labelKey: 'dynamicDates.now', date: now },
+    { labelKey: 'dynamicDates.oneHourAgo', date: new Date(now.getTime() - 3600000) },
+    { labelKey: 'dynamicDates.oneDayAgo', date: new Date(now.getTime() - 86400000) },
+    { labelKey: 'dynamicDates.oneWeekAgo', date: new Date(now.getTime() - 604800000) },
+    { labelKey: 'dynamicDates.oneMonthAgo', date: new Date(now.getTime() - 2592000000) },
+    { labelKey: 'dynamicDates.nextHour', date: new Date(now.getTime() + 3600000) },
+    { labelKey: 'dynamicDates.nextDay', date: new Date(now.getTime() + 86400000) },
+    { labelKey: 'dynamicDates.nextWeek', date: new Date(now.getTime() + 604800000) },
+    { labelKey: 'dynamicDates.nextMonth', date: new Date(now.getTime() + 2592000000) }
   ];
   
   return dates.map(item => ({
-    ...item,
+    label: t(item.labelKey),
+    date: item.date,
     epoch: Math.floor(item.date.getTime() / 1000)
   }));
 };

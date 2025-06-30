@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useI18n } from '@/contexts/I18nContext';
 
 const CurrentEpochDisplay = () => {
+  const { t } = useI18n();
   const [currentEpoch, setCurrentEpoch] = useState(Math.floor(Date.now() / 1000));
 
   useEffect(() => {
@@ -15,7 +17,9 @@ const CurrentEpochDisplay = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-center text-lg md:text-xl">Current Unix Epoch Time</CardTitle>
+        <CardTitle className="text-center text-lg md:text-xl">
+          {t('tools.epochConverter.currentEpochTime')}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="text-center">

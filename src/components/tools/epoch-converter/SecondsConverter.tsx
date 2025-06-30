@@ -4,8 +4,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { convertSecondsToTime } from './utils';
+import { useI18n } from '@/contexts/I18nContext';
 
 const SecondsConverter = () => {
+  const { t } = useI18n();
   const [secondsToConvert, setSecondsToConvert] = useState('90061');
   const [timeConversionResult, setTimeConversionResult] = useState<any>(null);
 
@@ -20,7 +22,7 @@ const SecondsConverter = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Convert Seconds to Days, Hours, and Minutes</CardTitle>
+        <CardTitle className="text-lg md:text-xl">{t('tools.epochConverter.secondsConverter')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col sm:flex-row gap-4">
@@ -31,7 +33,7 @@ const SecondsConverter = () => {
             className="flex-1 text-sm"
           />
           <Button onClick={handleConvertSecondsToTime} className="w-full sm:w-auto" size="sm">
-            Convert
+            {t('tools.epochConverter.convert')}
           </Button>
         </div>
 
@@ -40,10 +42,10 @@ const SecondsConverter = () => {
             <CardContent className="pt-6">
               <div className="text-center space-y-2">
                 <div className="text-lg md:text-2xl font-bold break-words">
-                  {timeConversionResult.days} days, {timeConversionResult.hours} hours, {timeConversionResult.minutes} minutes, {timeConversionResult.seconds} seconds
+                  {timeConversionResult.days} {t('tools.epochConverter.days')}, {timeConversionResult.hours} {t('tools.epochConverter.hours')}, {timeConversionResult.minutes} {t('tools.epochConverter.minutes')}, {timeConversionResult.seconds} {t('tools.epochConverter.seconds')}
                 </div>
                 <div className="text-sm text-gray-600">
-                  Total: {timeConversionResult.total.toLocaleString()} seconds
+                  {t('tools.epochConverter.total')}: {timeConversionResult.total.toLocaleString()} {t('tools.epochConverter.seconds')}
                 </div>
               </div>
             </CardContent>

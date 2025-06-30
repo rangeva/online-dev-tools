@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,9 +11,10 @@ import { Copy, Calendar as CalendarIcon, Clock, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/contexts/I18nContext";
 
 const DateTimeConverter = () => {
-  // Initialize with current date and time
+  const { t } = useI18n();
   const now = new Date();
   const [inputValue, setInputValue] = useState(now.toISOString());
   const [inputFormat, setInputFormat] = useState("iso");
@@ -52,10 +54,19 @@ const DateTimeConverter = () => {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (Math.abs(diffMinutes) < 1) return "Just now";
-    if (Math.abs(diffMinutes) < 60) return `${Math.abs(diffMinutes)} minute${Math.abs(diffMinutes) === 1 ? '' : 's'} ${diffMinutes < 0 ? 'from now' : 'ago'}`;
-    if (Math.abs(diffHours) < 24) return `${Math.abs(diffHours)} hour${Math.abs(diffHours) === 1 ? '' : 's'} ${diffHours < 0 ? 'from now' : 'ago'}`;
-    if (Math.abs(diffDays) < 30) return `${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'} ${diffDays < 0 ? 'from now' : 'ago'}`;
+    if (Math.abs(diffMinutes) < 1) return t('dateTime.justNow');
+    if (Math.abs(diffMinutes) < 60) {
+      const key = Math.abs(diffMinutes) === 1 ? 'dateTime.minuteAgo' : 'dateTime.minutesAgo';
+      return t(key, { count: Math.abs(diffMinutes) }) + (diffMinutes < 0 ? ` ${t('dateTime.fromNow')}` : ` ${t('dateTime.ago')}`);
+    }
+    if (Math.abs(diffHours) < 24) {
+      const key = Math.abs(diffHours) === 1 ? 'dateTime.hourAgo' : 'dateTime.hoursAgo';
+      return t(key, { count: Math.abs(diffHours) }) + (diffHours < 0 ? ` ${t('dateTime.fromNow')}` : ` ${t('dateTime.ago')}`);
+    }
+    if (Math.abs(diffDays) < 30) {
+      const key = Math.abs(diffDays) === 1 ? 'dateTime.dayAgo' : 'dateTime.daysAgo';
+      return t(key, { count: Math.abs(diffDays) }) + (diffDays < 0 ? ` ${t('dateTime.fromNow')}` : ` ${t('dateTime.ago')}`);
+    }
     
     return date.toLocaleDateString();
   };
@@ -72,8 +83,8 @@ const DateTimeConverter = () => {
     setResults(formatDate(combinedDate));
     
     toast({
-      title: "Date & Time Selected",
-      description: "Input updated with selected date and time"
+      title: t('tools.dateTimeConverter.dateTimeSelected'),
+      description: t('tools.dateTimeConverter.inputUpdated')
     });
   };
 
@@ -87,14 +98,12 @@ const DateTimeConverter = () => {
           break;
         case "timestamp":
           const timestamp = parseInt(inputValue);
-          // Handle both seconds and milliseconds timestamps
           date = new Date(timestamp < 10000000000 ? timestamp * 1000 : timestamp);
           break;
         case "milliseconds":
           date = new Date(parseInt(inputValue));
           break;
         case "auto":
-          // Try different formats
           if (/^\d{10}$/.test(inputValue)) {
             date = new Date(parseInt(inputValue) * 1000);
           } else if (/^\d{13}$/.test(inputValue)) {
@@ -113,13 +122,13 @@ const DateTimeConverter = () => {
 
       setResults(formatDate(date));
       toast({
-        title: "Success",
-        description: "Date converted successfully!"
+        title: t('tools.dateTimeConverter.success'),
+        description: t('tools.dateTimeConverter.successDescription')
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Invalid date format. Please check your input.",
+        title: t('tools.dateTimeConverter.error'),
+        description: t('tools.dateTimeConverter.errorDescription'),
         variant: "destructive"
       });
     }
@@ -133,8 +142,8 @@ const DateTimeConverter = () => {
     setSelectedDate(now);
     setSelectedTime(format(now, "HH:mm"));
     toast({
-      title: "Current Time Set",
-      description: "Input set to current date and time"
+      title: t('tools.dateTimeConverter.currentTimeSet'),
+      description: t('tools.dateTimeConverter.currentTimeDescription')
     });
   };
 
@@ -149,8 +158,8 @@ const DateTimeConverter = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
-      title: "Copied!",
-      description: "Date format copied to clipboard"
+      title: t('tools.dateTimeConverter.copied'),
+      description: t('tools.dateTimeConverter.copiedDescription')
     });
   };
 
@@ -167,19 +176,19 @@ const DateTimeConverter = () => {
         <CardHeader>
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-5 w-5" />
-            <CardTitle>Date-time Converter</CardTitle>
+            <CardTitle>{t('tools.dateTimeConverter.title')}</CardTitle>
           </div>
           <CardDescription>
-            Convert date and time into various different formats with enhanced functionality
+            {t('tools.dateTimeConverter.description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Date/Time Picker Section */}
           <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-            <Label className="text-sm font-medium">Visual Date & Time Picker</Label>
+            <Label className="text-sm font-medium">{t('tools.dateTimeConverter.visualPicker')}</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="date-picker">Select Date</Label>
+                <Label htmlFor="date-picker">{t('tools.dateTimeConverter.selectDate')}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -190,7 +199,7 @@ const DateTimeConverter = () => {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                      {selectedDate ? format(selectedDate, "PPP") : <span>{t('tools.dateTimeConverter.pickDate')}</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -205,7 +214,7 @@ const DateTimeConverter = () => {
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="time-picker">Select Time</Label>
+                <Label htmlFor="time-picker">{t('tools.dateTimeConverter.selectTime')}</Label>
                 <Input
                   id="time-picker"
                   type="time"
@@ -221,14 +230,14 @@ const DateTimeConverter = () => {
               className="w-full"
             >
               <Clock className="h-4 w-4 mr-2" />
-              Use Selected Date & Time
+              {t('tools.dateTimeConverter.useSelected')}
             </Button>
           </div>
 
           {/* Original Input Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="input-date">Input Date/Time</Label>
+              <Label htmlFor="input-date">{t('tools.dateTimeConverter.inputDateTime')}</Label>
               <Input
                 id="input-date"
                 value={inputValue}
@@ -237,7 +246,7 @@ const DateTimeConverter = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="input-format">Input Format</Label>
+              <Label htmlFor="input-format">{t('tools.dateTimeConverter.inputFormat')}</Label>
               <Select value={inputFormat} onValueChange={setInputFormat}>
                 <SelectTrigger>
                   <SelectValue />
@@ -255,24 +264,24 @@ const DateTimeConverter = () => {
           <div className="flex flex-wrap gap-3">
             <Button onClick={handleConvert} className="flex-1 min-w-fit">
               <CalendarIcon className="h-4 w-4 mr-2" />
-              Convert Date
+              {t('tools.dateTimeConverter.convertDate')}
             </Button>
             <Button onClick={setCurrentTime} variant="outline" className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              Use Current Time
+              {t('tools.dateTimeConverter.useCurrentTime')}
             </Button>
             <Button onClick={clearAll} variant="outline" className="flex items-center gap-2">
               <RotateCcw className="h-4 w-4" />
-              Clear All
+              {t('tools.dateTimeConverter.clearAll')}
             </Button>
           </div>
 
           {Object.keys(results).length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Converted Formats</h3>
+                <h3 className="text-lg font-semibold">{t('tools.dateTimeConverter.convertedFormats')}</h3>
                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                  {Object.keys(results).length} formats available
+                  {Object.keys(results).length} {t('tools.dateTimeConverter.formatsAvailable')}
                 </div>
               </div>
               <div className="grid gap-3">
@@ -301,11 +310,11 @@ const DateTimeConverter = () => {
           )}
 
           <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1">
-            <div><strong>Tips:</strong></div>
-            <div>• Use the visual date & time picker for easy date selection</div>
-            <div>• Unix timestamps can be in seconds (10 digits) or milliseconds (13 digits)</div>
-            <div>• Auto-detect works with most common date formats</div>
-            <div>• Use "Current Time" to quickly get the current date and time</div>
+            <div><strong>{t('tools.dateTimeConverter.tips')}</strong></div>
+            <div>• {t('tools.dateTimeConverter.tip1')}</div>
+            <div>• {t('tools.dateTimeConverter.tip2')}</div>
+            <div>• {t('tools.dateTimeConverter.tip3')}</div>
+            <div>• {t('tools.dateTimeConverter.tip4')}</div>
           </div>
         </CardContent>
       </Card>
