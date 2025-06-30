@@ -74,6 +74,9 @@ export const en = {
     cancel: "Cancel",
     confirm: "Confirm",
     yes: "Yes",
-    no: "No"
+    no: "No",
+    selectLanguage: "Select Language",
+    popularLanguages: "Popular Languages",
+    otherLanguages: "Other Languages"
   }
 };

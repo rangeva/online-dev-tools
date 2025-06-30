@@ -45,7 +45,7 @@ export const AdvancedLanguageSelector: React.FC<AdvancedLanguageSelectorProps> =
         return (
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             <Globe className="h-4 w-4" />
-            <span className="sr-only">{t('common.selectLanguage', 'Select Language')}</span>
+            <span className="sr-only">Select Language</span>
           </Button>
         );
       
@@ -82,7 +82,7 @@ export const AdvancedLanguageSelector: React.FC<AdvancedLanguageSelectorProps> =
         {/* Popular Languages */}
         <div className="px-2 py-1">
           <p className="text-xs font-medium text-muted-foreground mb-1">
-            {t('common.popularLanguages', 'Popular Languages')}
+            Popular Languages
           </p>
         </div>
         {SUPPORTED_LANGUAGES
@@ -111,7 +111,7 @@ export const AdvancedLanguageSelector: React.FC<AdvancedLanguageSelectorProps> =
             <DropdownMenuSeparator />
             <div className="px-2 py-1">
               <p className="text-xs font-medium text-muted-foreground mb-1">
-                {t('common.otherLanguages', 'Other Languages')}
+                Other Languages
               </p>
             </div>
             {otherLanguages.map((lang) => (
