@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { useI18n } from '@/i18n/context';
 
 // Extend the global Window interface to include Tally
 declare global {
@@ -17,7 +16,6 @@ declare global {
 
 export const FeedbackForm = () => {
   const { toast } = useToast();
-  const { tString } = useI18n();
   const formId = '3jX45R';
 
   const handleFeedbackClick = () => {
@@ -37,8 +35,8 @@ export const FeedbackForm = () => {
         onSubmit: (payload: any) => {
           console.log('Feedback submitted:', payload);
           toast({
-            title: tString('feedback.thanks'),
-            description: tString('feedback.thanksDesc'),
+            title: "Thank you!",
+            description: "Your feedback has been sent successfully. We appreciate your input!",
           });
         },
         hiddenFields: {
@@ -49,8 +47,8 @@ export const FeedbackForm = () => {
     } else {
       console.error('Tally widget not loaded');
       toast({
-        title: tString('common.error'),
-        description: tString('feedback.error'),
+        title: "Error",
+        description: "Feedback form could not be loaded. Please try again later.",
         variant: "destructive",
       });
     }
@@ -61,7 +59,7 @@ export const FeedbackForm = () => {
       onClick={handleFeedbackClick}
       size="icon"
       className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg z-50 bg-blue-600 hover:bg-blue-700"
-      aria-label={tString('feedback.title')}
+      aria-label="Send Feedback"
     >
       <MessageSquare className="h-5 w-5" />
     </Button>

@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Download } from "lucide-react";
-import { useI18n } from "@/i18n/context";
 
 interface ConvertedResultProps {
   convertedImage: string;
@@ -11,18 +10,16 @@ interface ConvertedResultProps {
 }
 
 export const ConvertedResult = ({ convertedImage, outputFormat, onDownload }: ConvertedResultProps) => {
-  const { t } = useI18n();
-
   return (
     <div className="space-y-4 border-t pt-6">
       <div className="flex items-center justify-between">
-        <Label>{t('imageConverter.convertedImage')}</Label>
+        <Label>Converted Image</Label>
         <Button 
           onClick={onDownload}
           className="flex items-center gap-2"
         >
           <Download className="h-4 w-4" />
-          {t('imageConverter.download')}
+          Download
         </Button>
       </div>
       <div className="max-w-md border rounded-lg p-4 bg-gray-50">

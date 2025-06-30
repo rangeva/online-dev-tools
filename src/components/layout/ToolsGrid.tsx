@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
-import { useI18n } from "@/i18n/context";
 import { tools, toolCategories } from "@/data/toolsData";
 
 interface ToolsGridProps {
@@ -11,17 +10,15 @@ interface ToolsGridProps {
 }
 
 const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
-  const { t } = useI18n();
-
   if (filteredTools.length === 0) {
     return (
       <div className="text-center py-12">
         <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-          {t('tools.noToolsFound')}
+          No tools found
         </h3>
         <p className="text-slate-500 dark:text-slate-500">
-          {t('tools.adjustFilter')}
+          Try adjusting your search or category filter
         </p>
       </div>
     );

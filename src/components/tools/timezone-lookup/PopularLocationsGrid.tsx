@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { MapPin } from "lucide-react";
-import { useI18n } from "@/i18n/context";
 import { popularLocations } from './timezoneData';
 
 interface PopularLocationsGridProps {
@@ -11,11 +10,9 @@ interface PopularLocationsGridProps {
 }
 
 const PopularLocationsGrid = ({ onQuickSearch, isLoading }: PopularLocationsGridProps) => {
-  const { t } = useI18n();
-
   return (
     <div>
-      <Label>{t('timezone.popularLocations')}</Label>
+      <Label>Popular Locations</Label>
       <div className="flex flex-wrap gap-2 mt-2">
         {popularLocations.map((location) => (
           <Button

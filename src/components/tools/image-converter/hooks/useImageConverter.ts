@@ -1,7 +1,6 @@
 
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useI18n } from "@/i18n/context";
 import { getMimeTypeAndQuality } from "../utils";
 
 export const useImageConverter = () => {
@@ -13,7 +12,6 @@ export const useImageConverter = () => {
   const [isConverting, setIsConverting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
-  const { t, tString } = useI18n();
 
   const handleFileSelect = (file: File | null, url: string | null) => {
     setSelectedFile(file);
@@ -42,15 +40,15 @@ export const useImageConverter = () => {
         const formatName = outputFormat.toUpperCase();
         
         toast({
-          title: tString('imageConverter.success'),
-          description: tString('imageConverter.successDesc', { format: formatName })
+          title: "Conversion successful",
+          description: `Image converted to ${formatName}`
         });
       };
 
       img.onerror = () => {
         toast({
-          title: tString('imageConverter.failed'),
-          description: tString('imageConverter.failedLoad'),
+          title: "Conversion failed",
+          description: "Failed to load the image.",
           variant: "destructive"
         });
       };
@@ -58,8 +56,8 @@ export const useImageConverter = () => {
       img.src = URL.createObjectURL(selectedFile);
     } catch (error) {
       toast({
-        title: tString('imageConverter.failed'),
-        description: tString('imageConverter.failedError'),
+        title: "Conversion failed",
+        description: "An error occurred during conversion.",
         variant: "destructive"
       });
     } finally {
