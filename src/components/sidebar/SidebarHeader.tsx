@@ -1,61 +1,49 @@
 
-import { Link } from "react-router-dom";
-import { useRef, useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Code } from "lucide-react";
+import { Link } from "react-router-dom";
+import { LanguageSelector } from "@/components/i18n/LanguageSelector";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SidebarHeaderProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
-  onMobileMenuClose?: () => void;
 }
 
-export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) {
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    onSearchChange(value);
-  }, [onSearchChange]);
-
-  // Maintain focus on search input after each change
-  useEffect(() => {
-    if (searchInputRef.current && document.activeElement !== searchInputRef.current && searchTerm) {
-      searchInputRef.current.focus();
-      // Set cursor to end of input
-      const length = searchInputRef.current.value.length;
-      searchInputRef.current.setSelectionRange(length, length);
-    }
-  }, [searchTerm]);
-
-  const handleInputFocus = useCallback(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, []);
+export function SidebarHeader({ searchTerm, onSearchChange }: SidebarHeaderProps) {
+  const { t } = useI18n();
 
   return (
-    <div className="p-4 border-b flex-shrink-0">
-      <div className="flex items-center">
-        <Link 
-          to="/" 
-          className="text-lg font-semibold text-blue-600 dark:text-blue-400"
-          onClick={onMobileMenuClose}
-        >
-          OnlineDevTools.io
-        </Link>
+    <div className="p-4 border-b border-sidebar-border">
+      {/* Logo and Title */}
+      <Link to="/" className="flex items-center space-x-3 mb-4 group">
+        <div className="p-2 bg-blue-600 rounded-lg group-hover:bg-blue-700 transition-colors">
+          <Code className="h-5 w-5 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-bold text-sidebar-foreground truncate">
+            {t('header.title')}
+          </h1>
+          <p className="text-xs text-sidebar-foreground/70 truncate">
+            {t('header.subtitle')}
+          </p>
+        </div>
+      </Link>
+
+      {/* Language Selector */}
+      <div className="mb-4">
+        <LanguageSelector />
       </div>
-      <div className="relative mt-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sidebar-foreground/50 h-4 w-4" />
         <Input
-          ref={searchInputRef}
           type="text"
-          placeholder="Search tools..."
+          placeholder={t('hero.searchPlaceholder')}
           value={searchTerm}
-          onChange={handleSearchChange}
-          onFocus={handleInputFocus}
-          className="pl-10"
-          autoComplete="off"
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="pl-10 bg-sidebar-accent border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-foreground/50"
         />
       </div>
     </div>

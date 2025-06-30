@@ -1,131 +1,119 @@
 
-import { Link, useParams } from "react-router-dom";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { tools, toolCategories } from "@/data/toolsData";
-import { useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { tools } from "@/data/toolsData";
+import { useTranslatedTools } from "@/data/translatedToolsData";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SidebarCategoryMenuProps {
   searchTerm: string;
   accordionValue: string[];
   onAccordionChange: (value: string[]) => void;
-  onMobileMenuClose?: () => void;
 }
 
-export function SidebarCategoryMenu({ 
-  searchTerm, 
-  accordionValue, 
-  onAccordionChange, 
-  onMobileMenuClose 
-}: SidebarCategoryMenuProps) {
-  const { toolId } = useParams();
+export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionChange }: SidebarCategoryMenuProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useI18n();
+  const { toolCategories } = useTranslatedTools();
+  
+  const currentPath = location.pathname;
+  const isHomePage = currentPath === '/';
+  const currentCategory = currentPath.startsWith('/category/') ? currentPath.split('/category/')[1] : null;
+  
+  const filteredTools = tools.filter(tool => 
+    tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
-  // Memoize the filtered tools to prevent unnecessary re-computations
-  const filteredToolsByCategory = useMemo(() => {
-    // Group tools by category
-    const toolsByCategory = toolCategories.reduce((acc, category) => {
-      acc[category.id] = tools.filter(tool => tool.category === category.id);
-      return acc;
-    }, {} as Record<string, typeof tools>);
-
-    // Filter tools based on search term
-    return Object.entries(toolsByCategory).reduce((acc, [categoryId, categoryTools]) => {
-      const filteredTools = categoryTools.filter(tool =>
-        tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tool.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-      if (filteredTools.length > 0) {
-        acc[categoryId] = filteredTools;
-      }
-      return acc;
-    }, {} as Record<string, typeof tools>);
-  }, [searchTerm]);
-
-  const handleToolClick = () => {
-    // Close mobile menu when a tool is selected
-    if (onMobileMenuClose) {
-      onMobileMenuClose();
+  const handleCategoryClick = (categoryId: string) => {
+    if (categoryId === "all") {
+      navigate("/");
+    } else {
+      navigate(`/category/${categoryId}`);
     }
   };
 
-  // Determine accordion value based on search
-  const currentAccordionValue = useMemo(() => {
-    if (searchTerm && Object.keys(filteredToolsByCategory).length > 0) {
-      // If searching and there are results, open the first category with results
-      return Object.keys(filteredToolsByCategory)[0];
-    }
-    return accordionValue[0] || "";
-  }, [searchTerm, filteredToolsByCategory, accordionValue]);
+  const handleToolClick = (toolId: string) => {
+    navigate(`/tool/${toolId}`);
+  };
 
   return (
-    <div className="flex-1 overflow-hidden">
-      <ScrollArea className="h-full">
-        <div className="p-2">
-          <Accordion 
-            type="single" 
-            className="w-full" 
-            value={currentAccordionValue}
-            onValueChange={(value) => onAccordionChange(value ? [value] : [])}
-            collapsible
-          >
-            {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
-              const category = toolCategories.find(cat => cat.id === categoryId);
-              if (!category) return null;
+    <ScrollArea className="flex-1 px-3">
+      <div className="space-y-2">
+        {/* All Tools Button */}
+        <Button
+          variant={isHomePage && !currentCategory ? "secondary" : "ghost"}
+          className="w-full justify-start text-left"
+          onClick={() => handleCategoryClick("all")}
+        >
+          <span className="flex-1">{t('navigation.tools')}</span>
+          <Badge variant="outline" className="ml-2">
+            {filteredTools.length}
+          </Badge>
+        </Button>
 
-              const Icon = category.icon;
+        {/* Categories Accordion */}
+        <Accordion 
+          type="multiple" 
+          value={accordionValue}
+          onValueChange={onAccordionChange}
+          className="w-full"
+        >
+          {toolCategories.map((category) => {
+            const categoryTools = filteredTools.filter(tool => tool.category === category.id);
+            const Icon = category.icon;
+            const isActive = currentCategory === category.id;
+            
+            if (categoryTools.length === 0) return null;
 
-              return (
-                <AccordionItem key={categoryId} value={categoryId} className="border-b-0">
-                  <AccordionTrigger className="flex items-center gap-2 px-3 py-3 hover:no-underline bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md mb-1">
-                    <div className="flex items-center gap-2 flex-1">
-                      <Icon className="h-4 w-4" />
-                      <span className="font-medium text-sm">{category.name}</span>
-                      <Badge variant="secondary" className="ml-auto mr-2">
-                        {categoryTools.length}
-                      </Badge>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-0">
-                    <div className="w-full text-sm ml-4">
-                      <ul className="flex w-full min-w-0 flex-col gap-1">
-                        {categoryTools.map((tool) => {
-                          const ToolIcon = tool.icon;
-                          const isActive = toolId === tool.id;
-                          
-                          return (
-                            <li key={tool.id} className="group/menu-item relative">
-                              <Link 
-                                to={`/tool/${tool.id}`} 
-                                className={`peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground ${isActive ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground' : ''}`}
-                                onClick={handleToolClick}
-                              >
-                                <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md">
-                                  <ToolIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-medium text-sm">{tool.name}</div>
-                                </div>
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-
-          {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
-            <div className="p-4 text-center text-slate-500 dark:text-slate-400">
-              No tools found matching "{searchTerm}"
-            </div>
-          )}
-        </div>
-      </ScrollArea>
-    </div>
+            return (
+              <AccordionItem key={category.id} value={category.id} className="border-none">
+                <AccordionTrigger 
+                  className={`hover:no-underline py-2 px-3 rounded-lg hover:bg-accent/50 transition-colors ${
+                    isActive ? 'bg-accent text-accent-foreground' : ''
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleCategoryClick(category.id);
+                  }}
+                >
+                  <div className="flex items-center gap-2 flex-1 text-left">
+                    <Icon className={`h-4 w-4 ${isActive ? 'text-accent-foreground' : 'text-muted-foreground'}`} />
+                    <span className="flex-1">{category.name}</span>
+                    <Badge variant="outline" className="ml-2">
+                      {categoryTools.length}
+                    </Badge>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pb-2">
+                  <div className="ml-6 space-y-1">
+                    {categoryTools.map((tool) => {
+                      const isToolActive = currentPath === `/tool/${tool.id}`;
+                      return (
+                        <Button
+                          key={tool.id}
+                          variant={isToolActive ? "secondary" : "ghost"}
+                          size="sm"
+                          className="w-full justify-start text-left h-8"
+                          onClick={() => handleToolClick(tool.id)}
+                        >
+                          <tool.icon className="h-3 w-3 mr-2 flex-shrink-0" />
+                          <span className="truncate">{tool.name}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+      </div>
+    </ScrollArea>
   );
 }

@@ -10,6 +10,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { tools } from "@/data/toolsData";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useTranslatedTools } from "@/data/translatedToolsData";
 
 const Index = () => {
   const { toolId, category } = useParams();
@@ -17,6 +18,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState(category || "all");
   const isMobile = useIsMobile();
+  const { toolCategories } = useTranslatedTools();
 
   const { selectedTool } = usePageMeta(toolId, activeCategory);
 

@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
-import { tools, toolCategories } from "@/data/toolsData";
+import { tools } from "@/data/toolsData";
 import { useI18n } from "@/contexts/I18nContext";
+import { useTranslatedTools } from "@/data/translatedToolsData";
 
 interface ToolsGridProps {
   filteredTools: typeof tools;
@@ -12,6 +13,7 @@ interface ToolsGridProps {
 
 const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
   const { t } = useI18n();
+  const { toolCategories } = useTranslatedTools();
 
   if (filteredTools.length === 0) {
     return (
@@ -31,6 +33,8 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {filteredTools.map((tool) => {
         const Icon = tool.icon;
+        const categoryName = toolCategories.find(cat => cat.id === tool.category)?.name || tool.category;
+        
         return (
           <Link key={tool.id} to={`/tool/${tool.id}`}>
             <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105 h-full">
@@ -40,7 +44,7 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
                     <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    {toolCategories.find(cat => cat.id === tool.category)?.name}
+                    {categoryName}
                   </Badge>
                 </div>
                 <CardTitle className="text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
