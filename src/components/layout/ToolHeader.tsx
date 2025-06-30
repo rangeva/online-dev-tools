@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useI18n } from "@/i18n/context";
 import { tools } from "@/data/toolsData";
 
 interface ToolHeaderProps {
@@ -10,6 +11,7 @@ interface ToolHeaderProps {
 
 const ToolHeader = ({ toolId }: ToolHeaderProps) => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const selectedTool = tools.find(tool => tool.id === toolId);
 
   if (!selectedTool) return null;
@@ -22,7 +24,7 @@ const ToolHeader = ({ toolId }: ToolHeaderProps) => {
           onClick={() => navigate("/")}
           className="border-slate-200 dark:border-slate-700"
         >
-          ← Back to Tools
+          {t('nav.backToTools')}
         </Button>
         <Separator orientation="vertical" className="h-6" />
         <div className="flex items-center space-x-2">
