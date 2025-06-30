@@ -12,9 +12,10 @@ interface SidebarCategoryMenuProps {
   searchTerm: string;
   accordionValue: string[];
   onAccordionChange: (value: string[]) => void;
+  onMobileMenuClose?: () => void;
 }
 
-export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionChange }: SidebarCategoryMenuProps) {
+export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionChange, onMobileMenuClose }: SidebarCategoryMenuProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useI18n();
@@ -36,10 +37,12 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
     } else {
       navigate(`/category/${categoryId}`);
     }
+    onMobileMenuClose?.();
   };
 
   const handleToolClick = (toolId: string) => {
     navigate(`/tool/${toolId}`);
+    onMobileMenuClose?.();
   };
 
   return (

@@ -2,21 +2,26 @@
 import { Input } from "@/components/ui/input";
 import { Search, Code } from "lucide-react";
 import { Link } from "react-router-dom";
-import { LanguageSelector } from "@/components/i18n/LanguageSelector";
+import { AdvancedLanguageSelector } from "@/components/i18n/AdvancedLanguageSelector";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface SidebarHeaderProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
+  onMobileMenuClose?: () => void;
 }
 
-export function SidebarHeader({ searchTerm, onSearchChange }: SidebarHeaderProps) {
+export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) {
   const { t } = useI18n();
 
   return (
     <div className="p-4 border-b border-sidebar-border">
       {/* Logo and Title */}
-      <Link to="/" className="flex items-center space-x-3 mb-4 group">
+      <Link 
+        to="/" 
+        className="flex items-center space-x-3 mb-4 group"
+        onClick={onMobileMenuClose}
+      >
         <div className="p-2 bg-blue-600 rounded-lg group-hover:bg-blue-700 transition-colors">
           <Code className="h-5 w-5 text-white" />
         </div>
@@ -32,7 +37,7 @@ export function SidebarHeader({ searchTerm, onSearchChange }: SidebarHeaderProps
 
       {/* Language Selector */}
       <div className="mb-4">
-        <LanguageSelector />
+        <AdvancedLanguageSelector variant="compact" />
       </div>
 
       {/* Search */}

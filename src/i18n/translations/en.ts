@@ -1,111 +1,79 @@
 
-import { Translations } from '@/types/i18n';
-
-export const en: Translations = {
-  // Common
-  common: {
-    search: 'Search',
-    back: 'Back',
-    copy: 'Copy',
-    clear: 'Clear',
-    reset: 'Reset',
-    generate: 'Generate',
-    convert: 'Convert',
-    download: 'Download',
-    upload: 'Upload',
-    analyze: 'Analyze',
-    preview: 'Preview',
-    loading: 'Loading...',
-    error: 'Error',
-    success: 'Success',
-    close: 'Close',
-    save: 'Save',
-    cancel: 'Cancel',
-    delete: 'Delete',
-    edit: 'Edit',
-    add: 'Add',
-    remove: 'Remove',
-    next: 'Next',
-    previous: 'Previous',
-    settings: 'Settings',
-    help: 'Help',
-    about: 'About'
+export const en = {
+  // Header and navigation
+  header: {
+    title: "Developer Toolbox",
+    subtitle: "Essential Online Tools for Developers",
+    badges: {
+      free: "Free",
+      noSignup: "No Sign-up Required"
+    }
   },
 
   // Navigation
   navigation: {
-    home: 'Home',
-    tools: 'Tools',
-    categories: 'Categories',
-    backToTools: 'Back to Tools'
+    home: "Home",
+    tools: "All Tools",
+    categories: "Categories"
   },
 
-  // Header & Hero
-  header: {
-    title: 'Developer Toolbox',
-    subtitle: 'Essential online tools for developers',
-    badges: {
-      free: 'Free',
-      noSignup: 'No Sign-up'
+  // Hero section
+  hero: {
+    title: "Developer Tools Collection",
+    subtitle: "Access a comprehensive collection of developer tools to boost your productivity. All tools are free, work offline, and require no sign-up.",
+    searchPlaceholder: "Search tools..."
+  },
+
+  // Tools
+  tools: {
+    noResults: "No tools found",
+    noResultsSubtext: "Try adjusting your search terms or browse categories."
+  },
+
+  // Categories
+  categories: {
+    text: "Text Tools",
+    html: "HTML Tools", 
+    encoding: "Encoding Tools",
+    converters: "Converters",
+    date: "Date & Time",
+    data: "Data Tools",
+    security: "Security Tools",
+    generators: "Generators",
+    graphics: "Graphics Tools",
+    marketing: "Marketing Tools",
+    ai: "AI Tools"
+  },
+
+  // SEO
+  seo: {
+    homeTitle: "Developer Toolbox - Essential Online Tools for Developers",
+    homeDescription: "Collection of essential online tools for developers including text utilities, encoding/decoding, date tools, JSON formatters, security tools and more.",
+    toolTitle: "{{toolName}} - Developer Toolbox",
+    toolDescription: "{{toolName}}: {{description}} - Free online tool with no sign-up required.",
+    categoryTitle: "{{categoryName}} Tools - Developer Toolbox", 
+    categoryDescription: "{{categoryName}} tools for developers - Free online tools with no sign-up required.",
+    keywords: {
+      developer: "developer",
+      tools: "tools",
+      online: "online", 
+      free: "free"
     }
   },
 
-  hero: {
-    title: 'All-in-One Developer Tools',
-    subtitle: 'A comprehensive collection of essential online tools for developers. No sign-up required, completely free, and works entirely in your browser.',
-    searchPlaceholder: 'Search tools...'
-  },
-
-  // Tool Categories
-  categories: {
-    text: 'Text Tools',
-    encoding: 'Encoding & Decoding',
-    converters: 'Converters',
-    generators: 'Generators',
-    security: 'Security Tools',
-    html: 'HTML Tools',
-    data: 'Data Tools',
-    graphics: 'Graphics & Design',
-    marketing: 'Marketing Tools',
-    date: 'Date & Time',
-    ai: 'AI Tools'
-  },
-
-  // Common Tool Features
-  tools: {
-    noResults: 'No tools found',
-    noResultsSubtext: 'Try adjusting your search or category filter',
-    inputLabel: 'Input',
-    outputLabel: 'Output',
-    resultLabel: 'Result',
-    optionsLabel: 'Options',
-    previewLabel: 'Preview',
-    exampleLabel: 'Example'
-  },
-
-  // Language Selector
-  language: {
-    select: 'Select Language',
-    current: 'Current Language',
-    change: 'Change Language'
-  },
-
-  // Error Messages
-  errors: {
-    generic: 'Something went wrong. Please try again.',
-    invalidInput: 'Invalid input provided',
-    processingFailed: 'Processing failed. Please check your input.',
-    copyFailed: 'Failed to copy to clipboard',
-    uploadFailed: 'File upload failed',
-    networkError: 'Network error. Please check your connection.'
-  },
-
-  // Success Messages
-  success: {
-    copied: 'Copied to clipboard',
-    generated: 'Generated successfully',
-    converted: 'Converted successfully',
-    uploaded: 'File uploaded successfully',
-    saved: 'Saved successfully'
+  // Common
+  common: {
+    loading: "Loading...",
+    error: "Error",
+    success: "Success",
+    copy: "Copy",
+    paste: "Paste",
+    clear: "Clear",
+    reset: "Reset",
+    save: "Save",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    yes: "Yes",
+    no: "No"
   }
 };
