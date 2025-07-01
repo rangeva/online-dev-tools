@@ -4,7 +4,7 @@ import { Search, Code } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdvancedLanguageSelector } from "@/components/i18n/AdvancedLanguageSelector";
 import { useI18n } from "@/contexts/I18nContext";
-import React from "react";
+import React, { useRef } from "react";
 
 interface SidebarHeaderProps {
   searchTerm: string;
@@ -14,6 +14,17 @@ interface SidebarHeaderProps {
 
 export const SidebarHeader = React.memo(({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) => {
   const { t } = useI18n();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearchChange(e.target.value);
+    // Maintain focus after state update
+    setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
+    }, 0);
+  };
 
   return (
     <div className="p-4 border-b border-sidebar-border">
@@ -45,10 +56,11 @@ export const SidebarHeader = React.memo(({ searchTerm, onSearchChange, onMobileM
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sidebar-foreground/50 h-4 w-4" />
         <Input
+          ref={searchInputRef}
           type="text"
           placeholder={t('hero.searchPlaceholder')}
           value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={handleSearchChange}
           className="pl-10 bg-sidebar-accent border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-foreground/50"
         />
       </div>
