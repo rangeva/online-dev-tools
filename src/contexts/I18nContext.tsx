@@ -1,8 +1,10 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SupportedLanguage, Translations, TranslationKey, TranslationValues } from '@/types/i18n';
 import { I18N_CONFIG, detectBrowserLanguage, getStoredLanguage, setStoredLanguage } from '@/i18n/config';
 import { getTranslations } from '@/i18n/translations';
+import { getLanguageFromPath } from '@/utils/multilingualRouting';
 
 interface I18nContextType {
   language: SupportedLanguage;
@@ -19,13 +21,31 @@ interface I18nProviderProps {
 }
 
 export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
-  const [language, setCurrentLanguage] = useState<SupportedLanguage>(() => {
-    return getStoredLanguage() || detectBrowserLanguage();
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Extract language from URL on initial load
+  const getInitialLanguage = (): SupportedLanguage => {
+    const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+    return urlLanguage || getStoredLanguage() || detectBrowserLanguage();
+  };
 
+  const [language, setCurrentLanguage] = useState<SupportedLanguage>(getInitialLanguage);
   const [translations, setTranslations] = useState<Translations>(() => {
     return getTranslations(language);
   });
+
+  // Synchronize language with URL changes
+  useEffect(() => {
+    const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+    if (urlLanguage && urlLanguage !== language) {
+      setCurrentLanguage(urlLanguage);
+      setTranslations(getTranslations(urlLanguage));
+      if (I18N_CONFIG.persistLanguage) {
+        setStoredLanguage(urlLanguage);
+      }
+    }
+  }, [location.pathname, language]);
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
     setCurrentLanguage(newLanguage);

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,11 +11,22 @@ import {
 import { Globe } from 'lucide-react';
 import { useI18n } from '@/contexts/I18nContext';
 import { SUPPORTED_LANGUAGES } from '@/i18n/config';
+import { createMultilingualUrl, getLanguageFromPath } from '@/utils/multilingualRouting';
 
 export const LanguageSelector: React.FC = () => {
   const { language, setLanguage, t } = useI18n();
+  const navigate = useNavigate();
+  const location = useLocation();
   
   const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === language);
+
+  const handleLanguageChange = (newLanguage: string) => {
+    const { cleanPath } = getLanguageFromPath(location.pathname);
+    const newUrl = createMultilingualUrl(cleanPath, newLanguage as any);
+    
+    setLanguage(newLanguage as any);
+    navigate(newUrl);
+  };
 
   return (
     <DropdownMenu>
@@ -29,7 +41,7 @@ export const LanguageSelector: React.FC = () => {
         {SUPPORTED_LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => handleLanguageChange(lang.code)}
             className={`flex items-center gap-2 ${language === lang.code ? 'bg-accent' : ''}`}
           >
             <span className="text-lg">{lang.flag}</span>

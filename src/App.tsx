@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { LanguageRoute } from "@/components/routing/LanguageRoute";
+import { LanguageRedirect } from "@/components/i18n/LanguageRedirect";
 import Index from "./pages/Index";
 import ToolPage from "./pages/ToolPage";
 import CategoryPage from "./pages/CategoryPage";
@@ -20,6 +21,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <LanguageRedirect />
           <Routes>
             {/* Default English routes (no language prefix) */}
             <Route path="/" element={<Index />} />
