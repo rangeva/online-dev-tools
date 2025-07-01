@@ -3,8 +3,7 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { SidebarHeader } from "./SidebarHeader";
-import { SidebarCategoryMenu } from "./SidebarCategoryMenu";
+import { SidebarContent } from "./SidebarContent";
 
 interface SidebarMobileWrapperProps {
   searchTerm: string;
@@ -38,19 +37,13 @@ export function SidebarMobileWrapper({
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-80 p-0 bg-sidebar border-sidebar-border">
-          <div className="flex flex-col h-full">
-            <SidebarHeader 
-              searchTerm={searchTerm} 
-              onSearchChange={onSearchChange}
-              onMobileMenuClose={handleMobileMenuClose}
-            />
-            <SidebarCategoryMenu 
-              searchTerm={searchTerm}
-              accordionValue={accordionValue}
-              onAccordionChange={onAccordionChange}
-              onMobileMenuClose={handleMobileMenuClose}
-            />
-          </div>
+          <SidebarContent 
+            searchTerm={searchTerm} 
+            onSearchChange={onSearchChange}
+            accordionValue={accordionValue}
+            onAccordionChange={onAccordionChange}
+            onMobileMenuClose={handleMobileMenuClose}
+          />
         </SheetContent>
       </Sheet>
     </>
