@@ -1,5 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { SupportedLanguage, Translations, TranslationKey, TranslationValues } from '@/types/i18n';
 import { I18N_CONFIG, detectBrowserLanguage, getStoredLanguage, setStoredLanguage } from '@/i18n/config';
 import { getTranslations } from '@/i18n/translations';
@@ -32,18 +33,25 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       console.log('I18nProvider - URL language:', urlLanguage);
       
       // If URL has a language, use it
-      if (urlLanguage) {
+      if (urlLanguage && urlLanguage !== 'en') {
         console.log('I18nProvider - Using URL language:', urlLanguage);
         return urlLanguage;
       }
       
-      // Otherwise, use stored language or detected language
-      const storedLanguage = getStoredLanguage();
-      const detectedLanguage = detectBrowserLanguage();
-      console.log('I18nProvider - Stored language:', storedLanguage);
-      console.log('I18nProvider - Detected language:', detectedLanguage);
+      // For root path, check stored/detected language but don't auto-redirect
+      if (location.pathname === '/') {
+        const storedLanguage = getStoredLanguage();
+        console.log('I18nProvider - Stored language:', storedLanguage);
+        
+        // Only use stored language if it's not English (since English is default)
+        if (storedLanguage && storedLanguage !== 'en') {
+          return storedLanguage;
+        }
+      }
       
-      return storedLanguage || detectedLanguage;
+      // Default to English
+      console.log('I18nProvider - Using default language: en');
+      return 'en';
     } catch (error) {
       console.error('I18nProvider - Error getting initial language:', error);
       return I18N_CONFIG.defaultLanguage;
@@ -78,7 +86,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('I18nProvider - Error in URL effect:', error);
     }
-  }, [location.pathname, language]);
+  }, [location.pathname]); // Removed language from deps
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
     console.log('I18nProvider - Setting language to:', newLanguage);
@@ -91,40 +99,45 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   };
 
   const t = (key: TranslationKey, values?: TranslationValues): string => {
-    const keys = key.split('.');
-    let translation: any = translations;
+    try {
+      const keys = key.split('.');
+      let translation: any = translations;
 
-    for (const k of keys) {
-      if (translation && typeof translation === 'object' && k in translation) {
-        translation = translation[k];
-      } else {
-        // Fallback to English if key not found
-        const fallbackTranslations = getTranslations(I18N_CONFIG.fallbackLanguage);
-        let fallback: any = fallbackTranslations;
-        for (const fk of keys) {
-          if (fallback && typeof fallback === 'object' && fk in fallback) {
-            fallback = fallback[fk];
-          } else {
-            return key; // Return key if translation not found
+      for (const k of keys) {
+        if (translation && typeof translation === 'object' && k in translation) {
+          translation = translation[k];
+        } else {
+          // Fallback to English if key not found
+          const fallbackTranslations = getTranslations(I18N_CONFIG.fallbackLanguage);
+          let fallback: any = fallbackTranslations;
+          for (const fk of keys) {
+            if (fallback && typeof fallback === 'object' && fk in fallback) {
+              fallback = fallback[fk];
+            } else {
+              return key; // Return key if translation not found
+            }
           }
+          translation = fallback;
+          break;
         }
-        translation = fallback;
-        break;
       }
-    }
 
-    if (typeof translation !== 'string') {
+      if (typeof translation !== 'string') {
+        return key;
+      }
+
+      // Simple interpolation
+      if (values) {
+        return Object.entries(values).reduce((str, [key, value]) => {
+          return str.replace(new RegExp(`{{${key}}}`, 'g'), String(value));
+        }, translation);
+      }
+
+      return translation;
+    } catch (error) {
+      console.warn('Translation error for key:', key, error);
       return key;
     }
-
-    // Simple interpolation
-    if (values) {
-      return Object.entries(values).reduce((str, [key, value]) => {
-        return str.replace(new RegExp(`{{${key}}}`, 'g'), String(value));
-      }, translation);
-    }
-
-    return translation;
   };
 
   const isRTL = false; // TODO: Implement RTL detection based on language
@@ -133,11 +146,15 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     console.log('I18nProvider - Setting document attributes');
     console.log('I18nProvider - Language:', language);
     
-    // Update document language attribute
-    document.documentElement.lang = language;
-    
-    // Update document direction for RTL languages
-    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    try {
+      // Update document language attribute
+      document.documentElement.lang = language;
+      
+      // Update document direction for RTL languages
+      document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    } catch (error) {
+      console.error('I18nProvider - Error setting document attributes:', error);
+    }
   }, [language, isRTL]);
 
   console.log('I18nProvider - Rendering with language:', language);

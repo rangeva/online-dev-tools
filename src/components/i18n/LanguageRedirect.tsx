@@ -21,27 +21,34 @@ export const LanguageRedirect = () => {
       console.log('LanguageRedirect - URL language:', urlLanguage);
       console.log('LanguageRedirect - Clean path:', cleanPath);
       
-      // If we're on the root path without language prefix, redirect to language-specific URL
-      if (!urlLanguage && location.pathname === '/') {
+      // Prevent infinite redirects by checking if we're already in the right place
+      if (location.pathname === '/') {
         const detectedLanguage = detectBrowserLanguage();
         console.log('LanguageRedirect - Detected language:', detectedLanguage);
         
-        if (detectedLanguage !== 'en') {
+        // Only redirect non-English languages from root
+        if (detectedLanguage !== 'en' && language === 'en') {
           const newUrl = createMultilingualUrl('/', detectedLanguage);
           console.log('LanguageRedirect - Redirecting to:', newUrl);
           setLanguage(detectedLanguage);
           navigate(newUrl, { replace: true });
+          return;
         }
       }
-      // If URL has a language but it doesn't match current language state, update the state
-      else if (urlLanguage && urlLanguage !== language) {
+      
+      // Update language state if URL has different language
+      if (urlLanguage && urlLanguage !== language) {
         console.log('LanguageRedirect - Updating language state to:', urlLanguage);
         setLanguage(urlLanguage);
       }
     } catch (error) {
       console.error('LanguageRedirect - Error in redirect logic:', error);
+      // Don't redirect on error, just update language state
+      if (language !== 'en') {
+        setLanguage('en');
+      }
     }
-  }, [location.pathname, navigate, language, setLanguage]);
+  }, [location.pathname, navigate, setLanguage]); // Removed language from deps to prevent loops
 
   return null;
 };
