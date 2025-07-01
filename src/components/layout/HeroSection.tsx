@@ -2,13 +2,14 @@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
+import React from "react";
 
 interface HeroSectionProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
 }
 
-const HeroSection = ({ searchTerm, onSearchChange }: HeroSectionProps) => {
+const HeroSection = React.memo(({ searchTerm, onSearchChange }: HeroSectionProps) => {
   const { t } = useI18n();
 
   return (
@@ -33,6 +34,8 @@ const HeroSection = ({ searchTerm, onSearchChange }: HeroSectionProps) => {
       </div>
     </div>
   );
-};
+});
+
+HeroSection.displayName = 'HeroSection';
 
 export default HeroSection;

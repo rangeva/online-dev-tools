@@ -4,6 +4,7 @@ import { Search, Code } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdvancedLanguageSelector } from "@/components/i18n/AdvancedLanguageSelector";
 import { useI18n } from "@/contexts/I18nContext";
+import React from "react";
 
 interface SidebarHeaderProps {
   searchTerm: string;
@@ -11,7 +12,7 @@ interface SidebarHeaderProps {
   onMobileMenuClose?: () => void;
 }
 
-export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) {
+export const SidebarHeader = React.memo(({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) => {
   const { t } = useI18n();
 
   return (
@@ -53,4 +54,6 @@ export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }:
       </div>
     </div>
   );
-}
+});
+
+SidebarHeader.displayName = 'SidebarHeader';
