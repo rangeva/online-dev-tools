@@ -15,33 +15,41 @@ import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
+const AppContent = () => {
+  console.log('AppContent - Rendering with router context available');
+  
+  return (
+    <I18nProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <LanguageRedirect />
+        <Routes>
+          {/* Default English routes (no language prefix) */}
+          <Route path="/" element={<Index />} />
+          <Route path="/tool/:toolId" element={<ToolPage />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
+          
+          {/* Language-prefixed routes */}
+          <Route path="/:lang/*" element={<LanguageRoute />} />
+          
+          {/* Catch-all route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </TooltipProvider>
+    </I18nProvider>
+  );
+};
+
 const App = () => {
   console.log('App - Rendering main app component');
   
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <I18nProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <LanguageRedirect />
-              <Routes>
-                {/* Default English routes (no language prefix) */}
-                <Route path="/" element={<Index />} />
-                <Route path="/tool/:toolId" element={<ToolPage />} />
-                <Route path="/category/:category" element={<CategoryPage />} />
-                
-                {/* Language-prefixed routes */}
-                <Route path="/:lang/*" element={<LanguageRoute />} />
-                
-                {/* Catch-all route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </I18nProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
       </QueryClientProvider>
     </ErrorBoundary>
   );
