@@ -13,12 +13,17 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslatedTools } from "@/data/translatedToolsData";
 
 const Index = () => {
+  console.log('Index - Component rendering');
+  
   const { toolId, category } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState(category || "all");
   const isMobile = useIsMobile();
   const { toolCategories } = useTranslatedTools();
+
+  console.log('Index - Params:', { toolId, category });
+  console.log('Index - Active category:', activeCategory);
 
   const { selectedTool } = usePageMeta(toolId, activeCategory);
 
@@ -52,6 +57,9 @@ const Index = () => {
     
     return matchesSearch && matchesCategory;
   });
+
+  console.log('Index - Filtered tools count:', filteredTools.length);
+  console.log('Index - Selected tool:', selectedTool?.name);
 
   return (
     <div className="min-h-screen flex w-full">

@@ -24,39 +24,64 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   
   // Extract language from URL on initial load
   const getInitialLanguage = (): SupportedLanguage => {
-    const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+    console.log('I18nProvider - Getting initial language');
+    console.log('I18nProvider - Current pathname:', location.pathname);
     
-    // If URL has a language, use it
-    if (urlLanguage) {
-      return urlLanguage;
+    try {
+      const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+      console.log('I18nProvider - URL language:', urlLanguage);
+      
+      // If URL has a language, use it
+      if (urlLanguage) {
+        console.log('I18nProvider - Using URL language:', urlLanguage);
+        return urlLanguage;
+      }
+      
+      // Otherwise, use stored language or detected language
+      const storedLanguage = getStoredLanguage();
+      const detectedLanguage = detectBrowserLanguage();
+      console.log('I18nProvider - Stored language:', storedLanguage);
+      console.log('I18nProvider - Detected language:', detectedLanguage);
+      
+      return storedLanguage || detectedLanguage;
+    } catch (error) {
+      console.error('I18nProvider - Error getting initial language:', error);
+      return I18N_CONFIG.defaultLanguage;
     }
-    
-    // Otherwise, use stored language or detected language
-    return getStoredLanguage() || detectBrowserLanguage();
   };
 
   const [language, setCurrentLanguage] = useState<SupportedLanguage>(getInitialLanguage);
   const [translations, setTranslations] = useState<Translations>(() => {
+    console.log('I18nProvider - Loading initial translations for:', language);
     return getTranslations(language);
   });
 
   // Synchronize language with URL changes
   useEffect(() => {
-    const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+    console.log('I18nProvider - URL effect triggered');
+    console.log('I18nProvider - Current pathname:', location.pathname);
+    console.log('I18nProvider - Current language:', language);
     
-    if (urlLanguage && urlLanguage !== language) {
-      console.log('Language changed from URL:', urlLanguage);
-      setCurrentLanguage(urlLanguage);
-      setTranslations(getTranslations(urlLanguage));
+    try {
+      const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+      console.log('I18nProvider - URL language from effect:', urlLanguage);
       
-      if (I18N_CONFIG.persistLanguage) {
-        setStoredLanguage(urlLanguage);
+      if (urlLanguage && urlLanguage !== language) {
+        console.log('I18nProvider - Language changed from URL:', urlLanguage);
+        setCurrentLanguage(urlLanguage);
+        setTranslations(getTranslations(urlLanguage));
+        
+        if (I18N_CONFIG.persistLanguage) {
+          setStoredLanguage(urlLanguage);
+        }
       }
+    } catch (error) {
+      console.error('I18nProvider - Error in URL effect:', error);
     }
   }, [location.pathname, language]);
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
-    console.log('Setting language to:', newLanguage);
+    console.log('I18nProvider - Setting language to:', newLanguage);
     setCurrentLanguage(newLanguage);
     setTranslations(getTranslations(newLanguage));
     
@@ -105,12 +130,17 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   const isRTL = false; // TODO: Implement RTL detection based on language
 
   useEffect(() => {
+    console.log('I18nProvider - Setting document attributes');
+    console.log('I18nProvider - Language:', language);
+    
     // Update document language attribute
     document.documentElement.lang = language;
     
     // Update document direction for RTL languages
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
   }, [language, isRTL]);
+
+  console.log('I18nProvider - Rendering with language:', language);
 
   return (
     <I18nContext.Provider value={{
