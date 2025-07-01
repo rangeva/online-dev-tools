@@ -4,13 +4,14 @@ import { useSidebarAccordion } from "@/hooks/useSidebarAccordion";
 import { SidebarHeader } from "./sidebar/SidebarHeader";
 import { SidebarCategoryMenu } from "./sidebar/SidebarCategoryMenu";
 import { SidebarMobileWrapper } from "./sidebar/SidebarMobileWrapper";
+import React from "react";
 
 interface AppSidebarProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }
 
-export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
+export const AppSidebar = React.memo(({ searchTerm, onSearchChange }: AppSidebarProps) => {
   const isMobile = useIsMobile();
   const { accordionValue, handleAccordionChange } = useSidebarAccordion();
 
@@ -46,4 +47,6 @@ export function AppSidebar({ searchTerm, onSearchChange }: AppSidebarProps) {
       <SidebarContent />
     </div>
   );
-}
+});
+
+AppSidebar.displayName = 'AppSidebar';

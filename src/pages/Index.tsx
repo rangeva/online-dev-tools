@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SimpleHeroSection from "@/components/layout/SimpleHeroSection";
 import ToolsGrid from "@/components/layout/ToolsGrid";
@@ -21,6 +21,11 @@ const Index = () => {
   const { toolCategories } = useTranslatedTools();
 
   const { selectedTool } = usePageMeta(toolId, activeCategory);
+
+  // Memoize the search change handler to prevent unnecessary re-renders
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+  }, []);
 
   // Update URL when category changes
   useEffect(() => {
@@ -50,7 +55,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex w-full">
-      <AppSidebar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <AppSidebar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
       <main className={`flex-1 ${!isMobile ? 'ml-80' : ''} bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800`}>
         {selectedTool ? (
           <div className="container mx-auto px-4 py-8">
