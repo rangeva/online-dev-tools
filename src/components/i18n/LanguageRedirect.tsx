@@ -21,13 +21,13 @@ export const LanguageRedirect = () => {
       console.log('LanguageRedirect - URL language:', urlLanguage);
       console.log('LanguageRedirect - Clean path:', cleanPath);
       
-      // Prevent infinite redirects by checking if we're already in the right place
-      if (location.pathname === '/') {
+      // Only handle initial redirect for root path when no language is specified
+      if (location.pathname === '/' && !urlLanguage) {
         const detectedLanguage = detectBrowserLanguage();
         console.log('LanguageRedirect - Detected language:', detectedLanguage);
         
         // Only redirect non-English languages from root
-        if (detectedLanguage !== 'en' && language === 'en') {
+        if (detectedLanguage !== 'en') {
           const newUrl = createMultilingualUrl('/', detectedLanguage);
           console.log('LanguageRedirect - Redirecting to:', newUrl);
           setLanguage(detectedLanguage);
@@ -36,10 +36,14 @@ export const LanguageRedirect = () => {
         }
       }
       
-      // Update language state if URL has different language
+      // Update language state if URL has different language (but don't redirect)
       if (urlLanguage && urlLanguage !== language) {
         console.log('LanguageRedirect - Updating language state to:', urlLanguage);
         setLanguage(urlLanguage);
+      } else if (!urlLanguage && language !== 'en') {
+        // If no language in URL but current language is not English, update to English
+        console.log('LanguageRedirect - No language in URL, setting to English');
+        setLanguage('en');
       }
     } catch (error) {
       console.error('LanguageRedirect - Error in redirect logic:', error);

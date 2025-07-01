@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SupportedLanguage, Translations, TranslationKey, TranslationValues } from '@/types/i18n';
@@ -33,23 +32,12 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       console.log('I18nProvider - URL language:', urlLanguage);
       
       // If URL has a language, use it
-      if (urlLanguage && urlLanguage !== 'en') {
+      if (urlLanguage) {
         console.log('I18nProvider - Using URL language:', urlLanguage);
         return urlLanguage;
       }
       
-      // For root path, check stored/detected language but don't auto-redirect
-      if (location.pathname === '/') {
-        const storedLanguage = getStoredLanguage();
-        console.log('I18nProvider - Stored language:', storedLanguage);
-        
-        // Only use stored language if it's not English (since English is default)
-        if (storedLanguage && storedLanguage !== 'en') {
-          return storedLanguage;
-        }
-      }
-      
-      // Default to English
+      // Default to English for paths without language prefix
       console.log('I18nProvider - Using default language: en');
       return 'en';
     } catch (error) {
@@ -74,19 +62,21 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       const { language: urlLanguage } = getLanguageFromPath(location.pathname);
       console.log('I18nProvider - URL language from effect:', urlLanguage);
       
-      if (urlLanguage && urlLanguage !== language) {
-        console.log('I18nProvider - Language changed from URL:', urlLanguage);
-        setCurrentLanguage(urlLanguage);
-        setTranslations(getTranslations(urlLanguage));
+      const targetLanguage = urlLanguage || 'en';
+      
+      if (targetLanguage !== language) {
+        console.log('I18nProvider - Language changed from URL:', targetLanguage);
+        setCurrentLanguage(targetLanguage);
+        setTranslations(getTranslations(targetLanguage));
         
         if (I18N_CONFIG.persistLanguage) {
-          setStoredLanguage(urlLanguage);
+          setStoredLanguage(targetLanguage);
         }
       }
     } catch (error) {
       console.error('I18nProvider - Error in URL effect:', error);
     }
-  }, [location.pathname]); // Removed language from deps
+  }, [location.pathname]); // Removed language from deps to prevent loops
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
     console.log('I18nProvider - Setting language to:', newLanguage);

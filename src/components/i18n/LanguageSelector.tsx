@@ -24,15 +24,12 @@ export const LanguageSelector: React.FC = () => {
     const { cleanPath } = getLanguageFromPath(location.pathname);
     const newUrl = createMultilingualUrl(cleanPath, newLanguage as any);
     
-    console.log('Changing language to:', newLanguage);
-    console.log('Current path:', location.pathname);
-    console.log('Clean path:', cleanPath);
-    console.log('New URL:', newUrl);
+    console.log('LanguageSelector - Changing language to:', newLanguage);
+    console.log('LanguageSelector - Current path:', location.pathname);
+    console.log('LanguageSelector - Clean path:', cleanPath);
+    console.log('LanguageSelector - New URL:', newUrl);
     
-    // Set language first
-    setLanguage(newLanguage as any);
-    
-    // Then navigate to the new URL
+    // Navigate first, then the I18nProvider will update the language from the URL
     navigate(newUrl, { replace: true });
   };
 
