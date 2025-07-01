@@ -12,6 +12,7 @@ import { Home, ChevronRight } from "lucide-react";
 import { tools } from "@/data/toolsData";
 import { useTranslatedTools } from "@/data/translatedToolsData";
 import { useI18n } from "@/contexts/I18nContext";
+import { createMultilingualUrl } from "@/utils/multilingualRouting";
 
 interface BreadcrumbItem {
   label: string;
@@ -24,10 +25,14 @@ const MultilingualBreadcrumbs = () => {
   const location = useLocation();
   const { t, language } = useI18n();
   const { toolCategories } = useTranslatedTools();
+  
+  // Extract language and clean path
   const pathSegments = location.pathname.split('/').filter(segment => segment);
+  const isLanguagePrefixed = ['es', 'fr', 'de', 'pt', 'it', 'ja', 'ko', 'zh'].includes(pathSegments[0]);
+  const cleanSegments = isLanguagePrefixed ? pathSegments.slice(1) : pathSegments;
 
   // Don't show breadcrumbs on home page
-  if (pathSegments.length === 0) {
+  if (cleanSegments.length === 0) {
     return null;
   }
 
@@ -37,13 +42,13 @@ const MultilingualBreadcrumbs = () => {
     // Always start with home
     breadcrumbItems.push({
       label: t('navigation.home'),
-      href: "/",
+      href: createMultilingualUrl("/", language),
       icon: Home
     });
 
     // Handle different route patterns
-    if (pathSegments[0] === "tool" && pathSegments[1]) {
-      const toolId = pathSegments[1];
+    if (cleanSegments[0] === "tool" && cleanSegments[1]) {
+      const toolId = cleanSegments[1];
       const tool = tools.find(t => t.id === toolId);
       
       if (tool) {
@@ -53,25 +58,25 @@ const MultilingualBreadcrumbs = () => {
         if (category) {
           breadcrumbItems.push({
             label: category.name,
-            href: `/category/${category.id}`
+            href: createMultilingualUrl(`/category/${category.id}`, language)
           });
         }
         
         // Add tool breadcrumb
         breadcrumbItems.push({
           label: tool.name,
-          href: `/tool/${tool.id}`,
+          href: createMultilingualUrl(`/tool/${tool.id}`, language),
           isCurrentPage: true
         });
       }
-    } else if (pathSegments[0] === "category" && pathSegments[1]) {
-      const categoryId = pathSegments[1];
+    } else if (cleanSegments[0] === "category" && cleanSegments[1]) {
+      const categoryId = cleanSegments[1];
       const category = toolCategories.find(cat => cat.id === categoryId);
       
       if (category) {
         breadcrumbItems.push({
           label: category.name,
-          href: `/category/${categoryId}`,
+          href: createMultilingualUrl(`/category/${categoryId}`, language),
           isCurrentPage: true
         });
       }

@@ -3,8 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { LanguageRoute } from "@/components/routing/LanguageRoute";
 import Index from "./pages/Index";
 import ToolPage from "./pages/ToolPage";
 import CategoryPage from "./pages/CategoryPage";
@@ -20,10 +21,15 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Default English routes (no language prefix) */}
             <Route path="/" element={<Index />} />
             <Route path="/tool/:toolId" element={<ToolPage />} />
             <Route path="/category/:category" element={<CategoryPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Language-prefixed routes */}
+            <Route path="/:lang/*" element={<LanguageRoute />} />
+            
+            {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

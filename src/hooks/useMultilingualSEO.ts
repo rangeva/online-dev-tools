@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useI18n } from "@/contexts/I18nContext";
 import { tools, toolCategories } from "@/data/toolsData";
 import { useTranslatedTools } from "@/data/translatedToolsData";
+import { useLocation } from "react-router-dom";
 
 interface SEOConfig {
   title?: string;
@@ -15,6 +16,7 @@ interface SEOConfig {
 export const useMultilingualSEO = (toolId?: string, activeCategory?: string) => {
   const { t, language } = useI18n();
   const { toolCategories: translatedCategories } = useTranslatedTools();
+  const location = useLocation();
   const selectedTool = toolId ? tools.find(tool => tool.id === toolId) : null;
 
   const getPageTitle = (): string => {
@@ -66,13 +68,15 @@ export const useMultilingualSEO = (toolId?: string, activeCategory?: string) => 
 
   const getCanonicalUrl = (): string => {
     const baseUrl = 'https://onlinedevtools.io';
+    const langPrefix = language === 'en' ? '' : `/${language}`;
+    
     if (selectedTool) {
-      return `${baseUrl}/tool/${selectedTool.id}`;
+      return `${baseUrl}${langPrefix}/tool/${selectedTool.id}`;
     }
     if (activeCategory && activeCategory !== "all") {
-      return `${baseUrl}/category/${activeCategory}`;
+      return `${baseUrl}${langPrefix}/category/${activeCategory}`;
     }
-    return baseUrl;
+    return `${baseUrl}${langPrefix}`;
   };
 
   const getAlternateUrls = (): Record<string, string> => {
@@ -84,10 +88,11 @@ export const useMultilingualSEO = (toolId?: string, activeCategory?: string) => 
       ? `/tool/${selectedTool.id}`
       : activeCategory && activeCategory !== "all"
       ? `/category/${activeCategory}`
-      : '/';
+      : '';
 
     supportedLanguages.forEach(lang => {
-      alternates[lang] = `${baseUrl}${lang === 'en' ? '' : `/${lang}`}${currentPath}`;
+      const langPrefix = lang === 'en' ? '' : `/${lang}`;
+      alternates[lang] = `${baseUrl}${langPrefix}${currentPath}`;
     });
 
     return alternates;
@@ -168,7 +173,7 @@ export const useMultilingualSEO = (toolId?: string, activeCategory?: string) => 
 
   useEffect(() => {
     updateSEOTags();
-  }, [selectedTool, activeCategory, toolId, language, t]);
+  }, [selectedTool, activeCategory, toolId, language, t, location.pathname]);
 
   return {
     title: getPageTitle(),
