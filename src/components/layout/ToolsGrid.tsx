@@ -6,13 +6,14 @@ import { AlertCircle } from "lucide-react";
 import { tools } from "@/data/toolsData";
 import { useI18n } from "@/contexts/I18nContext";
 import { useTranslatedTools } from "@/data/translatedToolsData";
+import { createMultilingualUrl } from "@/utils/multilingualRouting";
 
 interface ToolsGridProps {
   filteredTools: typeof tools;
 }
 
 const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { toolCategories } = useTranslatedTools();
 
   if (filteredTools.length === 0) {
@@ -34,9 +35,10 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
       {filteredTools.map((tool) => {
         const Icon = tool.icon;
         const categoryName = toolCategories.find(cat => cat.id === tool.category)?.name || tool.category;
+        const toolUrl = createMultilingualUrl(`/tool/${tool.id}`, language);
         
         return (
-          <Link key={tool.id} to={`/tool/${tool.id}`}>
+          <Link key={tool.id} to={toolUrl}>
             <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105 h-full">
               <CardHeader className="pb-2 p-4">
                 <div className="flex items-start justify-between">

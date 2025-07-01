@@ -24,8 +24,16 @@ export const LanguageSelector: React.FC = () => {
     const { cleanPath } = getLanguageFromPath(location.pathname);
     const newUrl = createMultilingualUrl(cleanPath, newLanguage as any);
     
+    console.log('Changing language to:', newLanguage);
+    console.log('Current path:', location.pathname);
+    console.log('Clean path:', cleanPath);
+    console.log('New URL:', newUrl);
+    
+    // Set language first
     setLanguage(newLanguage as any);
-    navigate(newUrl);
+    
+    // Then navigate to the new URL
+    navigate(newUrl, { replace: true });
   };
 
   return (

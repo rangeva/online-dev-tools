@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SupportedLanguage, Translations, TranslationKey, TranslationValues } from '@/types/i18n';
@@ -22,12 +21,18 @@ interface I18nProviderProps {
 
 export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   const location = useLocation();
-  const navigate = useNavigate();
   
   // Extract language from URL on initial load
   const getInitialLanguage = (): SupportedLanguage => {
     const { language: urlLanguage } = getLanguageFromPath(location.pathname);
-    return urlLanguage || getStoredLanguage() || detectBrowserLanguage();
+    
+    // If URL has a language, use it
+    if (urlLanguage) {
+      return urlLanguage;
+    }
+    
+    // Otherwise, use stored language or detected language
+    return getStoredLanguage() || detectBrowserLanguage();
   };
 
   const [language, setCurrentLanguage] = useState<SupportedLanguage>(getInitialLanguage);
@@ -38,9 +43,12 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   // Synchronize language with URL changes
   useEffect(() => {
     const { language: urlLanguage } = getLanguageFromPath(location.pathname);
+    
     if (urlLanguage && urlLanguage !== language) {
+      console.log('Language changed from URL:', urlLanguage);
       setCurrentLanguage(urlLanguage);
       setTranslations(getTranslations(urlLanguage));
+      
       if (I18N_CONFIG.persistLanguage) {
         setStoredLanguage(urlLanguage);
       }
@@ -48,8 +56,10 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   }, [location.pathname, language]);
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
+    console.log('Setting language to:', newLanguage);
     setCurrentLanguage(newLanguage);
     setTranslations(getTranslations(newLanguage));
+    
     if (I18N_CONFIG.persistLanguage) {
       setStoredLanguage(newLanguage);
     }

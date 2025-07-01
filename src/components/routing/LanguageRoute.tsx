@@ -3,13 +3,14 @@ import { useParams, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useI18n } from "@/contexts/I18nContext";
 import { SUPPORTED_LANGUAGES } from "@/i18n/config";
+import { getLanguageFromPath } from "@/utils/multilingualRouting";
 import Index from "@/pages/Index";
 import ToolPage from "@/pages/ToolPage";
 import CategoryPage from "@/pages/CategoryPage";
 import NotFound from "@/pages/NotFound";
 
 export const LanguageRoute = () => {
-  const { lang } = useParams();
+  const { lang, '*': remainingPath } = useParams();
   const { setLanguage } = useI18n();
 
   // Check if the language is supported
@@ -17,6 +18,7 @@ export const LanguageRoute = () => {
 
   useEffect(() => {
     if (isValidLanguage) {
+      console.log('LanguageRoute - Setting language to:', lang);
       setLanguage(lang as any);
     }
   }, [lang, isValidLanguage, setLanguage]);

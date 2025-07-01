@@ -1,9 +1,16 @@
 
 import { useParams, Navigate } from "react-router-dom";
+import { getLanguageFromPath, reverseToolNameMapping } from "@/utils/multilingualRouting";
+import { useLocation } from "react-router-dom";
 import Index from "./Index";
 
 const ToolPage = () => {
   const { toolId } = useParams();
+  const location = useLocation();
+  
+  // Get the actual tool ID from the URL (could be translated)
+  const { toolId: actualToolId } = getLanguageFromPath(location.pathname);
+  const finalToolId = actualToolId || toolId;
   
   // List of valid tool IDs for SEO purposes
   const validToolIds = [
@@ -26,7 +33,7 @@ const ToolPage = () => {
     "temperature-converter", "credential-format-detector", "tokenizer", "website-rank-tracker"
   ];
 
-  if (!toolId || !validToolIds.includes(toolId)) {
+  if (!finalToolId || !validToolIds.includes(finalToolId)) {
     return <Navigate to="/" replace />;
   }
 
