@@ -26,8 +26,13 @@ export const useTranslatedTools = () => {
     name: t(categoryTranslationKeys[category.id] || category.name)
   }));
 
+  const translatedTools = tools.map(tool => ({
+    ...tool,
+    name: t(`toolNames.${tool.id}` as any) || tool.name
+  }));
+
   return {
-    tools,
+    tools: translatedTools,
     toolCategories: translatedCategories,
     categoryTranslationKeys
   };

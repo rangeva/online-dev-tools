@@ -20,7 +20,7 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
   const navigate = useNavigate();
   const location = useLocation();
   const { t, language } = useI18n();
-  const { toolCategories } = useTranslatedTools();
+  const { toolCategories, tools: translatedTools } = useTranslatedTools();
   
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/' || currentPath === `/${language}`;
@@ -101,6 +101,9 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
                   <div className="ml-6 space-y-1">
                     {categoryTools.map((tool) => {
                       const isToolActive = currentPath.includes(`/tool/${tool.id}`);
+                      const translatedTool = translatedTools.find(t => t.id === tool.id);
+                      const toolName = translatedTool?.name || tool.name;
+                      
                       return (
                         <Button
                           key={tool.id}
@@ -110,7 +113,7 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
                           onClick={() => handleToolClick(tool.id)}
                         >
                           <tool.icon className="h-3 w-3 mr-2 flex-shrink-0" />
-                          <span className="truncate">{tool.name}</span>
+                          <span className="truncate">{toolName}</span>
                         </Button>
                       );
                     })}

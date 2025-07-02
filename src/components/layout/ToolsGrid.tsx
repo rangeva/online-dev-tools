@@ -14,7 +14,7 @@ interface ToolsGridProps {
 
 const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
   const { t, language } = useI18n();
-  const { toolCategories } = useTranslatedTools();
+  const { toolCategories, tools: translatedTools } = useTranslatedTools();
 
   if (filteredTools.length === 0) {
     return (
@@ -35,6 +35,8 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
       {filteredTools.map((tool) => {
         const Icon = tool.icon;
         const categoryName = toolCategories.find(cat => cat.id === tool.category)?.name || tool.category;
+        const translatedTool = translatedTools.find(t => t.id === tool.id);
+        const toolName = translatedTool?.name || tool.name;
         const toolUrl = createMultilingualUrl(`/tool/${tool.id}`, language);
         
         return (
@@ -50,7 +52,7 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
                   </Badge>
                 </div>
                 <CardTitle className="text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {tool.name}
+                  {toolName}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0">
