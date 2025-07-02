@@ -204,8 +204,6 @@ export const en: Translations = {
     reset: "Reset",
     save: "Save",
     cancel: "Cancel",
-    yes: "Yes",
-    no: "No",
     search: "Search",
     back: "Back",
     generate: "Generate",
