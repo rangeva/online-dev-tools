@@ -21,36 +21,68 @@ export const useMultilingualSEO = (toolId?: string, activeCategory?: string) => 
 
   const getPageTitle = (): string => {
     if (selectedTool) {
-      return t('seo.toolTitle', { toolName: selectedTool.name });
+      // Try to get translated SEO title, fallback to tool name
+      try {
+        return t('seo.toolTitle' as any, { toolName: selectedTool.name });
+      } catch {
+        return `${selectedTool.name} - ${t('header.title')}`;
+      }
     }
     if (activeCategory && activeCategory !== "all") {
       const categoryName = translatedCategories.find(cat => cat.id === activeCategory)?.name;
-      return t('seo.categoryTitle', { categoryName: categoryName || activeCategory });
+      try {
+        return t('seo.categoryTitle' as any, { categoryName: categoryName || activeCategory });
+      } catch {
+        return `${categoryName || activeCategory} - ${t('header.title')}`;
+      }
     }
-    return t('seo.homeTitle');
+    try {
+      return t('seo.homeTitle' as any);
+    } catch {
+      return t('header.title');
+    }
   };
 
   const getPageDescription = (): string => {
     if (selectedTool) {
-      return t('seo.toolDescription', { 
-        toolName: selectedTool.name,
-        description: selectedTool.description 
-      });
+      try {
+        return t('seo.toolDescription' as any, { 
+          toolName: selectedTool.name,
+          description: selectedTool.description 
+        });
+      } catch {
+        return `${selectedTool.description} - ${t('header.subtitle')}`;
+      }
     }
     if (activeCategory && activeCategory !== "all") {
       const categoryName = translatedCategories.find(cat => cat.id === activeCategory)?.name;
-      return t('seo.categoryDescription', { categoryName: categoryName || activeCategory });
+      try {
+        return t('seo.categoryDescription' as any, { categoryName: categoryName || activeCategory });
+      } catch {
+        return `${categoryName || activeCategory} tools - ${t('header.subtitle')}`;
+      }
     }
-    return t('seo.homeDescription');
+    try {
+      return t('seo.homeDescription' as any);
+    } catch {
+      return t('header.subtitle');
+    }
   };
 
   const getKeywords = (): string[] => {
-    const baseKeywords = [
-      t('seo.keywords.developer'),
-      t('seo.keywords.tools'),
-      t('seo.keywords.online'),
-      t('seo.keywords.free')
-    ];
+    const baseKeywords: string[] = [];
+    
+    try {
+      baseKeywords.push(
+        t('seo.keywords.developer' as any),
+        t('seo.keywords.tools' as any),
+        t('seo.keywords.online' as any),
+        t('seo.keywords.free' as any)
+      );
+    } catch {
+      // Fallback to English keywords if translation is not available
+      baseKeywords.push('developer', 'tools', 'online', 'free');
+    }
 
     if (selectedTool) {
       return [...baseKeywords, selectedTool.name, ...selectedTool.tags];

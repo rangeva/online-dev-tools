@@ -23,7 +23,7 @@ export const useTranslatedTools = () => {
   
   const translatedCategories = toolCategories.map(category => ({
     ...category,
-    name: t(categoryTranslationKeys[category.id] || category.name)
+    name: t(categoryTranslationKeys[category.id] as any || category.name as any)
   }));
 
   const translatedTools = tools.map(tool => ({

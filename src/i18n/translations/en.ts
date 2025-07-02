@@ -200,12 +200,10 @@ export const en: Translations = {
     error: "Error",
     success: "Success",
     copy: "Copy",
-    paste: "Paste",
     clear: "Clear",
     reset: "Reset",
     save: "Save",
     cancel: "Cancel",
-    confirm: "Confirm",
     yes: "Yes",
     no: "No",
     search: "Search",
@@ -248,6 +246,22 @@ export const en: Translations = {
     converted: "Converted successfully",
     uploaded: "File uploaded successfully",
     saved: "Saved successfully"
+  },
+
+  // SEO Messages
+  seo: {
+    homeTitle: "Developer Toolbox - Free Online Tools for Developers",
+    homeDescription: "Access a comprehensive collection of free online developer tools. No sign-up required, works offline.",
+    toolTitle: "{toolName} - Free Online Tool",
+    toolDescription: "Use {toolName} - {description}. Free online tool, no sign-up required.",
+    categoryTitle: "{categoryName} Tools - Developer Toolbox",
+    categoryDescription: "Browse our collection of {categoryName} for developers. All tools are free and require no sign-up.",
+    keywords: {
+      developer: "developer",
+      tools: "tools",
+      online: "online",
+      free: "free"
+    }
   },
 
   // Date and time related terms

@@ -176,6 +176,20 @@ export interface Translations {
     uploaded: string;
     saved: string;
   };
+  seo?: {
+    homeTitle: string;
+    homeDescription: string;
+    toolTitle: string;
+    toolDescription: string;
+    categoryTitle: string;
+    categoryDescription: string;
+    keywords: {
+      developer: string;
+      tools: string;
+      online: string;
+      free: string;
+    };
+  };
   dateTime?: {
     justNow: string;
     minuteAgo: string;
@@ -220,6 +234,8 @@ export type TranslationKey =
   | `language.${keyof Translations['language']}`
   | `errors.${keyof Translations['errors']}`
   | `success.${keyof Translations['success']}`
+  | `seo.${keyof NonNullable<Translations['seo']>}`
+  | `seo.keywords.${keyof NonNullable<Translations['seo']>['keywords']}`
   | `dateTime.${keyof NonNullable<Translations['dateTime']>}`
   | `dynamicDates.${keyof NonNullable<Translations['dynamicDates']>}`
   | `timestampFormats.${keyof NonNullable<Translations['timestampFormats']>}`;

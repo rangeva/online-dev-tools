@@ -1,4 +1,3 @@
-
 import { Translations } from '@/types/i18n';
 
 export const fr: Translations = {
@@ -29,7 +28,10 @@ export const fr: Translations = {
     previous: 'Précédent',
     settings: 'Paramètres',
     help: 'Aide',
-    about: 'À propos'
+    about: 'À propos',
+    selectLanguage: 'Sélectionner la Langue',
+    popularLanguages: 'Langues Populaires',
+    otherLanguages: 'Autres Langues'
   },
 
   // Navigation
@@ -80,7 +82,71 @@ export const fr: Translations = {
     resultLabel: 'Résultat',
     optionsLabel: 'Options',
     previewLabel: 'Aperçu',
-    exampleLabel: 'Exemple'
+    exampleLabel: 'Exemple',
+    dateTimeConverter: {
+      title: 'Convertisseur de Date-Heure',
+      description: 'Convertir date et heure en différents formats',
+      visualPicker: 'Sélecteur Visuel de Date et Heure',
+      selectDate: 'Sélectionner la Date',
+      selectTime: 'Sélectionner l\'Heure',
+      pickDate: 'Choisir une date',
+      useSelected: 'Utiliser Date et Heure Sélectionnées',
+      inputDateTime: 'Saisir Date/Heure',
+      inputFormat: 'Format d\'Entrée',
+      convertDate: 'Convertir la Date',
+      useCurrentTime: 'Utiliser l\'Heure Actuelle',
+      clearAll: 'Tout Effacer',
+      convertedFormats: 'Formats Convertis',
+      formatsAvailable: 'formats disponibles',
+      tips: 'Conseils:',
+      tip1: 'Utilisez le sélecteur visuel pour une sélection facile des dates',
+      tip2: 'Les timestamps Unix peuvent être en secondes (10 chiffres) ou millisecondes (13 chiffres)',
+      tip3: 'La détection automatique fonctionne avec la plupart des formats courants',
+      tip4: 'Utilisez "Heure Actuelle" pour obtenir rapidement la date et l\'heure actuelles',
+      dateTimeSelected: 'Date et Heure Sélectionnées',
+      inputUpdated: 'Entrée mise à jour avec date et heure sélectionnées',
+      currentTimeSet: 'Heure Actuelle Définie',
+      currentTimeDescription: 'Entrée définie à la date et heure actuelles',
+      success: 'Succès',
+      successDescription: 'Date convertie avec succès!',
+      error: 'Erreur',
+      errorDescription: 'Format de date invalide. Veuillez vérifier votre entrée.',
+      copied: 'Copié!',
+      copiedDescription: 'Format de date copié dans le presse-papiers'
+    },
+    epochConverter: {
+      currentEpochTime: 'Temps Unix Epoch Actuel',
+      timestampToHuman: 'Convertir Timestamp en Date Humaine',
+      humanToTimestamp: 'Convertir Date Humaine en Timestamp',
+      dynamicDateList: 'Liste de Dates Dynamiques',
+      secondsConverter: 'Convertir Secondes en Jours, Heures et Minutes',
+      startEndDates: 'Dates Epoch pour Début et Fin d\'Année/Mois/Jour',
+      batchConvert: 'Conversion par Lot (un par ligne):',
+      now: 'Maintenant',
+      convert: 'Convertir',
+      batchConvertButton: 'Conversion par Lot',
+      results: 'Résultats:',
+      original: 'Original',
+      utcDate: 'Date UTC',
+      localDate: 'Date Locale',
+      isoFormat: 'Format ISO',
+      unixTimestamp: 'Timestamp Unix',
+      milliseconds: 'Millisecondes',
+      description: 'Description',
+      date: 'Date',
+      inputFormat: 'Format d\'entrée: RFC 2822, D-M-Y, M/D/Y, Y-M-D, etc.',
+      calculate: 'Calculer',
+      year: 'Année:',
+      month: 'Mois:',
+      day: 'Jour:',
+      start: 'Début:',
+      end: 'Fin:',
+      total: 'Total:',
+      seconds: 'secondes',
+      days: 'jours',
+      hours: 'heures',
+      minutes: 'minutes'
+    }
   },
 
   // Language Selector
