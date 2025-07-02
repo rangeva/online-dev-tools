@@ -48,15 +48,16 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
 
   const [language, setCurrentLanguage] = useState<SupportedLanguage>(getInitialLanguage);
   const [translations, setTranslations] = useState<Translations>(() => {
-    console.log('I18nProvider - Loading initial translations for:', language);
-    return getTranslations(language);
+    const initialLang = getInitialLanguage();
+    console.log('I18nProvider - Loading initial translations for:', initialLang);
+    return getTranslations(initialLang);
   });
 
   // Synchronize language with URL changes
   useEffect(() => {
     console.log('I18nProvider - URL effect triggered');
     console.log('I18nProvider - Current pathname:', location.pathname);
-    console.log('I18nProvider - Current language:', language);
+    console.log('I18nProvider - Current language state:', language);
     
     try {
       const { language: urlLanguage } = getLanguageFromPath(location.pathname);
@@ -65,7 +66,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       const targetLanguage = urlLanguage || 'en';
       
       if (targetLanguage !== language) {
-        console.log('I18nProvider - Language changed from URL:', targetLanguage);
+        console.log('I18nProvider - Updating language state to:', targetLanguage);
         setCurrentLanguage(targetLanguage);
         setTranslations(getTranslations(targetLanguage));
         
@@ -76,10 +77,10 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('I18nProvider - Error in URL effect:', error);
     }
-  }, [location.pathname]); // Removed language from deps to prevent loops
+  }, [location.pathname, language]); // Keep language in deps but handle it carefully
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
-    console.log('I18nProvider - Setting language to:', newLanguage);
+    console.log('I18nProvider - Manual language change to:', newLanguage);
     setCurrentLanguage(newLanguage);
     setTranslations(getTranslations(newLanguage));
     
@@ -133,8 +134,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   const isRTL = false; // TODO: Implement RTL detection based on language
 
   useEffect(() => {
-    console.log('I18nProvider - Setting document attributes');
-    console.log('I18nProvider - Language:', language);
+    console.log('I18nProvider - Setting document attributes for language:', language);
     
     try {
       // Update document language attribute

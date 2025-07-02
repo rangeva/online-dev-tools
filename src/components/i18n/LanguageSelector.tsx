@@ -14,7 +14,7 @@ import { SUPPORTED_LANGUAGES } from '@/i18n/config';
 import { createMultilingualUrl, getLanguageFromPath } from '@/utils/multilingualRouting';
 
 export const LanguageSelector: React.FC = () => {
-  const { language, setLanguage, t } = useI18n();
+  const { language, t } = useI18n();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -29,7 +29,7 @@ export const LanguageSelector: React.FC = () => {
     console.log('LanguageSelector - Clean path:', cleanPath);
     console.log('LanguageSelector - New URL:', newUrl);
     
-    // Navigate first, then the I18nProvider will update the language from the URL
+    // Navigate to the new URL - I18nProvider will handle the language state update
     navigate(newUrl, { replace: true });
   };
 
