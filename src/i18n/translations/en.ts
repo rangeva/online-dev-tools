@@ -1,5 +1,7 @@
 
-export const en = {
+import { Translations } from '@/types/i18n';
+
+export const en: Translations = {
   // Header and navigation
   header: {
     title: "Developer Toolbox",
@@ -14,7 +16,8 @@ export const en = {
   navigation: {
     home: "Home",
     tools: "All Tools",
-    categories: "Categories"
+    categories: "Categories",
+    backToTools: "Back to Tools"
   },
 
   // Hero section
@@ -28,6 +31,12 @@ export const en = {
   tools: {
     noResults: "No tools found",
     noResultsSubtext: "Try adjusting your search terms or browse categories.",
+    inputLabel: "Input",
+    outputLabel: "Output",
+    resultLabel: "Result",
+    optionsLabel: "Options",
+    previewLabel: "Preview",
+    exampleLabel: "Example",
     dateTimeConverter: {
       title: "Date-time Converter",
       description: "Convert date and time into various different formats with enhanced functionality",
@@ -109,20 +118,80 @@ export const en = {
     ai: "AI Tools"
   },
 
-  // SEO
-  seo: {
-    homeTitle: "Developer Toolbox - Essential Online Tools for Developers",
-    homeDescription: "Collection of essential online tools for developers including text utilities, encoding/decoding, date tools, JSON formatters, security tools and more.",
-    toolTitle: "{{toolName}} - Developer Toolbox",
-    toolDescription: "{{toolName}}: {{description}} - Free online tool with no sign-up required.",
-    categoryTitle: "{{categoryName}} Tools - Developer Toolbox", 
-    categoryDescription: "{{categoryName}} tools for developers - Free online tools with no sign-up required.",
-    keywords: {
-      developer: "developer",
-      tools: "tools",
-      online: "online", 
-      free: "free"
-    }
+  // Tool Names
+  toolNames: {
+    'word-counter': 'Word Counter',
+    'text-diff': 'Text Diff',
+    'case-converter': 'Case Converter',
+    'regex-tester': 'RegEx Tester',
+    'add-prefix-suffix': 'Add Prefix/Suffix',
+    'line-break-manager': 'Line Break Manager',
+    'find-replace': 'Find & Replace',
+    'remove-duplicate-lines': 'Remove Duplicate Lines',
+    'remove-empty-lines': 'Remove Empty Lines',
+    'remove-extra-spaces': 'Remove Extra Spaces',
+    'html-minifier': 'HTML Minifier',
+    'html-beautifier': 'HTML Beautifier',
+    'html-to-markdown': 'HTML to Markdown',
+    'html-to-jsx': 'HTML to JSX',
+    'html-previewer': 'HTML Previewer',
+    'html-to-plain-text': 'HTML to Plain Text',
+    'html-entity-coder': 'HTML Entity Coder',
+    'html-wysiwyg-editor': 'HTML WYSIWYG Editor',
+    'url-encoder': 'URL Encoder',
+    'base64-encoder': 'Base64 Encoder',
+    'jwt-decoder': 'JWT Decoder',
+    'base64-string-encoder': 'Base64 String Encoder',
+    'date-time-converter': 'Date Time Converter',
+    'epoch-converter': 'Epoch Converter',
+    'integer-base-converter': 'Integer Base Converter',
+    'roman-numeral-converter': 'Roman Numeral Converter',
+    'color-converter': 'Color Converter',
+    'text-to-nato-alphabet': 'Text to NATO Alphabet',
+    'text-to-ascii-binary': 'Text to ASCII/Binary',
+    'text-to-unicode': 'Text to Unicode',
+    'yaml-to-json-converter': 'YAML to JSON',
+    'yaml-to-toml': 'YAML to TOML',
+    'json-to-yaml-converter': 'JSON to YAML',
+    'json-to-toml-converter': 'JSON to TOML',
+    'toml-to-json-converter': 'TOML to JSON',
+    'toml-to-yaml-converter': 'TOML to YAML',
+    'xml-to-json-converter': 'XML to JSON',
+    'json-to-xml-converter': 'JSON to XML',
+    'markdown-to-html-converter': 'Markdown to HTML',
+    'list-converter': 'List Converter',
+    'temperature-converter': 'Temperature Converter',
+    'iso-generator': 'ISO Generator',
+    'cron-editor': 'Cron Editor',
+    'timezone-lookup': 'Timezone Lookup',
+    'json-formatter': 'JSON Formatter',
+    'xml-formatter': 'XML Formatter',
+    'yaml-converter': 'YAML Converter',
+    'hash-generator': 'Hash Generator',
+    'htpasswd-generator': 'Htpasswd Generator',
+    'strong-password-generator': 'Strong Password Generator',
+    'uuid-generator': 'UUID Generator',
+    'lorem-generator': 'Lorem Generator',
+    'fake-data-generator': 'Fake Data Generator',
+    'random-phone-generator': 'Random Phone Generator',
+    'random-email-generator': 'Random Email Generator',
+    'color-palette-generator': 'Color Palette Generator',
+    'html-color-codes': 'HTML Color Codes',
+    'qr-code-generator': 'QR Code Generator',
+    'wifi-qr-generator': 'WiFi QR Generator',
+    'camera-recorder': 'Camera Recorder',
+    'painting-drawing-tool': 'Painting Tool',
+    'image-format-converter': 'Image Format Converter',
+    'credential-format-detector': 'Credential Format Detector',
+    'tokenizer': 'Tokenizer',
+    'website-rank-tracker': 'Website Rank Tracker'
+  },
+
+  // Language Selector
+  language: {
+    select: "Select Language",
+    current: "Current Language",
+    change: "Change Language"
   },
 
   // Common
@@ -139,9 +208,46 @@ export const en = {
     confirm: "Confirm",
     yes: "Yes",
     no: "No",
+    search: "Search",
+    back: "Back",
+    generate: "Generate",
+    convert: "Convert",
+    download: "Download",
+    upload: "Upload",
+    analyze: "Analyze",
+    preview: "Preview",
+    close: "Close",
+    delete: "Delete",
+    edit: "Edit",
+    add: "Add",
+    remove: "Remove",
+    next: "Next",
+    previous: "Previous",
+    settings: "Settings",
+    help: "Help",
+    about: "About",
     selectLanguage: "Select Language",
     popularLanguages: "Popular Languages",
     otherLanguages: "Other Languages"
+  },
+
+  // Error Messages
+  errors: {
+    generic: "Something went wrong. Please try again.",
+    invalidInput: "Invalid input provided",
+    processingFailed: "Processing failed. Please check your input.",
+    copyFailed: "Failed to copy to clipboard",
+    uploadFailed: "File upload failed",
+    networkError: "Network error. Please check your connection."
+  },
+
+  // Success Messages
+  success: {
+    copied: "Copied to clipboard",
+    generated: "Generated successfully",
+    converted: "Converted successfully",
+    uploaded: "File uploaded successfully",
+    saved: "Saved successfully"
   },
 
   // Date and time related terms

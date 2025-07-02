@@ -43,6 +43,9 @@ export interface Translations {
     settings: string;
     help: string;
     about: string;
+    selectLanguage: string;
+    popularLanguages: string;
+    otherLanguages: string;
   };
   navigation: {
     home: string;
@@ -88,6 +91,70 @@ export interface Translations {
     optionsLabel: string;
     previewLabel: string;
     exampleLabel: string;
+    dateTimeConverter: {
+      title: string;
+      description: string;
+      visualPicker: string;
+      selectDate: string;
+      selectTime: string;
+      pickDate: string;
+      useSelected: string;
+      inputDateTime: string;
+      inputFormat: string;
+      convertDate: string;
+      useCurrentTime: string;
+      clearAll: string;
+      convertedFormats: string;
+      formatsAvailable: string;
+      tips: string;
+      tip1: string;
+      tip2: string;
+      tip3: string;
+      tip4: string;
+      dateTimeSelected: string;
+      inputUpdated: string;
+      currentTimeSet: string;
+      currentTimeDescription: string;
+      success: string;
+      successDescription: string;
+      error: string;
+      errorDescription: string;
+      copied: string;
+      copiedDescription: string;
+    };
+    epochConverter: {
+      currentEpochTime: string;
+      timestampToHuman: string;
+      humanToTimestamp: string;
+      dynamicDateList: string;
+      secondsConverter: string;
+      startEndDates: string;
+      batchConvert: string;
+      now: string;
+      convert: string;
+      batchConvertButton: string;
+      results: string;
+      original: string;
+      utcDate: string;
+      localDate: string;
+      isoFormat: string;
+      unixTimestamp: string;
+      milliseconds: string;
+      description: string;
+      date: string;
+      inputFormat: string;
+      calculate: string;
+      year: string;
+      month: string;
+      day: string;
+      start: string;
+      end: string;
+      total: string;
+      seconds: string;
+      days: string;
+      hours: string;
+      minutes: string;
+    };
   };
   language: {
     select: string;
@@ -109,6 +176,34 @@ export interface Translations {
     uploaded: string;
     saved: string;
   };
+  dateTime?: {
+    justNow: string;
+    minuteAgo: string;
+    minutesAgo: string;
+    hourAgo: string;
+    hoursAgo: string;
+    dayAgo: string;
+    daysAgo: string;
+    fromNow: string;
+    ago: string;
+  };
+  dynamicDates?: {
+    now: string;
+    oneHourAgo: string;
+    oneDayAgo: string;
+    oneWeekAgo: string;
+    oneMonthAgo: string;
+    nextHour: string;
+    nextDay: string;
+    nextWeek: string;
+    nextMonth: string;
+  };
+  timestampFormats?: {
+    seconds: string;
+    milliseconds: string;
+    microseconds: string;
+    nanoseconds: string;
+  };
 }
 
 export type TranslationKey = 
@@ -120,8 +215,13 @@ export type TranslationKey =
   | `categories.${keyof Translations['categories']}`
   | `toolNames.${string}`
   | `tools.${keyof Translations['tools']}`
+  | `tools.dateTimeConverter.${keyof Translations['tools']['dateTimeConverter']}`
+  | `tools.epochConverter.${keyof Translations['tools']['epochConverter']}`
   | `language.${keyof Translations['language']}`
   | `errors.${keyof Translations['errors']}`
-  | `success.${keyof Translations['success']}`;
+  | `success.${keyof Translations['success']}`
+  | `dateTime.${keyof NonNullable<Translations['dateTime']>}`
+  | `dynamicDates.${keyof NonNullable<Translations['dynamicDates']>}`
+  | `timestampFormats.${keyof NonNullable<Translations['timestampFormats']>}`;
 
 export type TranslationValues = Record<string, string | number>;
