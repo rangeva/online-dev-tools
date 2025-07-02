@@ -4,6 +4,7 @@ import { Search, Code } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdvancedLanguageSelector } from "@/components/i18n/AdvancedLanguageSelector";
 import { useI18n } from "@/contexts/I18nContext";
+import { createMultilingualUrl } from "@/utils/multilingualRouting";
 import React from "react";
 
 interface SidebarHeaderProps {
@@ -13,13 +14,14 @@ interface SidebarHeaderProps {
 }
 
 export const SidebarHeader = React.memo(({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const homeUrl = createMultilingualUrl('/', language);
 
   return (
     <div className="p-4 border-b border-sidebar-border">
       {/* Logo and Title */}
       <Link 
-        to="/" 
+        to={homeUrl} 
         className="flex items-center space-x-3 mb-4 group"
         onClick={onMobileMenuClose}
       >

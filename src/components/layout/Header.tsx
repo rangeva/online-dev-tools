@@ -4,15 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Code } from "lucide-react";
 import { LanguageSelector } from "@/components/i18n/LanguageSelector";
 import { useI18n } from "@/contexts/I18nContext";
+import { createMultilingualUrl } from "@/utils/multilingualRouting";
 
 const Header = () => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const homeUrl = createMultilingualUrl('/', language);
 
   return (
     <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to={homeUrl} className="flex items-center space-x-3">
             <div className="p-2 bg-blue-600 rounded-lg">
               <Code className="h-6 w-6 text-white" />
             </div>

@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { tools } from "@/data/toolsData";
 import { useTranslatedTools } from "@/data/translatedToolsData";
 import { useI18n } from "@/contexts/I18nContext";
+import { createMultilingualUrl } from "@/utils/multilingualRouting";
 
 interface SidebarCategoryMenuProps {
   searchTerm: string;
@@ -18,12 +19,12 @@ interface SidebarCategoryMenuProps {
 export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionChange, onMobileMenuClose }: SidebarCategoryMenuProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { toolCategories } = useTranslatedTools();
   
   const currentPath = location.pathname;
-  const isHomePage = currentPath === '/';
-  const currentCategory = currentPath.startsWith('/category/') ? currentPath.split('/category/')[1] : null;
+  const isHomePage = currentPath === '/' || currentPath === `/${language}`;
+  const currentCategory = currentPath.includes('/category/') ? currentPath.split('/category/')[1] : null;
   
   const filteredTools = tools.filter(tool => 
     tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,16 +33,19 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
   );
 
   const handleCategoryClick = (categoryId: string) => {
+    let targetUrl;
     if (categoryId === "all") {
-      navigate("/");
+      targetUrl = createMultilingualUrl('/', language);
     } else {
-      navigate(`/category/${categoryId}`);
+      targetUrl = createMultilingualUrl(`/category/${categoryId}`, language);
     }
+    navigate(targetUrl);
     onMobileMenuClose?.();
   };
 
   const handleToolClick = (toolId: string) => {
-    navigate(`/tool/${toolId}`);
+    const targetUrl = createMultilingualUrl(`/tool/${toolId}`, language);
+    navigate(targetUrl);
     onMobileMenuClose?.();
   };
 
@@ -96,7 +100,7 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
                 <AccordionContent className="pb-2">
                   <div className="ml-6 space-y-1">
                     {categoryTools.map((tool) => {
-                      const isToolActive = currentPath === `/tool/${tool.id}`;
+                      const isToolActive = currentPath.includes(`/tool/${tool.id}`);
                       return (
                         <Button
                           key={tool.id}

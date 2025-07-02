@@ -11,6 +11,8 @@ import { tools } from "@/data/toolsData";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslatedTools } from "@/data/translatedToolsData";
+import { useI18n } from "@/contexts/I18nContext";
+import { createMultilingualUrl } from "@/utils/multilingualRouting";
 
 const Index = () => {
   console.log('Index - Component rendering');
@@ -21,6 +23,7 @@ const Index = () => {
   const [activeCategory, setActiveCategory] = useState(category || "all");
   const isMobile = useIsMobile();
   const { toolCategories } = useTranslatedTools();
+  const { language } = useI18n();
 
   console.log('Index - Params:', { toolId, category });
   console.log('Index - Active category:', activeCategory);
@@ -41,11 +44,13 @@ const Index = () => {
 
   const handleCategoryChange = (newCategory: string) => {
     setActiveCategory(newCategory);
+    let targetUrl;
     if (newCategory === "all") {
-      navigate("/");
+      targetUrl = createMultilingualUrl('/', language);
     } else {
-      navigate(`/category/${newCategory}`);
+      targetUrl = createMultilingualUrl(`/category/${newCategory}`, language);
     }
+    navigate(targetUrl);
   };
 
   const filteredTools = tools.filter(tool => {
