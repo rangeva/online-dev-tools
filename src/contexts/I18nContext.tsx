@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SupportedLanguage, Translations, TranslationKey, TranslationValues } from '@/types/i18n';
@@ -77,7 +78,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('I18nProvider - Error in URL effect:', error);
     }
-  }, [location.pathname, language]); // Keep language in deps but handle it carefully
+  }, [location.pathname]); // Removed language from deps to prevent conflicts
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
     console.log('I18nProvider - Manual language change to:', newLanguage);
