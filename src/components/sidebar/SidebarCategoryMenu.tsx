@@ -84,14 +84,18 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
                   className={`hover:no-underline py-2 px-3 rounded-lg hover:bg-accent/50 transition-colors ${
                     isActive ? 'bg-accent text-accent-foreground' : ''
                   }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleCategoryClick(category.id);
-                  }}
                 >
                   <div className="flex items-center gap-2 flex-1 text-left">
                     <Icon className={`h-4 w-4 ${isActive ? 'text-accent-foreground' : 'text-muted-foreground'}`} />
-                    <span className="flex-1">{category.name}</span>
+                    <span 
+                      className="flex-1 cursor-pointer hover:underline" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryClick(category.id);
+                      }}
+                    >
+                      {category.name}
+                    </span>
                     <Badge variant="outline" className="ml-2">
                       {categoryTools.length}
                     </Badge>
