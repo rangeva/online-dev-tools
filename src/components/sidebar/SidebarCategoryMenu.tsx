@@ -45,6 +45,13 @@ export function SidebarCategoryMenu({ searchTerm, accordionValue, onAccordionCha
 
   const handleToolClick = (toolId: string) => {
     const targetUrl = createMultilingualUrl(`/tool/${toolId}`, language);
+    
+    // Find which category this tool belongs to and ensure it stays open
+    const tool = tools.find(t => t.id === toolId);
+    if (tool && !accordionValue.includes(tool.category)) {
+      onAccordionChange([...accordionValue, tool.category]);
+    }
+    
     navigate(targetUrl);
     onMobileMenuClose?.();
   };
