@@ -28,7 +28,8 @@ export const useTranslatedTools = () => {
 
   const translatedTools = tools.map(tool => ({
     ...tool,
-    name: t(`toolNames.${tool.id}` as any) || tool.name
+    name: t(`toolNames.${tool.id}` as any) || tool.name,
+    description: t(`toolDescriptions.${tool.id}` as any) || tool.description
   }));
 
   return {

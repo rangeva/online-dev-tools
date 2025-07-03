@@ -66,6 +66,9 @@ export interface Translations {
   toolNames?: {
     [key: string]: string;
   };
+  toolDescriptions?: {
+    [key: string]: string;
+  };
   tools: {
     noResults: string;
     noResultsSubtext: string;
@@ -212,6 +215,7 @@ export type TranslationKey =
   | `hero.${keyof Translations['hero']}`
   | `categories.${keyof Translations['categories']}`
   | `toolNames.${string}`
+  | `toolDescriptions.${string}`
   | `tools.${keyof Translations['tools']}`
   | `tools.dateTimeConverter.${keyof Translations['tools']['dateTimeConverter']}`
   | `tools.epochConverter.${keyof Translations['tools']['epochConverter']}`
