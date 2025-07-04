@@ -67,21 +67,30 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       const targetLanguage = urlLanguage || 'en';
       
       if (targetLanguage !== language) {
-        console.log('I18nProvider - Updating language state to:', targetLanguage);
+        console.log('I18nProvider - Updating language state from URL to:', targetLanguage);
         setCurrentLanguage(targetLanguage);
         setTranslations(getTranslations(targetLanguage));
         
         if (I18N_CONFIG.persistLanguage) {
           setStoredLanguage(targetLanguage);
         }
+      } else {
+        console.log('I18nProvider - Language already synchronized with URL');
       }
     } catch (error) {
       console.error('I18nProvider - Error in URL effect:', error);
     }
-  }, [location.pathname]); // Removed language from deps to prevent conflicts
+  }, [location.pathname, language]); // Re-added language dependency for proper synchronization
 
   const setLanguage = (newLanguage: SupportedLanguage) => {
     console.log('I18nProvider - Manual language change to:', newLanguage);
+    
+    // Prevent unnecessary updates if language is already set
+    if (newLanguage === language) {
+      console.log('I18nProvider - Language already set, skipping update');
+      return;
+    }
+    
     setCurrentLanguage(newLanguage);
     setTranslations(getTranslations(newLanguage));
     
