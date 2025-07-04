@@ -3,25 +3,23 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getDynamicDates } from './utils';
-import { useI18n } from '@/contexts/I18nContext';
 
 const DynamicDates = () => {
-  const { t } = useI18n();
-  const dynamicDates = getDynamicDates(t);
+  const dynamicDates = getDynamicDates();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">{t('tools.epochConverter.dynamicDateList')}</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Dynamic Date List</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="min-w-[120px]">{t('tools.epochConverter.description')}</TableHead>
-                <TableHead className="min-w-[100px]">{t('tools.epochConverter.unixTimestamp')}</TableHead>
-                <TableHead className="min-w-[150px]">{t('tools.epochConverter.date')}</TableHead>
+                <TableHead className="min-w-[120px]">Description</TableHead>
+                <TableHead className="min-w-[100px]">Unix Timestamp</TableHead>
+                <TableHead className="min-w-[150px]">Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

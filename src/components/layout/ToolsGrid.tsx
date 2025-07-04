@@ -3,28 +3,25 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
-import { tools } from "@/data/toolsData";
-import { useI18n } from "@/contexts/I18nContext";
-import { useTranslatedTools } from "@/data/translatedToolsData";
-import { createMultilingualUrl } from "@/utils/multilingualRouting";
+import { useI18n } from "@/i18n/context";
+import { tools, toolCategories } from "@/data/toolsData";
 
 interface ToolsGridProps {
   filteredTools: typeof tools;
 }
 
 const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
-  const { t, language } = useI18n();
-  const { toolCategories, tools: translatedTools } = useTranslatedTools();
+  const { t } = useI18n();
 
   if (filteredTools.length === 0) {
     return (
       <div className="text-center py-12">
         <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-          {t('tools.noResults')}
+          {t('tools.noToolsFound')}
         </h3>
         <p className="text-slate-500 dark:text-slate-500">
-          {t('tools.noResultsSubtext')}
+          {t('tools.adjustFilter')}
         </p>
       </div>
     );
@@ -34,13 +31,8 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {filteredTools.map((tool) => {
         const Icon = tool.icon;
-        const categoryName = toolCategories.find(cat => cat.id === tool.category)?.name || tool.category;
-        const translatedTool = translatedTools.find(t => t.id === tool.id);
-        const toolName = translatedTool?.name || tool.name;
-        const toolUrl = createMultilingualUrl(`/tool/${tool.id}`, language);
-        
         return (
-          <Link key={tool.id} to={toolUrl}>
+          <Link key={tool.id} to={`/tool/${tool.id}`}>
             <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-105 h-full">
               <CardHeader className="pb-2 p-4">
                 <div className="flex items-start justify-between">
@@ -48,11 +40,11 @@ const ToolsGrid = ({ filteredTools }: ToolsGridProps) => {
                     <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    {categoryName}
+                    {toolCategories.find(cat => cat.id === tool.category)?.name}
                   </Badge>
                 </div>
                 <CardTitle className="text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {toolName}
+                  {tool.name}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0">

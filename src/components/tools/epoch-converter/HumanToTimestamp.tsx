@@ -11,10 +11,8 @@ import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { convertHumanToTimestamp } from './utils';
-import { useI18n } from '@/contexts/I18nContext';
 
 const HumanToTimestamp = () => {
-  const { t } = useI18n();
   const [humanDate, setHumanDate] = useState(new Date().toUTCString());
   const [batchHumanDates, setBatchHumanDates] = useState('');
   const [humanToTimestampResults, setHumanToTimestampResults] = useState<any[]>([]);
@@ -50,7 +48,7 @@ const HumanToTimestamp = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">{t('tools.epochConverter.humanToTimestamp')}</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Convert Human Date to Timestamp</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
@@ -73,9 +71,9 @@ const HumanToTimestamp = () => {
                 >
                   <CalendarIcon className="mr-1 h-4 w-4" />
                   <span className="hidden sm:inline">
-                    {selectedDate ? format(selectedDate, "PPP") : t('tools.dateTimeConverter.pickDate')}
+                    {selectedDate ? format(selectedDate, "PPP") : "Pick date"}
                   </span>
-                  <span className="sm:hidden">{t('tools.epochConverter.date')}</span>
+                  <span className="sm:hidden">Date</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -89,19 +87,19 @@ const HumanToTimestamp = () => {
               </PopoverContent>
             </Popover>
             <Button onClick={setCurrentHumanDate} variant="outline" size="sm">
-              {t('tools.epochConverter.now')}
+              Now
             </Button>
             <Button onClick={convertSingleHumanDate} size="sm">
-              {t('tools.epochConverter.convert')}
+              Convert
             </Button>
           </div>
         </div>
         <p className="text-xs md:text-sm text-gray-600">
-          {t('tools.epochConverter.inputFormat')}
+          Input format: RFC 2822, D-M-Y, M/D/Y, Y-M-D, etc. Strip 'GMT' to convert to local time.
         </p>
         
         <div>
-          <label className="block text-sm font-medium mb-2">{t('tools.epochConverter.batchConvert')}</label>
+          <label className="block text-sm font-medium mb-2">Batch Convert (one per line):</label>
           <Textarea
             placeholder="Wed, 25 Jun 2025 12:09:21 GMT&#10;2025-06-25 12:09:21&#10;06/25/2025 12:09:21"
             value={batchHumanDates}
@@ -110,21 +108,21 @@ const HumanToTimestamp = () => {
             className="text-sm"
           />
           <Button onClick={convertBatchHumanDates} className="mt-2 w-full sm:w-auto" size="sm">
-            {t('tools.epochConverter.batchConvertButton')}
+            Batch Convert
           </Button>
         </div>
 
         {humanToTimestampResults.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">{t('tools.epochConverter.results')}</h3>
+            <h3 className="text-lg font-semibold mb-2">Results:</h3>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="min-w-[120px]">{t('tools.epochConverter.original')}</TableHead>
-                    <TableHead className="min-w-[100px]">{t('tools.epochConverter.unixTimestamp')}</TableHead>
-                    <TableHead className="min-w-[100px]">{t('tools.epochConverter.milliseconds')}</TableHead>
-                    <TableHead className="min-w-[150px]">{t('tools.epochConverter.utcDate')}</TableHead>
+                    <TableHead className="min-w-[120px]">Original</TableHead>
+                    <TableHead className="min-w-[100px]">Unix Timestamp</TableHead>
+                    <TableHead className="min-w-[100px]">Milliseconds</TableHead>
+                    <TableHead className="min-w-[150px]">UTC Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

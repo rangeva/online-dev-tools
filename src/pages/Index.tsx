@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SimpleHeroSection from "@/components/layout/SimpleHeroSection";
 import ToolsGrid from "@/components/layout/ToolsGrid";
@@ -10,30 +10,15 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { tools } from "@/data/toolsData";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useTranslatedTools } from "@/data/translatedToolsData";
-import { useI18n } from "@/contexts/I18nContext";
-import { createMultilingualUrl } from "@/utils/multilingualRouting";
 
 const Index = () => {
-  console.log('Index - Component rendering');
-  
   const { toolId, category } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState(category || "all");
   const isMobile = useIsMobile();
-  const { toolCategories } = useTranslatedTools();
-  const { language } = useI18n();
-
-  console.log('Index - Params:', { toolId, category });
-  console.log('Index - Active category:', activeCategory);
 
   const { selectedTool } = usePageMeta(toolId, activeCategory);
-
-  // Memoize the search change handler to prevent unnecessary re-renders
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchTerm(value);
-  }, []);
 
   // Update URL when category changes
   useEffect(() => {
@@ -44,13 +29,11 @@ const Index = () => {
 
   const handleCategoryChange = (newCategory: string) => {
     setActiveCategory(newCategory);
-    let targetUrl;
     if (newCategory === "all") {
-      targetUrl = createMultilingualUrl('/', language);
+      navigate("/");
     } else {
-      targetUrl = createMultilingualUrl(`/category/${newCategory}`, language);
+      navigate(`/category/${newCategory}`);
     }
-    navigate(targetUrl);
   };
 
   const filteredTools = tools.filter(tool => {
@@ -63,12 +46,9 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
-  console.log('Index - Filtered tools count:', filteredTools.length);
-  console.log('Index - Selected tool:', selectedTool?.name);
-
   return (
     <div className="min-h-screen flex w-full">
-      <AppSidebar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+      <AppSidebar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <main className={`flex-1 ${!isMobile ? 'ml-80' : ''} bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800`}>
         {selectedTool ? (
           <div className="container mx-auto px-4 py-8">
