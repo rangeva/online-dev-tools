@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { useI18n } from "@/i18n/context";
 import { tools, toolCategories } from "@/data/toolsData";
 import { useMemo } from "react";
 
@@ -21,7 +20,6 @@ export function SidebarCategoryMenu({
   onMobileMenuClose 
 }: SidebarCategoryMenuProps) {
   const { toolId } = useParams();
-  const { t } = useI18n();
 
   // Memoize the filtered tools to prevent unnecessary re-computations
   const filteredToolsByCategory = useMemo(() => {
@@ -123,7 +121,7 @@ export function SidebarCategoryMenu({
 
           {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
             <div className="p-4 text-center text-slate-500 dark:text-slate-400">
-              {t('sidebar.noResults', { query: searchTerm })}
+              No tools found matching "{searchTerm}"
             </div>
           )}
         </div>

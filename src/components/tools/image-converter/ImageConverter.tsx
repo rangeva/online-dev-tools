@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Image as ImageIcon } from "lucide-react";
-import { useI18n } from "@/i18n/context";
 import { FileUpload } from "./FileUpload";
 import { ImagePreview } from "./ImagePreview";
 import { ConversionControls } from "./ConversionControls";
@@ -9,7 +8,6 @@ import { ConvertedResult } from "./ConvertedResult";
 import { useImageConverter } from "./hooks/useImageConverter";
 
 export const ImageConverter = () => {
-  const { t } = useI18n();
   const {
     selectedFile,
     previewUrl,
@@ -32,10 +30,10 @@ export const ImageConverter = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ImageIcon className="h-5 w-5" />
-            {t('imageConverter.title')}
+            Image Format Converter
           </CardTitle>
           <CardDescription>
-            {t('imageConverter.description')}
+            Convert images between different formats (PNG, JPEG, WebP, BMP, GIF) with quality control
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

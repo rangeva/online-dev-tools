@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useRef, useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useI18n } from "@/i18n/context";
 
 interface SidebarHeaderProps {
   searchTerm: string;
@@ -12,7 +11,6 @@ interface SidebarHeaderProps {
 }
 
 export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }: SidebarHeaderProps) {
-  const { t } = useI18n();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +50,7 @@ export function SidebarHeader({ searchTerm, onSearchChange, onMobileMenuClose }:
         <Input
           ref={searchInputRef}
           type="text"
-          placeholder={t('sidebar.searchPlaceholder')}
+          placeholder="Search tools..."
           value={searchTerm}
           onChange={handleSearchChange}
           onFocus={handleInputFocus}

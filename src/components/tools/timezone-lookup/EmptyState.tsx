@@ -1,18 +1,15 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe } from "lucide-react";
-import { useI18n } from "@/i18n/context";
 
 const EmptyState = () => {
-  const { t } = useI18n();
-
   return (
     <Card className="bg-muted/50">
       <CardContent className="pt-6">
         <div className="text-center text-muted-foreground">
           <Globe className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p>{t('timezone.emptyState')}</p>
-          <p className="text-sm mt-1">{t('timezone.emptyStateDetail')}</p>
+          <p>Enter a city name, US state, or select from popular locations to get timezone information.</p>
+          <p className="text-sm mt-1">Now supports all 50 US states, major cities worldwide, and international locations.</p>
         </div>
       </CardContent>
     </Card>

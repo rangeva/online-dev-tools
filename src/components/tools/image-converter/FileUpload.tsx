@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useI18n } from "@/i18n/context";
 import { getFileSizeString } from "./utils";
 
 interface FileUploadProps {
@@ -15,15 +14,14 @@ interface FileUploadProps {
 export const FileUpload = ({ selectedFile, onFileSelect }: FileUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { t } = useI18n();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith('image/')) {
         toast({
-          title: t('imageConverter.invalidFile'),
-          description: t('imageConverter.selectImageFile'),
+          title: "Invalid file type",
+          description: "Please select an image file.",
           variant: "destructive"
         });
         return;
@@ -36,7 +34,7 @@ export const FileUpload = ({ selectedFile, onFileSelect }: FileUploadProps) => {
 
   return (
     <div className="space-y-2">
-      <Label>{t('imageConverter.selectImage')}</Label>
+      <Label>Select Image</Label>
       <div className="flex items-center gap-4">
         <Button
           variant="outline"
@@ -44,7 +42,7 @@ export const FileUpload = ({ selectedFile, onFileSelect }: FileUploadProps) => {
           className="flex items-center gap-2"
         >
           <Upload className="h-4 w-4" />
-          {t('imageConverter.chooseFile')}
+          Choose File
         </Button>
         <input
           ref={fileInputRef}
