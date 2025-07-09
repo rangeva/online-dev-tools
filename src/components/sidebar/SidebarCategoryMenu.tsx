@@ -50,26 +50,46 @@ export function SidebarCategoryMenu({
     }
   };
 
+  // Determine if we should use multiple mode when searching
+  const useMultipleMode = searchTerm && Object.keys(filteredToolsByCategory).length > 0;
+  
   // Determine accordion value based on search
   const currentAccordionValue = useMemo(() => {
-    if (searchTerm && Object.keys(filteredToolsByCategory).length > 0) {
-      // If searching and there are results, open the first category with results
-      return Object.keys(filteredToolsByCategory)[0];
+    if (useMultipleMode) {
+      // If searching and there are results, open all categories with results
+      return Object.keys(filteredToolsByCategory);
     }
     return accordionValue[0] || "";
-  }, [searchTerm, filteredToolsByCategory, accordionValue]);
+  }, [useMultipleMode, filteredToolsByCategory, accordionValue]);
+
+  const AccordionComponent = useMultipleMode ? 
+    ({ children }: { children: React.ReactNode }) => (
+      <Accordion 
+        type="multiple" 
+        className="w-full" 
+        value={currentAccordionValue as string[]}
+        onValueChange={(value) => onAccordionChange(value)}
+      >
+        {children}
+      </Accordion>
+    ) : 
+    ({ children }: { children: React.ReactNode }) => (
+      <Accordion 
+        type="single" 
+        className="w-full" 
+        value={currentAccordionValue as string}
+        onValueChange={(value) => onAccordionChange(value ? [value] : [])}
+        collapsible
+      >
+        {children}
+      </Accordion>
+    );
 
   return (
     <div className="flex-1 overflow-hidden">
       <ScrollArea className="h-full">
         <div className="p-2">
-          <Accordion 
-            type="single" 
-            className="w-full" 
-            value={currentAccordionValue}
-            onValueChange={(value) => onAccordionChange(value ? [value] : [])}
-            collapsible
-          >
+          <AccordionComponent>
             {Object.entries(filteredToolsByCategory).map(([categoryId, categoryTools]) => {
               const category = toolCategories.find(cat => cat.id === categoryId);
               if (!category) return null;
@@ -117,7 +137,7 @@ export function SidebarCategoryMenu({
                 </AccordionItem>
               );
             })}
-          </Accordion>
+          </AccordionComponent>
 
           {Object.keys(filteredToolsByCategory).length === 0 && searchTerm && (
             <div className="p-4 text-center text-slate-500 dark:text-slate-400">
