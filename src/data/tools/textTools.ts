@@ -9,7 +9,8 @@ import {
   Replace,
   Filter,
   Trash2,
-  Space
+  Space,
+  Minus
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { toolComponents } from "../toolComponents";
@@ -104,5 +105,14 @@ export const textTools: Tool[] = [
     icon: Space,
     component: toolComponents.RemoveExtraSpaces,
     tags: ["text", "spaces", "whitespace", "trim", "clean"]
+  },
+  {
+    id: "em-dash-replacer",
+    name: "Em Dash Replacer",
+    description: "Replace Em Dashes (—) with commas, spaces, regular dashes, or colons",
+    category: "text",
+    icon: Minus,
+    component: toolComponents.EmDashReplacer,
+    tags: ["text", "em dash", "replace", "punctuation", "format"]
   }
 ];

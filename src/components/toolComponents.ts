@@ -10,6 +10,7 @@ import FindReplace from "@/components/tools/FindReplace";
 import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
 import RemoveEmptyLines from "@/components/tools/RemoveEmptyLines";
 import RemoveExtraSpaces from "@/components/tools/RemoveExtraSpaces";
+import EmDashReplacer from "@/components/tools/EmDashReplacer";
 import UrlEncoder from "@/components/tools/UrlEncoder";
 import Base64Encoder from "@/components/tools/Base64Encoder";
 import JwtDecoder from "@/components/tools/JwtDecoder";
@@ -77,6 +78,7 @@ export const toolComponents = {
   RemoveDuplicateLines,
   RemoveEmptyLines,
   RemoveExtraSpaces,
+  EmDashReplacer,
   UrlEncoder,
   Base64Encoder,
   JwtDecoder,
