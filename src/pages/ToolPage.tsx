@@ -9,7 +9,7 @@ const ToolPage = () => {
   const validToolIds = [
     "word-counter", "text-diff", "case-converter", "regex-tester",
     "add-prefix-suffix", "line-break-manager", "find-replace", 
-    "remove-duplicate-lines", "remove-empty-lines", "remove-extra-spaces",
+    "remove-duplicate-lines", "remove-empty-lines", "remove-extra-spaces", "em-dash-replacer",
     "html-minifier", "html-beautifier", "html-to-markdown", "html-to-jsx",
     "html-previewer", "html-to-plain-text", "html-entity-coder", "html-wysiwyg-editor",
     "url-encoder", "base64-encoder", "jwt-decoder", 
