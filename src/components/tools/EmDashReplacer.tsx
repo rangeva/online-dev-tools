@@ -91,7 +91,7 @@ const EmDashReplacer = () => {
               placeholder="Enter text with Em Dashes (—) here..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="min-h-[200px] resize-none"
+              className="min-h-[200px] resize-none whitespace-pre-wrap"
             />
             
             <div className="space-y-2">
@@ -132,7 +132,7 @@ const EmDashReplacer = () => {
               placeholder="Processed text will appear here..."
               value={outputText}
               readOnly
-              className="min-h-[200px] resize-none bg-muted"
+              className="min-h-[200px] resize-none bg-muted whitespace-pre-wrap"
             />
             
             <Button 
