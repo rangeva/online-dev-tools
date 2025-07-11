@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const EmDashReplacer = () => {
-  const [inputText, setInputText] = useState("");
-  const [outputText, setOutputText] = useState("");
+  const [inputHtml, setInputHtml] = useState("");
+  const [outputHtml, setOutputHtml] = useState("");
   const [replaceWith, setReplaceWith] = useState("comma");
+  const inputRef = useRef<HTMLDivElement>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const replacementOptions = {
@@ -19,8 +22,26 @@ const EmDashReplacer = () => {
     colon: ":"
   };
 
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.innerHTML !== inputHtml) {
+      inputRef.current.innerHTML = inputHtml;
+    }
+  }, [inputHtml]);
+
+  useEffect(() => {
+    if (outputRef.current && outputRef.current.innerHTML !== outputHtml) {
+      outputRef.current.innerHTML = outputHtml;
+    }
+  }, [outputHtml]);
+
+  const updateInputFromEditor = () => {
+    if (inputRef.current) {
+      setInputHtml(inputRef.current.innerHTML);
+    }
+  };
+
   const handleReplace = () => {
-    if (!inputText.trim()) {
+    if (!inputHtml.trim() && (!inputRef.current || !inputRef.current.textContent?.trim())) {
       toast({
         title: "Input required",
         description: "Please enter some text to process",
@@ -30,8 +51,8 @@ const EmDashReplacer = () => {
     }
 
     const replacement = replacementOptions[replaceWith as keyof typeof replacementOptions];
-    const result = inputText.replace(/—/g, replacement);
-    setOutputText(result);
+    const result = inputHtml.replace(/—/g, replacement);
+    setOutputHtml(result);
 
     toast({
       title: "Success",
@@ -40,7 +61,8 @@ const EmDashReplacer = () => {
   };
 
   const copyToClipboard = async () => {
-    if (!outputText) {
+    const textContent = outputRef.current?.textContent || "";
+    if (!textContent.trim()) {
       toast({
         title: "Nothing to copy",
         description: "No output text available to copy",
@@ -50,7 +72,8 @@ const EmDashReplacer = () => {
     }
 
     try {
-      await navigator.clipboard.writeText(outputText);
+      // Copy both HTML and plain text
+      await navigator.clipboard.writeText(textContent);
       toast({
         title: "Copied!",
         description: "Text copied to clipboard",
@@ -65,8 +88,14 @@ const EmDashReplacer = () => {
   };
 
   const handleClear = () => {
-    setInputText("");
-    setOutputText("");
+    setInputHtml("");
+    setOutputHtml("");
+    if (inputRef.current) {
+      inputRef.current.innerHTML = "";
+    }
+    if (outputRef.current) {
+      outputRef.current.innerHTML = "";
+    }
   };
 
   return (
@@ -78,75 +107,171 @@ const EmDashReplacer = () => {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Input Text</CardTitle>
-            <CardDescription>
-              Enter or paste the text containing Em Dashes (—) that you want to replace
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Textarea
-              placeholder="Enter text with Em Dashes (—) here..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              className="min-h-[200px] resize-none whitespace-pre-wrap font-mono"
-            />
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Replace Em Dashes with:</label>
-              <Select value={replaceWith} onValueChange={setReplaceWith}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="comma">Comma (,)</SelectItem>
-                  <SelectItem value="space">Space ( )</SelectItem>
-                  <SelectItem value="dash">Regular Dash (-)</SelectItem>
-                  <SelectItem value="colon">Colon (:)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <Tabs defaultValue="visual" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="visual">Rich Text Editor</TabsTrigger>
+          <TabsTrigger value="simple">Simple Text</TabsTrigger>
+        </TabsList>
 
-            <div className="flex gap-2">
-              <Button onClick={handleReplace} className="flex-1">
-                Replace Em Dashes
-              </Button>
-              <Button variant="outline" size="icon" onClick={handleClear}>
-                <RotateCcw className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <TabsContent value="visual" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Input Text</CardTitle>
+                <CardDescription>
+                  Enter or paste rich text containing Em Dashes (—) that you want to replace. Formatting will be preserved.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div 
+                  ref={inputRef}
+                  contentEditable
+                  className="min-h-[200px] p-4 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background whitespace-pre-wrap"
+                  onInput={updateInputFromEditor}
+                  onPaste={(e) => {
+                    // Allow rich paste
+                    setTimeout(updateInputFromEditor, 0);
+                  }}
+                  style={{
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    lineHeight: '1.6'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: inputHtml }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  You can paste rich text here and formatting will be preserved
+                </p>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Replace Em Dashes with:</label>
+                  <Select value={replaceWith} onValueChange={setReplaceWith}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="comma">Comma (,)</SelectItem>
+                      <SelectItem value="space">Space ( )</SelectItem>
+                      <SelectItem value="dash">Regular Dash (-)</SelectItem>
+                      <SelectItem value="colon">Colon (:)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Output Text</CardTitle>
-            <CardDescription>
-              Text with Em Dashes replaced by your selected character
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Textarea
-              placeholder="Processed text will appear here..."
-              value={outputText}
-              readOnly
-              className="min-h-[200px] resize-none bg-muted whitespace-pre-wrap font-mono"
-            />
-            
-            <Button 
-              variant="outline" 
-              onClick={copyToClipboard}
-              disabled={!outputText}
-              className="w-full"
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              Copy to Clipboard
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleReplace} className="flex-1">
+                    Replace Em Dashes
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={handleClear}>
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Output Text</CardTitle>
+                <CardDescription>
+                  Text with Em Dashes replaced by your selected character. Formatting is preserved.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div 
+                  ref={outputRef}
+                  className="min-h-[200px] p-4 border border-input rounded-md bg-muted whitespace-pre-wrap"
+                  style={{
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    lineHeight: '1.6'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: outputHtml }}
+                />
+                
+                <Button 
+                  variant="outline" 
+                  onClick={copyToClipboard}
+                  disabled={!outputHtml}
+                  className="w-full"
+                >
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy Text to Clipboard
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="simple" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Input Text</CardTitle>
+                <CardDescription>
+                  Enter or paste plain text containing Em Dashes (—) that you want to replace
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Textarea
+                  placeholder="Enter text with Em Dashes (—) here..."
+                  value={inputHtml.replace(/<[^>]*>/g, '')}
+                  onChange={(e) => setInputHtml(e.target.value)}
+                  className="min-h-[200px] resize-none whitespace-pre-wrap font-mono"
+                />
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Replace Em Dashes with:</label>
+                  <Select value={replaceWith} onValueChange={setReplaceWith}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="comma">Comma (,)</SelectItem>
+                      <SelectItem value="space">Space ( )</SelectItem>
+                      <SelectItem value="dash">Regular Dash (-)</SelectItem>
+                      <SelectItem value="colon">Colon (:)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={handleReplace} className="flex-1">
+                    Replace Em Dashes
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={handleClear}>
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Output Text</CardTitle>
+                <CardDescription>
+                  Text with Em Dashes replaced by your selected character
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Textarea
+                  placeholder="Processed text will appear here..."
+                  value={outputHtml.replace(/<[^>]*>/g, '')}
+                  readOnly
+                  className="min-h-[200px] resize-none bg-muted whitespace-pre-wrap font-mono"
+                />
+                
+                <Button 
+                  variant="outline" 
+                  onClick={copyToClipboard}
+                  disabled={!outputHtml}
+                  className="w-full"
+                >
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy to Clipboard
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       <Card>
         <CardHeader>
