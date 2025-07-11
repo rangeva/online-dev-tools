@@ -126,7 +126,7 @@ const EmDashReplacer = () => {
                 <div 
                   ref={inputRef}
                   contentEditable
-                  className="min-h-[200px] p-4 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background whitespace-pre-wrap"
+                  className="min-h-[200px] max-h-[200px] overflow-y-auto p-4 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background whitespace-pre-wrap"
                   onInput={updateInputFromEditor}
                   onPaste={(e) => {
                     // Allow rich paste
@@ -178,7 +178,7 @@ const EmDashReplacer = () => {
               <CardContent className="space-y-4">
                 <div 
                   ref={outputRef}
-                  className="min-h-[200px] p-4 border border-input rounded-md bg-muted whitespace-pre-wrap"
+                  className="min-h-[200px] max-h-[200px] overflow-y-auto p-4 border border-input rounded-md bg-muted whitespace-pre-wrap"
                   style={{
                     fontFamily: 'system-ui, -apple-system, sans-serif',
                     lineHeight: '1.6'
